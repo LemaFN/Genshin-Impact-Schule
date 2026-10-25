@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Ultimate Cosmic Cinematic Intro - Director's Cut 60fps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #020205;
+            color: #ffffff;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- HARDWARE-ACCELERATED CANVAS BACKGROUND --- */
+        #universe-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+            transform: translateZ(0);
+        }
+
+        /* --- CINEMATIC HUD CONTROLS --- */
+        .cinematic-hud {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%) translateZ(0);
+            z-index: 100;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 20px;
+            border-radius: 30px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: hud-fade-in 1.5s ease 1s forwards;
+            opacity: 0;
+        }
+
+        @keyframes hud-fade-in {
+            to { opacity: 1; }
+        }
+
+        .hud-btn {
+            background: transparent;
+            border: none;
+            color: #8ab4f8;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: color 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .hud-btn:hover {
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(138, 180, 248, 0.8);
+        }
+
+        .hud-divider {
+            width: 1px;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* --- MASTER STAGE CONTAINER --- */
+        .cosmic-stage {
+            position: absolute;
+            z-index: 10;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translateZ(0);
+        }
+
+        /* --- PHASE 1: NEURAL QUANTUM AWAKENING --- */
+        .neural-awakening-stage {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 12;
+            pointer-events: none;
+            animation: neural-phase-sequence 34s ease forwards;
+        }
+
+        .neural-beam {
+            position: absolute;
+            width: 2px;
+            height: 0px;
+            background: linear-gradient(180deg, transparent, #8ab4f8, #c58af8);
+            opacity: 0;
+            will-change: transform, height, opacity;
+        }
+
+        .beam-1 { transform: rotate(0deg) translateY(-150px); animation: beam-fire 34s ease forwards; animation-delay: 0.2s; }
+        .beam-2 { transform: rotate(60deg) translateY(-150px); animation: beam-fire 34s ease forwards; animation-delay: 0.4s; }
+        .beam-3 { transform: rotate(120deg) translateY(-150px); animation: beam-fire 34s ease forwards; animation-delay: 0.6s; }
+        .beam-4 { transform: rotate(180deg) translateY(-150px); animation: beam-fire 34s ease forwards; animation-delay: 0.8s; }
+        .beam-5 { transform: rotate(240deg) translateY(-150px); animation: beam-fire 34s ease forwards; animation-delay: 1.0s; }
+        .beam-6 { transform: rotate(300deg) translateY(-150px); animation: beam-fire 34s ease forwards; animation-delay: 1.2s; }
+
+        @keyframes beam-fire {
+            0%, 2% { height: 0px; opacity: 0; }
+            4% { height: 180px; opacity: 1; }
+            7% { height: 0px; opacity: 0; transform: scale(0); }
+            100% { height: 0px; opacity: 0; }
+        }
+
+        @keyframes neural-phase-sequence {
+            0%, 15% { opacity: 1; }
+            18% { opacity: 0; display: none; }
+            100% { opacity: 0; display: none; }
+        }
+
+        /* --- PHASE 2 & 3: QUANTUM CORE & 6s PAUSE + HIGH-SPEED SPIN --- */
+        .orbit-system {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            will-change: transform;
+            animation: cosmic-master-sequence 34s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .center-logo-wrapper {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 15;
+            will-change: transform, opacity;
+            animation: core-ignition-sequence 34s ease-in-out forwards;
+        }
+
+        .center-gemini-logo {
+            width: 130px;
+            height: 130px;
+            fill: url(#gemini-gradient);
+            filter: drop-shadow(0 0 35px rgba(138, 180, 248, 0.8));
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            display: block;
+        }
+
+        .center-gemini-logo:hover {
+            transform: scale(1.1);
+        }
+
+        @keyframes core-ignition-sequence {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            5% { transform: scale(0.2) rotate(-90deg); opacity: 0.4; }
+            12% { transform: scale(1) rotate(0deg); opacity: 1; }
+            42% { transform: scale(1) rotate(0deg); opacity: 1; }
+            46% { transform: scale(1.8) rotate(720deg); opacity: 1; }
+            52% { transform: scale(0.02) rotate(3600deg); opacity: 0; }
+            100% { opacity: 0; display: none; }
+        }
+
+        .orbit-icon {
+            position: absolute;
+            width: 72px;
+            height: 72px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 18px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 15px rgba(138,180,248,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            cursor: pointer;
+            will-change: transform, opacity;
+            animation: icon-advanced-outbreak 34s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .orbit-icon:hover {
+            transform: translate(var(--tx), var(--ty)) scale(1.15) rotate(var(--rot)) !important;
+            box-shadow: 0 15px 35px rgba(138, 180, 248, 0.8);
+            z-index: 50;
+        }
+
+        .orbit-icon img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        /* Fixed coordinate variables for each icon */
+        .icon-gmail { animation-delay: 1.5s; --tx: -170px; --ty: -100px; --rot: -12deg; }
+        .icon-chrome { animation-delay: 1.7s; --tx: 180px; --ty: -110px; --rot: 18deg; }
+        .icon-drive { animation-delay: 1.9s; --tx: -210px; --ty: 75px; --rot: -22deg; }
+        .icon-earth { animation-delay: 2.1s; --tx: 200px; --ty: 85px; --rot: 14deg; }
+        .icon-photos { animation-delay: 2.3s; --tx: 0px; --ty: -170px; --rot: 0deg; }
+        .icon-youtube { animation-delay: 2.5s; --tx: -120px; --ty: 160px; --rot: -8deg; }
+        .icon-ytmusic { animation-delay: 2.7s; --tx: 130px; --ty: 160px; --rot: 10deg; }
+
+        @keyframes icon-advanced-outbreak {
+            0% { transform: translate(0, 0) scale(0) rotate(0deg); opacity: 0; pointer-events: none; }
+            18% { transform: translate(calc(var(--tx) * 0.2), calc(var(--ty) * 0.2)) scale(0.5) rotate(var(--rot)); opacity: 0.6; pointer-events: none; }
+            26% { transform: translate(var(--tx), var(--ty)) scale(1.1) rotate(calc(var(--rot) * 1.5)); opacity: 1; pointer-events: auto; }
+            42% { transform: translate(var(--tx), var(--ty)) scale(1) rotate(var(--rot)); opacity: 1; pointer-events: auto; }
+            46% { transform: translate(var(--tx), var(--ty)) scale(1) rotate(720deg); opacity: 1; pointer-events: auto; }
+            49% { transform: translate(0, 0) rotate(5400deg) scale(0.4); opacity: 0.9; pointer-events: none; }
+            52% { transform: translate(0, 0) rotate(7200deg) scale(0.02); opacity: 0; display: none; pointer-events: none; }
+            100% { opacity: 0; display: none; pointer-events: none; }
+        }
+
+        @keyframes cosmic-master-sequence {
+            0% { transform: rotate(0deg); }
+            42% { transform: rotate(90deg); }
+            46% { transform: rotate(720deg); }
+            50% { transform: rotate(4320deg) scale(1); }
+            52% { transform: rotate(5400deg) scale(0.02); }
+            100% { transform: rotate(5400deg); display: none; }
+        }
+
+        /* --- PHASE 4: PLASMA SHOCKWAVE --- */
+        .quantum-shockwave {
+            position: absolute;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, rgba(138, 180, 248, 0.45) 0%, rgba(197, 138, 248, 0.25) 35%, rgba(90, 110, 248, 0.08) 65%, transparent 85%);
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            will-change: transform, opacity;
+            animation: shockwave-burst 34s ease-in-out forwards;
+        }
+
+        @keyframes shockwave-burst {
+            0%, 48% { opacity: 0; transform: scale(0.1); }
+            50% { opacity: 1; transform: scale(0.9); }
+            55% { opacity: 0.85; transform: scale(1.6); }
+            62% { opacity: 0; transform: scale(2.8); }
+            100% { opacity: 0; }
+        }
+
+        /* --- PHASE 5: TEXT REVEAL STAGE --- */
+        .intro-stage {
+            position: absolute;
+            z-index: 25;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 400px;
+            opacity: 0;
+            will-change: opacity;
+            animation: show-intro-stage 34s ease-in-out forwards;
+        }
+
+        @keyframes show-intro-stage {
+            0%, 51% { opacity: 0; pointer-events: none; }
+            53% { opacity: 1; pointer-events: auto; }
+            80% { opacity: 1; }
+            84% { opacity: 0; pointer-events: none; }
+            100% { opacity: 0; }
+        }
+
+        .text-stage {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .badge-pill {
+            background: linear-gradient(135deg, rgba(138, 180, 248, 0.15), rgba(197, 138, 248, 0.15));
+            border: 1px solid rgba(138, 180, 248, 0.4);
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            color: #8ab4f8;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(138, 180, 248, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            will-change: transform, opacity;
+            animation: badge-reveal 34s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes badge-reveal {
+            0%, 53% { opacity: 0; transform: translateY(20px); }
+            56% { opacity: 1; transform: translateY(0); }
+            78% { opacity: 1; transform: translateY(0); }
+            82% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 0; }
+        }
+
+        .text-portal-mask {
+            position: relative;
+            clip-path: inset(0 100% 0 0);
+            will-change: clip-path, transform, opacity;
+            animation: portal-wipe-master 34s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes portal-wipe-master {
+            0%, 55% { clip-path: inset(0 100% 0 0); transform: scale(0.9); opacity: 0; }
+            61% { clip-path: inset(0 0% 0 0); transform: scale(1); opacity: 1; }
+            76% { clip-path: inset(0 0% 0 0); transform: scale(1); opacity: 1; }
+            82% { clip-path: inset(0 0% 0 100%); transform: scale(1.05); opacity: 0; }
+            100% { clip-path: inset(0 0% 0 100%); opacity: 0; }
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 9vw, 5.5rem);
+            letter-spacing: 14px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #8ab4f8 0%, #c58af8 45%, #f88ab4 80%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            line-height: 1.1;
+            white-space: nowrap;
+            filter: drop-shadow(0 0 25px rgba(138, 180, 248, 0.4));
+        }
+
+        .subtitle {
+            font-size: clamp(0.8rem, 2.5vw, 1.25rem);
+            color: #b0c4de;
+            letter-spacing: 9px;
+            margin-top: 15px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            opacity: 0.9;
+        }
+
+        /* --- PHASE 6: FINALE & PERMANENT LOCK STATE --- */
+        .reveal-stage {
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100px;
+            z-index: 30;
+        }
+
+        .sparkle-flight-wrapper {
+            position: absolute;
+            left: 5%;
+            z-index: 35;
+            opacity: 0;
+            will-change: left, transform, opacity;
+            animation: epic-flight-choreography 34s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes epic-flight-choreography {
+            0%, 80% { left: 5%; transform: scale(0.3) rotate(-360deg); opacity: 0; }
+            82% { opacity: 1; transform: scale(0.6) rotate(-180deg); }
+            87% { left: 85%; transform: scale(1.1) rotate(540deg); opacity: 1; }
+            89% { left: 50%; transform: translate(-50%, -50%) scale(1.3) rotate(720deg); opacity: 1; }
+            92% { left: 50%; transform: translate(-50%, -50%) scale(1.8) rotate(1080deg); opacity: 1; }
+            94% { left: 50%; transform: translate(-50%, -50%) scale(2.2) rotate(1260deg); opacity: 0; }
+            100% { left: 50%; transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+        }
+
+        .flying-sparkle-svg {
+            width: 120px;
+            height: 120px;
+            fill: url(#gemini-gradient);
+            filter: drop-shadow(0 0 30px rgba(138, 180, 248, 0.9));
+            transform-origin: center;
+        }
+
+        .fin-flash-overlay {
+            position: absolute;
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(138,180,248,0.7) 0%, rgba(197,138,248,0.3) 40%, transparent 75%);
+            border-radius: 50%;
+            z-index: 32;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            opacity: 0;
+            will-change: transform, opacity;
+            animation: cinematic-flash-finale 34s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes cinematic-flash-finale {
+            0%, 90% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            93% { transform: translate(-50%, -50%) scale(2.0); opacity: 0.9; }
+            96% { transform: translate(-50%, -50%) scale(2.8); opacity: 0.2; }
+            100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+        }
+
+        .final-app-container {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(145deg, #ffffff, #f0f4f9);
+            border-radius: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 40px rgba(138, 180, 248, 0.5);
+            z-index: 33;
+            cursor: pointer;
+            
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0) rotate(220deg);
+            left: 50%;
+            top: 50%;
+            
+            will-change: transform, opacity;
+            animation: final-icon-reveal-lock 34s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .final-app-container:hover {
+            transform: translate(-50%, -50%) scale(1.08) rotate(0deg) !important;
+        }
+
+        @keyframes final-icon-reveal-lock {
+            0%, 91% { opacity: 0; transform: translate(-50%, -50%) scale(0) rotate(220deg); }
+            95% { opacity: 1; transform: translate(-50%, -50%) scale(1.06) rotate(-4deg); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(0deg); }
+        }
+
+        .final-app-sparkle {
+            width: 90px;
+            height: 90px;
+            fill: url(#gemini-gradient);
+            filter: drop-shadow(0 0 10px rgba(138, 180, 248, 0.4));
+        }
+
+        .final-title-wrapper {
+            position: absolute;
+            top: calc(50% + 100px);
+            left: 50%;
+            transform: translateX(-50%) translateZ(0);
+            z-index: 33;
+            text-align: center;
+            opacity: 0;
+            will-change: transform, opacity;
+            animation: final-title-lock 34s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes final-title-lock {
+            0%, 93% { opacity: 0; transform: translateX(-50%) translateY(20px); letter-spacing: 6px; }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); letter-spacing: 10px; }
+        }
+
+        .final-app-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-transform: uppercase;
+            text-shadow: 0 0 20px rgba(138, 180, 248, 0.8);
+            letter-spacing: 10px;
+        }
+
+        .final-app-subtitle {
+            font-size: 0.75rem;
+            color: #8ab4f8;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .feature-pills-container {
+            position: absolute;
+            top: calc(50% + 165px);
+            left: 50%;
+            transform: translateX(-50%) translateZ(0);
+            z-index: 33;
+            display: flex;
+            gap: 12px;
+            opacity: 0;
+            will-change: transform, opacity;
+            animation: feature-pills-lock 34s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+
+        @keyframes feature-pills-lock {
+            0%, 95% { opacity: 0; transform: translateX(-50%) translateY(15px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .feature-pill {
+            background: rgba(138, 180, 248, 0.1);
+            border: 1px solid rgba(138, 180, 248, 0.3);
+            padding: 5px 14px;
+            border-radius: 14px;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #c58af8;
+            backdrop-filter: blur(8px);
+        }
+
+        .final-aura {
+            position: absolute;
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, rgba(138, 180, 248, 0.25) 0%, rgba(197, 138, 248, 0.1) 50%, transparent 75%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            z-index: 31;
+            will-change: transform, opacity;
+            animation: aura-expand 34s ease-out forwards;
+        }
+
+        @keyframes aura-expand {
+            0%, 92% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            95% { transform: translate(-50%, -50%) scale(1.4); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="universe-canvas"></canvas>
+
+    <div class="quantum-shockwave"></div>
+    <div class="final-aura"></div>
+
+    <div class="cinematic-hud">
+        <button class="hud-btn" onclick="restartExperience()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/></svg>
+            Replay
+        </button>
+        <div class="hud-divider"></div>
+        <button class="hud-btn" onclick="toggleAtmosphere()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            Vibe
+        </button>
+    </div>
+
+    <div class="cosmic-stage">
+        
+        <svg style="width:0;height:0;position:absolute;">
+            <defs>
+                <linearGradient id="gemini-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8ab4f8" />
+                    <stop offset="50%" stop-color="#c58af8" />
+                    <stop offset="100%" stop-color="#f88ab4" />
+                </linearGradient>
+            </defs>
+        </svg>
+
+        <div class="neural-awakening-stage">
+            <div class="neural-beam beam-1"></div>
+            <div class="neural-beam beam-2"></div>
+            <div class="neural-beam beam-3"></div>
+            <div class="neural-beam beam-4"></div>
+            <div class="neural-beam beam-5"></div>
+            <div class="neural-beam beam-6"></div>
+        </div>
+
+        <div class="orbit-system" id="orbitSystem">
+            <div class="center-logo-wrapper">
+                <a href="https://gemini.google.com" onclick="openAppOrWeb(event, 'googlegemini://', 'https://gemini.google.com')" title="Gemini AI" style="display:block; width:100%; height:100%;">
+                    <svg class="center-gemini-logo" viewBox="0 0 24 24">
+                        <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"/>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Smart Clickable Ecosystem Icons with App-Intent / Web Fallback -->
+            <a href="https://mail.google.com" onclick="openAppOrWeb(event, 'googlegmail://', 'https://mail.google.com')" class="orbit-icon icon-gmail" title="Gmail"><img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Gmail_icon_%282020%29.svg" alt="Gmail"></a>
+            <a href="https://www.google.com/chrome/" onclick="openAppOrWeb(event, 'googlechrome://', 'https://www.google.com/chrome/')" class="orbit-icon icon-chrome" title="Chrome"><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Chrome_icon_%28September_2014%29.svg" alt="Chrome"></a>
+            <a href="https://drive.google.com" onclick="openAppOrWeb(event, 'googledrive://', 'https://drive.google.com')" class="orbit-icon icon-drive" title="Google Drive"><img src="https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg" alt="Drive"></a>
+            <a href="https://earth.google.com" onclick="openAppOrWeb(event, 'com.google.earth://', 'https://earth.google.com')" class="orbit-icon icon-earth" title="Google Earth"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSc8myJjuFh7f0ezKXmVuBHImjflXOoBHLmxCfrjyEiAw&s" alt="Google Earth"></a>
+            <a href="https://photos.google.com" onclick="openAppOrWeb(event, 'googlevideo://', 'https://photos.google.com')" class="orbit-icon icon-photos" title="Google Photos"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWkRoxlKca3qirGzrqWZPmgzV-DBRNgOWZ0oPRy90yMg&s=10" alt="Photos"></a>
+            <a href="https://www.youtube.com" onclick="openAppOrWeb(event, 'vnd.youtube://', 'https://www.youtube.com')" class="orbit-icon icon-youtube" title="YouTube"><img src="https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg" alt="YouTube"></a>
+            <a href="https://music.youtube.com" onclick="openAppOrWeb(event, 'youtubemusic://', 'https://music.youtube.com')" class="orbit-icon icon-ytmusic" title="YouTube Music"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Youtube_Music_icon.svg" alt="YT Music"></a>
+        </div>
+
+        <div class="intro-stage">
+            <div class="badge-pill">Google Ecosystem Intelligence</div>
+            <div class="text-stage">
+                <div class="text-portal-mask">
+                    <h1>GEMINI</h1>
+                    <div class="subtitle">Next-Gen Multimodal AI</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="reveal-stage">
+            <div class="fin-flash-overlay"></div>
+
+            <div class="sparkle-flight-wrapper">
+                <svg class="flying-sparkle-svg" viewBox="0 0 24 24">
+                    <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"/>
+                </svg>
+            </div>
+
+            <a href="https://gemini.google.com" onclick="openAppOrWeb(event, 'googlegemini://', 'https://gemini.google.com')" class="final-app-container" title="Open Gemini">
+                <svg class="final-app-sparkle" viewBox="0 0 24 24">
+                    <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z"/>
+                </svg>
+            </a>
+
+            <div class="final-title-wrapper">
+                <div class="final-app-title">Gemini</div>
+                <div class="final-app-subtitle">Built for Everyone</div>
+            </div>
+
+            <div class="feature-pills-container">
+                <div class="feature-pill">Multimodal</div>
+                <div class="feature-pill">Real-Time</div>
+                <div class="feature-pill">Integrated</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- SMART APP / WEB OPENER FUNCTION ---
+        function openAppOrWeb(event, appScheme, webUrl) {
+            event.preventDefault();
+            
+            // Try opening the native app scheme on mobile
+            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                let opened = false;
+                
+                // Attempt app launch
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = appScheme;
+                document.body.appendChild(iframe);
+                
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                }, 1000);
+
+                // Fallback to web browser if app isn't installed within 600ms
+                setTimeout(() => {
+                    window.open(webUrl, '_blank');
+                }, 600);
+            } else {
+                // On desktop, directly open the web link in a new tab
+                window.open(webUrl, '_blank');
+            }
+        }
+
+        const canvas = document.getElementById('universe-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        const particleCount = 100;
+        const particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                size: Math.random() * 2 + 0.8,
+                speedY: (Math.random() * 0.4 + 0.1) * -1,
+                speedX: (Math.random() - 0.5) * 0.25,
+                alpha: Math.random() * 0.6 + 0.2
+            });
+        }
+
+        let colorMode = 0;
+        function renderCanvas() {
+            ctx.fillStyle = '#020205';
+            ctx.fillRect(0, 0, width, height);
+
+            const cx = width / 2;
+            const cy = height / 2;
+            
+            const grad1 = ctx.createRadialGradient(cx - 150, cy - 100, 50, cx - 150, cy - 100, width * 0.65);
+            if (colorMode === 0) {
+                grad1.addColorStop(0, 'rgba(138, 180, 248, 0.12)');
+                grad1.addColorStop(0.5, 'rgba(197, 138, 248, 0.05)');
+                grad1.addColorStop(1, 'transparent');
+            } else {
+                grad1.addColorStop(0, 'rgba(52, 211, 153, 0.12)');
+                grad1.addColorStop(0.5, 'rgba(56, 189, 248, 0.08)');
+                grad1.addColorStop(1, 'transparent');
+            }
+            ctx.fillStyle = grad1;
+            ctx.fillRect(0, 0, width, height);
+
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.y += p.speedY;
+                p.x += p.speedX;
+
+                if (p.y < 0) {
+                    p.y = height + 10;
+                    p.x = Math.random() * width;
+                }
+
+                ctx.fillStyle = colorMode === 0 ? `rgba(138, 180, 248, ${p.alpha})` : `rgba(52, 211, 153, ${p.alpha})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            requestAnimationFrame(renderCanvas);
+        }
+        requestAnimationFrame(renderCanvas);
+
+        function restartExperience() {
+            const stage = document.querySelector('.cosmic-stage');
+            stage.style.display = 'none';
+            void stage.offsetHeight;
+            stage.style.display = 'flex';
+            
+            const clone = stage.cloneNode(true);
+            stage.parentNode.replaceChild(clone, stage);
+        }
+
+        function toggleAtmosphere() {
+            colorMode = colorMode === 0 ? 1 : 0;
+        }
+    </script>
+</body>
+</html>
+
