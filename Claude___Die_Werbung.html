@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Claude – Die Werbung</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Fredoka:wght@500&family=Playfair+Display:ital,wght@1,500&family=Space+Mono&family=Special+Elite&display=swap'>
+<style>
+:root{--bg:#14110f;--ink:#f5efe6;--dim:#a89d8f;--clay:#d97757;--glow:#f0a37f;--card:#201b18;--line:#3a322c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:var(--bg);color:var(--ink);overflow:hidden;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+body{position:relative}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .7s ease,transform .7s ease;transform:scale(.97);z-index:2;text-align:center}
+.scene.on{opacity:1;transform:none;pointer-events:auto}
+.serif{font-family:Georgia,"Iowan Old Style","Times New Roman",serif;font-weight:400}
+.spark{width:clamp(70px,16vw,120px);height:auto;filter:drop-shadow(0 0 28px rgba(217,119,87,.55))}
+.spark g{transform-origin:0 0}
+.bloom g{animation:bloom 1.4s cubic-bezier(.2,.9,.2,1) both}
+.think{animation:spin 6s linear infinite}
+@keyframes bloom{from{transform:scale(0) rotate(-90deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+/* Szene 1 */
+.prompt{margin-top:28px;width:min(560px,92%);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;text-align:left;font-size:clamp(1rem,3.6vw,1.2rem);min-height:62px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+.caret{display:inline-block;width:2px;height:1.1em;background:var(--clay);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.hello{font-size:clamp(1.6rem,6vw,2.6rem);margin-top:6px;opacity:0;transform:translateY(10px);transition:all .8s ease}
+.hello.show{opacity:1;transform:none}
+/* Szene 2 */
+.chip{font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;color:var(--clay);margin-bottom:16px;font-weight:600}
+.chat{width:min(600px,94%);display:flex;flex-direction:column;gap:14px;min-height:230px;justify-content:center}
+.b{max-width:88%;padding:14px 18px;border-radius:18px;font-size:clamp(.98rem,3.5vw,1.15rem);line-height:1.45;text-align:left;opacity:0;transform:translateY(12px);transition:all .45s ease}
+.b.show{opacity:1;transform:none}
+.u{align-self:flex-end;background:#2c2520;border:1px solid var(--line)}
+.c{align-self:flex-start;background:linear-gradient(135deg,rgba(217,119,87,.22),rgba(217,119,87,.08));border:1px solid rgba(217,119,87,.45);display:flex;gap:12px;align-items:flex-start}
+.c .av{flex:0 0 22px;margin-top:3px}
+.dots{display:flex;gap:5px;padding:6px 0}
+.dots i{width:7px;height:7px;border-radius:50%;background:var(--clay);animation:dot 1s infinite}
+.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes dot{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-5px)}}
+.tabs{display:flex;gap:8px;margin-top:26px;flex-wrap:wrap;justify-content:center}
+.tabs span{font-size:.75rem;padding:6px 12px;border-radius:99px;border:1px solid var(--line);color:var(--dim);transition:all .4s}
+.tabs span.on{color:var(--bg);background:var(--clay);border-color:var(--clay)}
+/* Szene 3 */
+.word{position:absolute;font-size:clamp(2.6rem,12vw,6.5rem);opacity:0;transform:scale(.8);letter-spacing:-.02em}
+.word.show{animation:word 1.15s ease both}
+.word em{color:var(--clay);font-style:italic}
+@keyframes word{0%{opacity:0;transform:scale(.8);filter:blur(12px)}25%{opacity:1;transform:scale(1);filter:none}80%{opacity:1;transform:scale(1.04)}100%{opacity:0;transform:scale(1.12);filter:blur(8px)}}
+/* Szene 4 */
+h1{font-size:clamp(3rem,15vw,6.5rem);letter-spacing:-.03em;margin-top:18px;line-height:1}
+.tag{font-size:clamp(1.05rem,4.2vw,1.5rem);color:var(--glow);margin-top:14px}
+.by{color:var(--dim);font-size:.85rem;letter-spacing:.2em;text-transform:uppercase;margin-top:26px}
+.cta{margin-top:30px;display:inline-block;background:var(--clay);color:#1a110c;font-weight:700;text-decoration:none;padding:14px 28px;border-radius:99px;font-size:1rem;box-shadow:0 0 40px rgba(217,119,87,.4);transition:transform .2s}
+.cta:hover{transform:scale(1.05)}
+.stagger>*{opacity:0;transform:translateY(14px);transition:all .8s ease}
+.stagger.on>*{opacity:1;transform:none}
+.stagger.on>:nth-child(2){transition-delay:.4s}.stagger.on>:nth-child(3){transition-delay:.9s}.stagger.on>:nth-child(4){transition-delay:1.4s}.stagger.on>:nth-child(5){transition-delay:1.9s}
+.hud{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:10;display:flex;gap:6px;align-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:99px;padding:4px;backdrop-filter:blur(10px)}
+.hud button{background:none;border:0;color:var(--dim);font:600 .78rem system-ui;letter-spacing:.15em;text-transform:uppercase;padding:8px 16px;border-radius:99px;cursor:pointer}
+.hud button:hover{color:var(--ink);background:rgba(255,255,255,.08)}
+#bar{position:fixed;top:env(safe-area-inset-top,0px);left:0;height:3px;background:var(--clay);width:0;z-index:10}
+.oh{font-size:clamp(1.5rem,5.5vw,2.3rem);margin-bottom:10px}
+.orb{--R:min(34vw,165px);position:relative;width:100%;height:calc(var(--R)*2 + 70px);flex:none}
+.core{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}.core .spark{width:84px}
+.ring{position:absolute;left:50%;top:50%;width:0;height:0;animation:spin 26s linear infinite}
+.t{position:absolute;left:-26px;top:-26px;width:52px;height:52px;transform:rotate(var(--a)) translateY(0) rotate(calc(var(--a)*-1)) scale(0);transition:transform 1.1s cubic-bezier(.2,.9,.2,1) calc(var(--i)*.12s),opacity .4s}
+.go .t{transform:rotate(var(--a)) translateY(calc(var(--R)*-1)) rotate(calc(var(--a)*-1)) scale(1)}
+.t .g{width:100%;height:100%;border-radius:15px;display:grid;place-items:center;color:#fff;font:800 1.05rem system-ui;box-shadow:0 8px 22px rgba(0,0,0,.45);animation:spin 26s linear infinite reverse;transition:box-shadow .3s}
+.hlm .t:not(.hl){opacity:.4}
+.t.hl .g{box-shadow:0 0 0 3px var(--clay),0 0 32px rgba(217,119,87,.85)}
+.cap{font-size:clamp(1.1rem,4.5vw,1.5rem);color:var(--glow);min-height:2em;margin-top:6px}
+.orb{height:min(60vh,470px);max-width:520px}
+.ring{animation:none}
+.t{width:60px;height:60px;left:-30px;top:-30px;transition:opacity .3s;opacity:0;transform:none;z-index:3;will-change:transform}
+.t .g{animation:none;background:#f3eee7;border-radius:17px;box-shadow:0 10px 26px rgba(0,0,0,.5)}
+.t .g svg{width:40px;height:40px}
+.core{z-index:6;transition:transform .7s cubic-bezier(.5,0,.2,1)}
+.t{pointer-events:none;cursor:pointer;display:block}
+.t .g{transition:transform .2s,box-shadow .2s}
+.t:hover .g{transform:scale(1.15);box-shadow:0 0 0 3px var(--clay),0 0 30px rgba(217,119,87,.8)}
+.wave{display:flex;gap:5px;align-items:center;height:110px;margin:26px 0}
+.wave i{width:5px;height:6px;border-radius:3px;background:var(--dim);opacity:.6;animation:wv var(--d) ease-in-out infinite alternate}
+.wave.ai i{background:var(--clay);opacity:1}
+@keyframes wv{to{height:var(--h)}}
+.vq{min-height:4.5em;max-width:520px;font-size:clamp(1.05rem,4vw,1.3rem);line-height:1.5}
+#start{position:fixed;inset:0;z-index:20;background:var(--bg);display:flex;flex-direction:column;gap:22px;align-items:center;justify-content:center;transition:opacity .6s;text-align:center;padding:24px}
+#start.off{opacity:0;pointer-events:none}
+#go{background:var(--clay);color:#1a110c;border:0;font:700 1.05rem system-ui;padding:15px 30px;border-radius:99px;cursor:pointer;box-shadow:0 0 40px rgba(217,119,87,.4)}
+#start a{color:var(--dim);font-size:.85rem}
+.eline{position:absolute;font-size:clamp(2rem,9vw,4.4rem);opacity:0;letter-spacing:-.02em}
+.eline.show{animation:word 2.2s ease both}
+.eline em{color:var(--clay)}
+.sw{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px;border-radius:50%;border:2px solid var(--clay);pointer-events:none;animation:sw 1.6s ease-out both}
+@keyframes sw{0%{transform:scale(.2);opacity:.9}100%{transform:scale(16);opacity:0}}
+#mq{font-size:clamp(1.6rem,7vw,3rem);max-width:90%;transition:transform .12s}
+#mf{margin-top:24px;font-size:clamp(1.6rem,6.5vw,2.8rem);opacity:0;transition:opacity .8s;max-width:90%}
+#mf.on{opacity:1}
+.cq{background:#2c2520;border:1px solid var(--line);border-radius:16px;padding:12px 16px;max-width:92%;font-size:clamp(.95rem,3.4vw,1.1rem);margin-bottom:14px;min-height:2.6em}
+.code{width:min(560px,94%);background:#0f0d0b;border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-align:left;font:clamp(.62rem,2.6vw,.82rem)/1.55 'Space Mono',ui-monospace,Menlo,Consolas,monospace;color:#e8dfd2;min-height:13.5em;white-space:pre;overflow:hidden}
+.code .k{color:#d97757}.code .s{color:#9ccf7a}.code .a{color:#e6c46a}
+.mc{width:min(560px,94%);margin-top:14px;background:rgba(0,0,0,.55);border-radius:6px;padding:10px 14px;text-align:left;font:700 clamp(.8rem,3.2vw,1rem) ui-monospace,Menlo,Consolas,monospace;text-shadow:2px 2px 0 #3a3a3a;opacity:0;transform:translateY(10px);transition:all .6s}
+.mc.on{opacity:1;transform:none}
+.mc .y{color:#ffff55}.mc .g{color:#ffaa00}
+.askrow{display:flex;gap:8px;width:min(560px,94%)}
+.askrow input{flex:1;min-width:0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;color:var(--ink);font:inherit;font-size:1rem;outline:none}
+.askrow input:focus{border-color:var(--clay)}
+.askrow button{background:var(--clay);color:#1a110c;border:0;border-radius:14px;padding:0 18px;font:700 .95rem system-ui;cursor:pointer}
+.sug{display:flex;flex-direction:column;gap:8px;margin-top:14px;width:min(560px,94%)}
+.sug span{border:1px solid var(--line);border-radius:12px;padding:10px 12px;color:var(--dim);font-size:.88rem;text-align:left;cursor:pointer}
+.sug span:hover{border-color:var(--clay);color:var(--ink)}
+.ans{margin-top:18px;width:min(560px,94%);min-height:5.5em;text-align:left;font-size:clamp(1rem,3.8vw,1.2rem);line-height:1.5}
+.nx{margin-top:12px;padding:10px 20px;background:transparent;color:var(--dim);border:1px solid var(--line);border-radius:99px;font:600 .85rem system-ui;cursor:pointer}
+@media (prefers-reduced-motion:reduce){.think,.pulse{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div id="bar"></div>
+
+<section class="scene" id="s1">
+  <div id="sp1"></div>
+  <div class="serif hello" id="hello">Hallo. Wie kann ich helfen?</div>
+  <div class="prompt"><span id="p1"></span><span class="caret"></span></div>
+</section>
+
+<section class="scene" id="s2">
+  <div class="chip" id="chip">Schreiben</div>
+  <div class="chat">
+    <div class="b u" id="u"></div>
+    <div class="b c" id="c"><div class="av" id="av"></div><div id="ct"></div></div>
+  </div>
+  <div class="tabs" id="tabs"><span>Schreiben</span><span>Programmieren</span><span>Analysieren</span><span>Abwägen</span></div>
+</section>
+
+<section class="scene" id="s3">
+  <div class="word serif" id="w0">Hilfsbereit.</div>
+  <div class="word serif" id="w1">Ehrlich.</div>
+  <div class="word serif" id="w2">Sorgfältig.</div>
+  <div class="word serif" id="w3">Ein <em>Denkpartner.</em></div>
+</section>
+
+<section class="scene" id="so">
+  <div class="serif oh">Verbindet sich mit allem, was du nutzt.</div>
+  <div class="orb" id="orb"><div class="core" id="core"></div><div class="ring" id="ring"></div></div>
+  <div class="cap serif" id="cap"></div>
+</section>
+
+<section class="scene stagger" id="s4">
+  <div id="sp4"></div>
+  <h1 class="serif">Claude</h1>
+  <div class="tag serif">Denk mit. Nicht nur nach.</div>
+  <div class="by">Entwickelt von Anthropic</div>
+  <a class="cta" href="https://claude.ai" target="_blank" rel="noopener">Mit Claude sprechen →</a>
+</section>
+
+<section class="scene" id="sv">
+  <div class="serif oh">Oder sprich einfach mit mir.</div>
+  <div class="wave you" id="wave"></div>
+  <div class="vq serif" id="vq"></div>
+</section>
+
+<section class="scene" id="se"><div class="serif eline" id="e1">Es gibt Fragen.</div><div class="serif eline" id="e2">Und es gibt <em>Antworten.</em></div></section>
+<section class="scene" id="sm"><div class="serif" id="mq"></div><div class="serif" id="mf"></div></section>
+<div id="start"><button id="go" onclick="startAd(true)">▶ Starten</button></div>
+<section class="scene" id="sc"><div class="chip">Programmieren</div><div class="cq serif" id="cu"></div><pre class="code" id="cp"></pre><div class="mc" id="mc"></div></section>
+<section class='scene' id='sa'><div class='serif oh'>Jetzt du. Frag mich etwas.</div><div class='askrow'><input id='ai' type='text' maxlength='140' placeholder='Deine Frage …' autocomplete='off'><button id='ab'>Fragen</button></div><div class='sug' id='sg'><span>Erklär mir Schwarze Löcher in einem Satz.</span><span>Gib mir eine Idee für ein Minecraft-Projekt.</span><span>Schreib mir einen Mutmacher für heute.</span></div><div class='ans serif' id='an'></div><button class='nx' id='aw'>Weiter →</button></section>
+<div class="hud"><button onclick="toggleSound(this)">🔇 Ton aus</button><button onclick="play()">↺ Nochmal</button></div>
+
+<script>
+const $=id=>document.getElementById(id);
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+let run=0;
+const VAR=[
+ {n:'Caveat',f:"'Caveat',cursive",w:600,i:'normal',s:1.35,h:'Hey! Was liegt an?',p:'Hilf mir, meinen Tag zu planen …'},
+ {n:'Space Mono',f:"'Space Mono','Courier New',monospace",w:400,i:'normal',s:.85,h:'Bereit, wenn du es bist.',p:'Erklär mir Quantenphysik wie einem Fünfjährigen …'},
+ {n:'Playfair Display',f:"'Playfair Display',Georgia,serif",w:500,i:'italic',s:1,h:'Guten Abend. Wie kann ich helfen?',p:'Ich brauche eine Idee für heute Abend …'},
+ {n:'Fredoka',f:"'Fredoka',system-ui,sans-serif",w:500,i:'normal',s:1.05,h:'Na, was hast du vor?',p:'Was koche ich mit den Resten im Kühlschrank? …'},
+ {n:'Special Elite',f:"'Special Elite','Courier New',monospace",w:400,i:'normal',s:.95,h:'Schreib einfach los.',p:'Hilf mir, den perfekten ersten Satz zu finden …'}
+];
+let lastV=-1;
+function pick(){let k;do{k=Math.floor(Math.random()*VAR.length)}while(k===lastV);lastV=k;return VAR[k]}
+
+function spark(cls){
+  const L=[46,32,44,30,46,34,44,30,46,32,44,30];
+  let g='';
+  L.forEach((l,i)=>{g+='<g style="animation-delay:'+(i*.05)+'s"><rect x="-3.2" y="'+(-l)+'" width="6.4" height="'+(l-8)+'" rx="3.2" transform="rotate('+(i*30)+')"/></g>'});
+  return '<svg class="spark '+cls+'" viewBox="-50 -50 100 100" fill="#d97757">'+g+'</svg>';
+}
+
+const demos=[
+ {t:"Schreiben",u:"Schreib meiner Oma einen Geburtstagsgruß.",a:"Liebe Oma, danke für jeden Sonntag an deinem Tisch. Alles Gute – und bleib genau so, wie du bist."},
+ {t:"Programmieren",u:"Warum stürzt mein Plugin ständig ab?",a:"Zeile 42: Der Spieler kann null sein. Mit einem Null-Check vorab läuft es stabil. Ich zeig dir den Fix."},
+ {t:"Analysieren",u:"Fass mir diesen 40-Seiten-Vertrag zusammen.",a:"Kurz: 24 Monate Laufzeit, 3 Monate Kündigungsfrist, Preisbindung nur im ersten Jahr. Punkt 7 solltest du dir genauer ansehen."},
+ {t:"Abwägen",u:"Ist mein Plan eigentlich gut?",a:"Der erste Teil ist stark. Beim zweiten sehe ich ein Risiko – ich sag dir ehrlich, warum, und wie du es löst."}
+];
+
+async function type(el,txt,sp,id){
+  for(const ch of txt){ if(id!==run) return false; el.textContent+=ch; if(sp>=12||Math.random()<.25)click(); await sleep(sp); }
+  return true;
+}
+const scenes=['s1','s2','s3','so','s4','sv','se','sm','sc','sa'].map($);
+const TOOLS=[['W','Word','#2b6cd6'],['X','Excel','#1f8a4c'],['P','PowerPoint','#d2512b'],['PDF','PDF','#c93a3a'],['▲','Google Drive','#d89a14'],['✉','Gmail','#d6453b'],['#','Slack','#6b3a8f'],['‹›','GitHub','#3a3f47'],['N','Notion','#6c6559'],['C','Canva','#12a6c9']];
+function show(n){scenes.forEach((s,i)=>s.classList.toggle('on',i===n))}
+
+async function play(){
+  const id=++run, ok=()=>id===run; if(window.speechSynthesis)speechSynthesis.cancel(); musicStart();
+  // Reset
+  show(-1);
+  $('sp1').innerHTML=''; $('sp4').innerHTML=''; $('p1').textContent='';
+  const V=pick(), hl=$('hello'), pr=$('p1').parentElement;
+  hl.textContent=V.h;
+  [hl,pr].forEach(e=>{e.style.fontFamily=V.f;e.style.fontWeight=V.w;e.style.fontStyle=V.i});
+  hl.style.fontSize='calc(clamp(1.6rem,6vw,2.6rem)*'+V.s+')';
+  pr.style.fontSize='calc(clamp(1rem,3.6vw,1.2rem)*'+Math.max(1,V.s)+')';
+  $('hello').classList.remove('show');
+  ['u','c'].forEach(k=>$(k).classList.remove('show'));
+  [...$('tabs').children].forEach(t=>t.classList.remove('on'));
+  [0,1,2,3].forEach(i=>$('w'+i).classList.remove('show'));
+  resetOrbit();
+  const bar=$('bar'); bar.style.transition='none'; bar.style.width='0'; void bar.offsetWidth;
+  bar.style.transition='width 86s linear'; bar.style.width='100%';
+  await sleep(300); if(!ok())return;
+
+  await epicIntro(id); if(!ok())return;
+  // Szene 1: Einstieg
+  try{await Promise.race([document.fonts.load(V.w+' 24px "'+V.n+'"'),sleep(900)])}catch(e){}
+  if(!ok())return;
+  show(0);
+  await sleep(500); if(!ok())return;
+  $('sp1').innerHTML=spark('bloom pulse'); tone(440,1.2,.05,'sine',0,880);
+  await sleep(1200); if(!ok())return;
+  $('hello').classList.add('show');
+  await sleep(900); if(!ok())return;
+  if(!await type($('p1'),V.p,45,id))return;
+  await sleep(1200); if(!ok())return;
+
+  // Szene 2: Fähigkeiten
+  show(1);
+  $('av').innerHTML=spark('').replace('class="spark ','style="width:22px" class="spark ');
+  for(let i=0;i<demos.length;i++){
+    const d=pickDemo(i);
+    $('chip').textContent=d.t;
+    [...$('tabs').children].forEach((t,j)=>t.classList.toggle('on',j===i));
+    $('u').classList.remove('show'); $('c').classList.remove('show');
+    $('u').textContent=''; $('ct').textContent='';
+    await sleep(450); if(!ok())return;
+    $('u').classList.add('show');
+    if(!await type($('u'),d.u,28,id))return;
+    await sleep(300); if(!ok())return;
+    $('ct').innerHTML='<div class="dots"><i></i><i></i><i></i></div>';
+    $('c').classList.add('show');
+    await sleep(850); if(!ok())return;
+    $('ct').textContent='';
+    const sp=say(d.a); if(!await type($('ct'),d.a,17,id))return; await sp;
+    await sleep(1300); if(!ok())return;
+  }
+
+  // Szene 3: Wörter
+  await codeScene(id); if(!ok())return;
+  await montage(id); if(!ok())return;
+  await voiceScene(id); if(!ok())return;
+  show(2);
+  for(let i=0;i<4;i++){
+    const w=$('w'+i); w.classList.remove('show'); void w.offsetWidth; w.classList.add('show'); tone(90,.5,.2,'sine',0,45); shock($('s3'));
+    await sleep(i===3?1500:1000); if(!ok())return;
+  }
+
+  // Szene 3b: Konnektoren & Skills
+  await orbitIn(id); if(!ok())return;
+  $('cap').textContent='… und viele mehr.';
+  await sleep(1700); if(!ok())return;
+
+  await orbitOut(id); if(!ok())return;
+  await askScene(id); if(!ok())return;
+
+  // Szene 4: Finale
+  show(4);
+  $('sp4').innerHTML=spark('bloom'); chord(); burst(200); shock($('s4')); musicFade(); say('Claude. Denk mit. Nicht nur nach.');
+  scenes[4].classList.remove('on'); void scenes[4].offsetWidth; scenes[4].classList.add('on');
+}
+
+/* Hintergrund: warme Partikel */
+const BU=[];
+function burst(n){for(let i=0;i<n;i++){const a=Math.random()*6.283,s=2+Math.random()*9;BU.push({x:W/2,y:H/2,vx:Math.cos(a)*s,vy:Math.sin(a)*s,r:Math.random()*2.2+.6,l:1})}}
+const cv=$('bg'),cx=cv.getContext('2d');let W,H,P=[];
+function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight;
+  P=Array.from({length:Math.min(90,Math.floor(W*H/14000))},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.8+.5,vy:-(Math.random()*.35+.08),vx:(Math.random()-.5)*.2,a:Math.random()*.5+.15}))}
+addEventListener('resize',rs);rs();
+(function loop(){
+  cx.fillStyle='#14110f';cx.fillRect(0,0,W,H);
+  const g=cx.createRadialGradient(W/2,H*.45,0,W/2,H*.45,Math.max(W,H)*.7);
+  g.addColorStop(0,'rgba(217,119,87,.16)');g.addColorStop(1,'rgba(217,119,87,0)');
+  cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  for(const p of P){p.y+=p.vy;p.x+=p.vx;if(p.y<-5){p.y=H+5;p.x=Math.random()*W}
+    cx.fillStyle='rgba(240,163,127,'+p.a+')';cx.beginPath();cx.arc(p.x,p.y,p.r,0,6.283);cx.fill()}
+  for(const b of BU){b.x+=b.vx;b.y+=b.vy;b.vx*=.985;b.vy*=.985;b.l-=.012;if(b.l>0){cx.fillStyle='rgba(240,163,127,'+b.l+')';cx.beginPath();cx.arc(b.x,b.y,b.r,0,6.283);cx.fill()}}
+  while(BU.length&&BU[0].l<=0)BU.shift();
+  requestAnimationFrame(loop);
+})();
+
+$('ring').innerHTML=TOOLS.map((t,i)=>'<div class="t" style="--a:'+(i*36)+'deg;--i:'+i+'"><div class="g" style="background:'+t[2]+'">'+t[0]+'</div></div>').join('');
+/* Echte Icons (eigene Nachzeichnung im Markenlook) */
+const off=(b,f,l,d)=>`<svg viewBox='0 0 48 48'><rect x='17' y='5' width='28' height='38' rx='4' fill='${b}'/>${d}<rect x='3' y='13' width='26' height='26' rx='4' fill='${f}'/><text x='16' y='33' font-family='Arial,sans-serif' font-size='19' font-weight='800' text-anchor='middle' fill='#fff'>${l}</text></svg>`;
+const slk=(c,r)=>`<g transform='rotate(${r} 24 24)' fill='${c}'><rect x='19' y='5' width='7' height='17' rx='3.5'/><circle cx='12.5' cy='12' r='3.5'/></g>`;
+const ICON={
+'Word':off('#41a5ee','#185abd','W',"<g fill='#fff' opacity='.85'><rect x='31' y='12' width='9' height='3' rx='1.5'/><rect x='31' y='19' width='9' height='3' rx='1.5'/><rect x='31' y='26' width='9' height='3' rx='1.5'/><rect x='31' y='33' width='9' height='3' rx='1.5'/></g>"),
+'Excel':off('#21a366','#107c41','X',"<path d='M31 12h10M31 20h10M31 28h10M31 36h10M36 12v24' stroke='#fff' stroke-width='2' opacity='.7'/>"),
+'PowerPoint':off('#ff8f6b','#c43e1c','P',"<circle cx='34' cy='24' r='7' fill='none' stroke='#fff' stroke-width='3.5' opacity='.85'/>"),
+'PDF':"<svg viewBox='0 0 48 48'><rect x='4' y='4' width='40' height='40' rx='9' fill='#e2231a'/><path d='M24 11c-3 9-5 17-12 23-2 1.8 0 3.5 3 1.2 5-4 13-7 21-7 3 0 3-4 0-4-6 0-9-6-12-13z' fill='none' stroke='#fff' stroke-width='2.6' stroke-linejoin='round'/></svg>",
+'Google Drive':"<svg viewBox='0 0 87.3 78'><path d='m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z' fill='#0066da'/><path d='m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0-1.2 4.5h27.5z' fill='#00ac47'/><path d='m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.5l5.85 11.5z' fill='#ea4335'/><path d='m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z' fill='#00832d'/><path d='m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z' fill='#2684fc'/><path d='m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z' fill='#ffba00'/></svg>",
+'Gmail':"<svg viewBox='0 0 48 48'><path d='M4 12a3 3 0 0 1 3-3h2l15 11.5L39 9h2a3 3 0 0 1 3 3v3L24 30 4 15z' fill='#ea4335'/><path d='M4 15v21a3 3 0 0 0 3 3h5V21z' fill='#4285f4'/><path d='M44 15v21a3 3 0 0 1-3 3h-5V21z' fill='#34a853'/><path d='M36 21l8-6v-3a3 3 0 0 0-3-3h-2z' fill='#fbbc04'/></svg>",
+'Slack':`<svg viewBox='0 0 48 48'>${slk('#36c5f0',0)}${slk('#2eb67d',90)}${slk('#ecb22e',180)}${slk('#e01e5a',270)}</svg>`,
+'GitHub':"<svg viewBox='0 0 16 16'><path fill='#1f2328' d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z'/></svg>",
+'Notion':"<svg viewBox='0 0 48 48'><rect x='7' y='6' width='34' height='36' rx='5' fill='#fff' stroke='#111' stroke-width='3'/><text x='24' y='33' font-family='Georgia,serif' font-size='25' font-weight='700' text-anchor='middle' fill='#111'>N</text></svg>",
+'Canva':"<svg viewBox='0 0 48 48'><defs><linearGradient id='cg' x1='0' y1='1' x2='1' y2='0'><stop offset='0' stop-color='#00c4cc'/><stop offset='1' stop-color='#7d2ae8'/></linearGradient></defs><circle cx='24' cy='24' r='21' fill='url(#cg)'/><text x='24' y='28' font-family='Georgia,serif' font-style='italic' font-weight='700' font-size='12' text-anchor='middle' fill='#fff'>Canva</text></svg>"
+};
+
+/* Orbit-Engine */
+const LINKS=['https://www.microsoft.com/microsoft-365/word','https://www.microsoft.com/microsoft-365/excel','https://www.microsoft.com/microsoft-365/powerpoint','https://www.adobe.com/acrobat.html','https://drive.google.com','https://mail.google.com','https://slack.com','https://github.com','https://www.notion.so','https://www.canva.com'];
+const SC=[[-.8,-.62],[.12,-.95],[.88,-.55],[-.95,.02],[.9,.38],[-.6,.62],[.22,.92],[-.34,-.3],[.5,-.22],[.42,.52]];
+const TILT=[-12,8,14,-9,11,-15,7,-6,13,-10];
+let tiles=[],spin=0,spd=7,orbitOn=false,last=0;
+function buildTiles(){
+  const ring=$('ring'); ring.innerHTML='';
+  tiles=TOOLS.map((t,i)=>{
+    const d=document.createElement('a'); d.className='t'; d.href=LINKS[i]; d.target='_blank'; d.rel='noopener noreferrer'; d.title=t[1]; d.innerHTML='<div class="g">'+ICON[t[1]]+'</div>'; ring.appendChild(d);
+    d.addEventListener('pointerenter',()=>{if(d.style.pointerEvents==='auto')$('cap').textContent=t[1]});
+    return {el:d,i,a:i/TOOLS.length*6.283,st:'orbit',cx:0,cy:0,cs:.5,cr:0,fx:0,fy:0,fs:.5,fr:0,t0:0};
+  });
+}
+function resetOrbit(){
+  orbitOn=false; spin=0; spd=7;
+  tiles.forEach(o=>{o.st='orbit';o.el.style.opacity=0;o.el.style.pointerEvents='none';o.cx=0;o.cy=0;o.cs=.5});
+  $('core').innerHTML=''; $('core').style.transform=''; $('cap').textContent='';
+}
+function frame(ts){
+  requestAnimationFrame(frame);
+  if(!orbitOn)return;
+  const dt=Math.min(.05,(ts-last)/1000||0); last=ts; spin+=spd*dt;
+  const B=$('orb'), ex=Math.min(B.clientWidth*.4,230), ey=B.clientHeight/2-42;
+  for(const o of tiles){
+    if(o.st==='gone')continue;
+    const tx=SC[o.i][0]*ex, ty=SC[o.i][1]*ey, tl=TILT[o.i];
+    let x,y,s,r;
+    if(o.st==='orbit'){const an=o.a+spin,rad=52+(o.i%3)*9;x=Math.cos(an)*rad;y=Math.sin(an)*rad;s=.55;r=an*57.3+90}
+    else if(o.st==='fly'){const p=Math.min(1,(ts-o.t0)/1100),q=p-1,e=1+2.2*q*q*q+1.2*q*q;
+      x=o.fx+(tx-o.fx)*e;y=o.fy+(ty-o.fy)*e;s=o.fs+(1-o.fs)*e;r=o.fr+(tl-o.fr)*e;if(p>=1)o.st='rest'}
+    else if(o.st==='rest'){x=tx+Math.sin(ts/900+o.i*1.7)*4;y=ty+Math.sin(ts/700+o.i*2.3)*6;s=1;r=tl+Math.sin(ts/1100+o.i)*3}
+    else{const p=Math.min(1,(ts-o.t0)/850),e=p*p*p,sa=e*2.2,k=1-e,c=Math.cos(sa),n=Math.sin(sa);
+      x=(o.fx*c-o.fy*n)*k;y=(o.fx*n+o.fy*c)*k;s=o.fs*(1-e*.9);r=o.fr+e*540;
+      if(p>=1){o.st='gone';o.el.style.opacity=0}}
+    o.cx=x;o.cy=y;o.cs=s;o.cr=r;
+    o.el.style.pointerEvents=(o.st==='fly'||o.st==='rest')?'auto':'none';
+    o.el.style.transform=`translate(${x}px,${y}px) rotate(${r}deg) scale(${s})`;
+  }
+}
+async function orbitIn(id){
+  const ok=()=>id===run;
+  show(3); orbitOn=true; last=performance.now();
+  await sleep(500); if(!ok())return;
+  $('core').innerHTML=spark('bloom pulse');
+  await sleep(500); if(!ok())return;
+  tiles.forEach(o=>o.el.style.opacity=1);
+  for(let k=0;k<12;k++){spd=7+k*1.1;await sleep(150);if(!ok())return}
+  for(let i=0;i<tiles.length;i++){
+    const o=tiles[i]; o.fx=o.cx;o.fy=o.cy;o.fs=o.cs;o.fr=o.cr;o.t0=performance.now();o.st='fly';whoosh(SC[i][0]);
+    $('cap').textContent=TOOLS[i][1];
+    await sleep(330); if(!ok())return;
+  }
+}
+async function orbitOut(id){
+  const ok=()=>id===run;
+  $('cap').textContent='Tippe ein Icon an.';
+  await sleep(3800); if(!ok())return;
+  $('cap').textContent='';
+  for(const o of tiles){o.fx=o.cx;o.fy=o.cy;o.fs=o.cs;o.fr=o.cr;o.t0=performance.now();o.st='suck';sucks(o.cx);await sleep(150);if(!ok())return}
+  await sleep(800); if(!ok())return;
+  $('core').style.transform='translate(-50%,-50%) scale(1.5) rotate(120deg)';
+  await sleep(700); if(!ok())return;
+  orbitOn=false;
+}
+/* Ton (WebAudio, startet erst nach Tipp auf Ton) */
+let AC=null,SND=false;
+function toggleSound(b){SND=!SND;if(SND&&!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC&&AC.state==='suspended')AC.resume();b.textContent=SND?'🔊 Ton an':'🔇 Ton aus';if(SND){tone(660,.25,.08,'sine');musicStart()}musicSet()}
+function tone(f,d,v,type,pan,f2){if(!SND||!AC||AC.state!=='running')return;const t=AC.currentTime,o=AC.createOscillator(),g=AC.createGain();o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);if(AC.createStereoPanner){const p=AC.createStereoPanner();p.pan.value=Math.max(-1,Math.min(1,pan||0));g.connect(p);p.connect(AC.destination)}else g.connect(AC.destination);o.start(t);o.stop(t+d+.05)}
+let lastClick=0;
+function click(){
+  const nw=performance.now(); if(nw-lastClick<60)return; lastClick=nw;
+  if(!SND||!AC||AC.state!=='running')return;
+  const t=AC.currentTime,n=Math.floor(AC.sampleRate*.05),buf=AC.createBuffer(1,n,AC.sampleRate),d=buf.getChannelData(0);
+  for(let i=0;i<n;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);
+  const s=AC.createBufferSource(),bp=AC.createBiquadFilter(),g=AC.createGain();
+  s.buffer=buf;bp.type='bandpass';bp.frequency.value=2300+Math.random()*300;bp.Q.value=.9;g.gain.value=.08;
+  s.connect(bp);bp.connect(g);g.connect(AC.destination);s.start(t);
+  tone(150,.08,.03,'sine',(Math.random()-.5)*.3,65);
+}
+function whoosh(x){tone(250,.55,.07,'sawtooth',x,1400)}
+function sucks(x){tone(1000,.6,.05,'triangle',-Math.sign(x)*.6,140)}
+function chime(){tone(880,.5,.08,'sine');tone(1320,.7,.05,'sine')}
+function chord(){[262,330,392,523].forEach((f,i)=>setTimeout(()=>tone(f,2.2,.05,'sine'),i*90))}
+
+/* 5 Varianten pro Chat-Beispiel (zufällig, nie zweimal hintereinander) */
+const DEMOS=[
+ [{u:'Formuliere eine freundliche Absage für ein Bewerbungsgespräch.',a:'Vielen Dank für das Gespräch. Nach reiflicher Überlegung habe ich mich anders entschieden. Ich wünsche Ihnen alles Gute.'},{u:'Schreib einen Toast für die Hochzeit meiner besten Freundin.',a:'Auf euch beide: zwei Menschen, die zusammen lauter lachen als jeder allein. Auf eine Liebe mit Humor!'},{u:'Gib mir drei Namen für meinen neuen Minecraft-Server.',a:'Blockhafen, Kupferkrone oder Moosgrund. Soll es eher gemütlich oder episch klingen?'},{u:'Mach aus meinem Stichpunkt-Chaos eine saubere E-Mail.',a:'Erledigt: Betreff, freundliche Anrede, drei klare Absätze und ein Abschluss mit nächstem Schritt.'}],
+ [{u:'Mein Server startet nicht. Was heißt diese Fehlermeldung?',a:'Der Port ist schon belegt, ein anderer Prozess nutzt ihn. Ich zeige dir, wie du ihn findest und beendest.'},{u:'Schreib mir eine Funktion, die Dateinamen bereinigt.',a:'Hier: Sonderzeichen raus, Leerzeichen zu Bindestrichen, alles klein. Dazu zwei Tests.'},{u:'Warum ist meine Webseite auf dem Handy so langsam?',a:'Drei Bilder sind mehrere Megabyte groß. Komprimiert und später geladen wird sie spürbar schneller.'},{u:'Erklär mir Git, als hätte ich nie davon gehört.',a:'Stell dir Git wie Speicherstände in einem Spiel vor: Du kannst jederzeit zurück oder neu verzweigen.'}],
+ [{u:'Erklär mir, wie Krankenkassenbeiträge auf Dividenden grundsätzlich funktionieren.',a:'Gern, Schritt für Schritt. Und ich sage dir, wo du zur Sicherheit eine Fachperson fragen solltest.'},{u:'Was steht in dieser Tabelle eigentlich drin?',a:'Der Umsatz steigt, aber die Kosten wachsen schneller. Der Knick beginnt im dritten Quartal.'},{u:'Vergleiche diese beiden Handytarife für mich.',a:'Tarif B ist günstiger, hat aber weniger Datenvolumen. Bei deinem Verbrauch lohnt sich A.'},{u:'Fass diesen langen Artikel in drei Sätzen zusammen.',a:'Kernaussage, wichtigstes Argument, offene Frage. Mehr brauchst du, um mitzureden.'}],
+ [{u:'Soll ich den Job wechseln?',a:'Das entscheidest du. Ich helfe dir, Gehalt, Team und Entwicklung ehrlich nebeneinanderzulegen.'},{u:'Ist mein Businessplan realistisch?',a:'Die Idee trägt. Bei der Kundengewinnung sind die Annahmen aber sehr optimistisch. Hier ist der Grund.'},{u:'Server selbst hosten oder lieber mieten?',a:'Selbst hosten bringt Kontrolle, kostet aber Zeit. Mieten ist bequemer. Es hängt von deinem Ziel ab.'},{u:'Soll ich noch ein Semester dranhängen?',a:'Pro: mehr Sicherheit. Contra: Zeit und Geld. Lass uns beides mit deinen Zielen abgleichen.'}]
+];
+let lastD=[-1,-1,-1,-1];
+function pickDemo(i){const all=[demos[i]].concat(DEMOS[i]);let k;do{k=Math.floor(Math.random()*all.length)}while(k===lastD[i]);lastD[i]=k;return Object.assign({},all[k],{t:demos[i].t})}
+
+/* Hintergrundmusik (leiser Synth-Teppich) */
+const CH=[[110,130.8,164.8,220],[87.3,130.8,174.6,220],[130.8,164.8,196,261.6],[98,147,196,247]];
+let MU=null,MI=0;
+function musicSet(){if(MU&&AC)MU.m.gain.setTargetAtTime(SND?.03:0,AC.currentTime,.4)}
+function musicFade(){if(MU&&AC)MU.m.gain.setTargetAtTime(0,AC.currentTime+5,2)}
+function musicStart(){
+  return;
+  if(!SND||!AC)return;
+  if(AC.state!=='running'){AC.resume().then(()=>{if(AC.state==='running')musicStart()}).catch(()=>{});return}
+  if(MU){musicSet();return}
+  const m=AC.createGain(),lp=AC.createBiquadFilter();
+  m.gain.value=0;lp.type='lowpass';lp.frequency.value=900;lp.connect(m);m.connect(AC.destination);
+  const oscs=CH[0].map((f,k)=>{const o=AC.createOscillator();o.type=k%2?'triangle':'sine';o.detune.value=(k-1.5)*6;o.frequency.value=f;o.connect(lp);o.start();return o});
+  MU={m,oscs};musicSet();
+  setInterval(()=>{if(!MU||AC.state!=='running')return;MI++;const c=CH[MI%4];MU.oscs.forEach((o,k)=>o.frequency.setTargetAtTime(c[k],AC.currentTime,.9))},6000);
+  setInterval(()=>{if(!MU||!SND||AC.state!=='running')return;const c=CH[MI%4];tone(c[Math.floor(Math.random()*4)]*4,1.8,.012,'sine',(Math.random()-.5)*1.4)},2200);
+}
+
+/* Mitmach-Szene: Zuschauer fragt, Claude antwortet live */
+let SAMPLE=null;
+try{if(window.claude&&claude.use)claude.use('sample').then(s=>{SAMPLE=s}).catch(()=>{})}catch(e){}
+async function askScene(id){
+  if(!SAMPLE)return;
+  const inp=$('ai'),ans=$('an');
+  let done=false,asked=false,busy=false,t0=Date.now(),tEnd=0;
+  inp.value='';ans.textContent='';show(9);
+  $('aw').onclick=()=>{done=true};
+  inp.oninput=()=>{t0=Date.now()};
+  const ask=async q=>{
+    q=(q||'').trim();if(!q||busy)return;busy=true;asked=true;inp.value=q;ans.textContent='…';
+    try{
+      const r=await SAMPLE('Du bist Claude und antwortest in einer Werbeanimation. Antworte auf Deutsch, warm und klar, höchstens drei kurze Sätze, ohne Formatierung. Frage des Zuschauers: '+q,{modelTier:'quick',cache:false,onText:({text})=>{if(id===run)ans.textContent=text}});
+      if(id===run)ans.textContent=r.text;
+    }catch(e){if(id===run)ans.textContent=(e&&e.code==='rate_limited')?'Gerade ist zu viel los. Versuch es gleich nochmal.':'Das hat leider nicht geklappt.'}
+    busy=false;tEnd=Date.now();
+  };
+  $('ab').onclick=()=>ask(inp.value);
+  inp.onkeydown=e=>{if(e.key==='Enter')ask(inp.value)};
+  [...$('sg').children].forEach(s=>{s.onclick=()=>ask(s.textContent)});
+  while(!done&&id===run){
+    await sleep(250);
+    if(!asked&&Date.now()-t0>20000)break;
+    if(asked&&!busy&&Date.now()-tEnd>10000)break;
+  }
+}
+
+/* Live-Code-Szene: kleines Minecraft-Plugin */
+const CODE=`public class Willkommen extends JavaPlugin
+    implements Listener {
+
+  @Override
+  public void onEnable() {
+    getServer().getPluginManager()
+      .registerEvents(this, this);
+  }
+
+  @EventHandler
+  public void onJoin(PlayerJoinEvent e) {
+    e.getPlayer().sendMessage(
+      "Willkommen auf dem Server!");
+  }
+}`;
+async function codeScene(id){
+  const ok=()=>id===run,u=$('cu'),p=$('cp'),m=$('mc');
+  u.textContent='';p.textContent='';m.classList.remove('on');show(8);
+  await sleep(500);if(!ok())return;
+  if(!await type(u,'Bau mir ein Minecraft-Plugin, das neue Spieler begrüßt.',26,id))return;
+  await sleep(500);if(!ok())return;
+  if(!await type(p,CODE,9,id))return;
+  p.innerHTML=p.textContent.replace(/("[^"]*")|(@\w+)|\b(public|class|extends|implements|void)\b/g,(x,s,a)=>s?'<span class=s>'+x+'</span>':a?'<span class=a>'+x+'</span>':'<span class=k>'+x+'</span>');
+  await sleep(500);if(!ok())return;
+  m.innerHTML='<div class=y>Steve joined the game</div><div class=g>Willkommen auf dem Server!</div>';
+  m.classList.add('on');tone(660,.3,.06,'sine');tone(990,.5,.04,'sine');
+  await sleep(2600);
+}
+
+/* Epische Szenen */
+function shock(el){const d=document.createElement('div');d.className='sw';el.appendChild(d);setTimeout(()=>d.remove(),1700)}
+async function epicIntro(id){
+  const ok=()=>id===run,e1=$('e1'),e2=$('e2');
+  [e1,e2].forEach(e=>e.classList.remove('show'));
+  show(6);
+  
+  await sleep(500); if(!ok())return;
+  e1.classList.add('show'); await sleep(2000); if(!ok())return;
+  e2.classList.add('show'); await sleep(1500); if(!ok())return;
+  tone(70,1.6,.28,'sine',0,28); shock($('se')); burst(160);
+  await sleep(1100);
+}
+const MQ=['Wie backe ich Brot?','Was ist ein Schwarzes Loch?','Warum ist mein Code kaputt?','Kann ich das so sagen?','Wie fange ich an?','Was bedeutet dieser Brief?','Ist das ein guter Plan?','Wie funktioniert Git?','Was koche ich heute?','Und jetzt?'];
+async function montage(id){
+  const ok=()=>id===run,q=$('mq'),f=$('mf');
+  f.classList.remove('on'); f.textContent=''; q.style.opacity=1; show(7);
+  for(let i=0;i<MQ.length;i++){
+    q.textContent=MQ[i]; q.style.transform='rotate('+((Math.random()-.5)*10)+'deg) scale('+(.9+Math.random()*.4)+')'; q.style.color=i%3?'var(--ink)':'var(--glow)';
+    tone(300+i*90,.12,.05,'triangle',(Math.random()-.5)*1.6);
+    await sleep(Math.max(150,520-i*50)); if(!ok())return;
+  }
+  q.style.opacity=0;
+  tone(70,1.4,.25,'sine',0,28); shock($('sm')); burst(120);
+  f.textContent='Jede Frage verdient eine gute Antwort.'; f.classList.add('on');
+  await sleep(2400);
+}
+
+/* Sprecherstimme (Browser-Stimme, optional) */
+let VOX=false;
+function say(t){return new Promise(r=>{if(!VOX||!window.speechSynthesis)return r();speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang='de-DE';const vs=speechSynthesis.getVoices().filter(x=>x.lang&&x.lang.toLowerCase().startsWith('de'));const v=vs.find(x=>/natural|neural|google/i.test(x.name))||vs[0];if(v)u.voice=v;u.rate=1.02;u.onend=u.onerror=()=>r();speechSynthesis.speak(u);setTimeout(r,14000)})}
+function toggleVox(b){VOX=!VOX;b.textContent=VOX?'🗣 Stimme an':'🗣 Stimme aus';if(VOX)say('Hallo, ich bin Claude.');else if(window.speechSynthesis)speechSynthesis.cancel()}
+
+/* Sprach-Szene */
+const VOICE=[{q:'Hey Claude, erinnere mich morgen an die Abgabe.',a:'Mach ich. Soll ich dir auch einen Wecker stellen?'},{q:'Erklär mir kurz, warum der Himmel blau ist.',a:'Das Sonnenlicht wird in der Luft gestreut, und blaues Licht am stärksten.'},{q:'Was kann ich heute Abend kochen?',a:'Wie wäre es mit Pasta und Ofengemüse? Das geht in zwanzig Minuten.'}];
+$('wave').innerHTML=Array.from({length:30},()=>`<i style='--d:${(.5+Math.random()*.7).toFixed(2)}s;--h:${Math.round(20+Math.random()*80)}px;animation-delay:-${Math.random().toFixed(2)}s'></i>`).join('');
+async function voiceScene(id){
+  const ok=()=>id===run,w=$('wave'),q=$('vq'),v=VOICE[Math.floor(Math.random()*VOICE.length)];
+  show(5); w.className='wave you'; q.textContent='';
+  await sleep(700); if(!ok())return;
+  if(!await type(q,'„'+v.q+'“',38,id))return;
+  await sleep(600); if(!ok())return;
+  w.className='wave ai'; q.textContent='';
+  tone(520,.5,.06,'sine',0,780);
+  const sp=say(v.a);
+  if(!await type(q,v.a,24,id))return;
+  await sp; if(!ok())return;
+  await sleep(1500);
+}
+
+buildTiles(); requestAnimationFrame(frame);
+tiles.forEach(o=>o.el.addEventListener('click',chime));
+function startAd(snd){
+  SND=!!snd;
+  if(snd){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();AC.resume()}
+  document.querySelector('.hud button').textContent=SND?'🔊 Ton an':'🔇 Ton aus';
+  $('start').classList.add('off'); play();
+}
+/* Automatischer Start: Ton ist an, sobald der Browser ihn erlaubt */
+try{AC=new (window.AudioContext||window.webkitAudioContext)();SND=true;AC.resume().catch(()=>{})}catch(e){}
+const tbtn=document.querySelector('.hud button');
+function lbl(){tbtn.textContent=SND?(AC&&AC.state==='running'?'🔊 Ton an':'🔇 Tippen für Ton'):'🔇 Ton aus'}
+if(AC)AC.onstatechange=lbl; lbl();
+const unlock=()=>{if(AC&&AC.state!=='running')AC.resume();if(AC&&AC.state==='running')['pointerdown','touchstart','keydown'].forEach(e=>removeEventListener(e,unlock))};
+['pointerdown','touchstart','keydown'].forEach(e=>addEventListener(e,unlock,{passive:true}));
+</script>
+</body>
+</html>
