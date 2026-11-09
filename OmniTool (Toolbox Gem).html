@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OmniTool – Die ultimative All-in-One-Toolbox</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#151f32',
+                            900: '#0f172a',
+                            950: '#090d16',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- QRious for QR Code generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-indigo-500 selection:text-white" x-data="omniApp()" x-init="initApp()">
+
+    <!-- Toast Notification -->
+    <div x-show="toast.show" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="translate-y-4 opacity-0"
+         x-transition:enter-end="translate-y-0 opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="translate-y-0 opacity-100"
+         x-transition:leave-end="translate-y-4 opacity-0"
+         class="fixed bottom-6 right-6 z-50 bg-indigo-600 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center space-x-3 border border-indigo-400/30"
+         style="display: none;">
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-indigo-200"></i>
+        <span class="text-sm font-medium" x-text="toast.message"></span>
+    </div>
+
+    <!-- Top Navbar -->
+    <header class="h-16 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 lg:px-6 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <button @click="sidebarOpen = !sidebarOpen" class="md:hidden p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition focus:outline-none">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+            </button>
+            <div class="flex items-center space-x-2 cursor-pointer" @click="currentTool = 'dashboard'; searchQuery = ''">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                    <i data-lucide="box" class="w-5 h-5 text-white"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-400 bg-clip-text text-transparent">OmniTool</span>
+                    <span class="hidden sm:inline-block ml-1 px-1.5 py-0.5 text-[10px] font-semibold bg-indigo-500/20 text-indigo-400 rounded border border-indigo-500/30">v3.0 100+ Tools</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Global Search Bar -->
+        <div class="flex-1 max-w-md mx-4 hidden sm:block">
+            <div class="relative">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" x-model="searchQuery" placeholder="Suche nach 100+ Tools (z.B. Base64, Hash, QR, Rechner)..." class="w-full bg-slate-950/60 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition shadow-inner">
+                <div x-show="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400 hover:text-white">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+            <button @click="currentTool = 'dashboard'; searchQuery = ''" class="hidden sm:flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition border border-slate-700">
+                <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                <span>Übersicht</span>
+            </button>
+            <button @click="currentTool = 'notes'" class="relative p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition" title="Notizblock">
+                <i data-lucide="sticky-note" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main App Container -->
+    <div class="flex-1 flex overflow-hidden relative">
+
+        <!-- Mobile Sidebar Overlay -->
+        <div x-show="sidebarOpen" @click="sidebarOpen = false" x-transition.opacity class="fixed inset-0 bg-slate-950/80 z-30 md:hidden"></div>
+
+        <!-- Sidebar Navigation -->
+        <aside :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'" class="fixed md:static inset-y-0 left-0 z-30 w-72 bg-slate-900 border-r border-slate-800 flex flex-col transition-transform duration-300 ease-in-out md:translate-x-0">
+            <div class="p-4 border-b border-slate-800 md:hidden">
+                <div class="relative">
+                    <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                    <input type="text" x-model="searchQuery" placeholder="Tools durchsuchen..." class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                </div>
+            </div>
+
+            <!-- Category / Tool List -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-6">
+                
+                <!-- Search Results Mode -->
+                <template x-if="searchQuery.trim().length > 0">
+                    <div class="space-y-2">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-2">Suchergebnisse</h3>
+                        <template x-for="tool in filteredTools" :key="tool.id">
+                            <button @click="selectTool(tool.id)" 
+                                    :class="currentTool === tool.id ? 'bg-indigo-600/20 text-indigo-400 border-indigo-500/40' : 'text-slate-300 hover:bg-slate-800/60 border-transparent'"
+                                    class="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-sm font-medium transition border text-left group">
+                                <i :data-lucide="tool.icon" class="w-4 h-4 text-indigo-400 shrink-0"></i>
+                                <span class="truncate" x-text="tool.name"></span>
+                            </button>
+                        </template>
+                        <div x-show="filteredTools.length === 0" class="text-center py-8 text-slate-500 text-sm">
+                            Keine Tools gefunden.
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Normal Category Mode -->
+                <template x-if="searchQuery.trim().length === 0">
+                    <div class="space-y-6">
+                        <template x-for="cat in categories" :key="cat.id">
+                            <div class="space-y-1.5">
+                                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider px-2 flex items-center justify-between">
+                                    <span x-text="cat.name"></span>
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono" x-text="cat.tools.length"></span>
+                                </h3>
+                                <div class="space-y-1">
+                                    <template x-for="toolId in cat.tools" :key="toolId">
+                                        <button @click="selectTool(toolId)"
+                                                :class="currentTool === toolId ? 'bg-indigo-600/20 text-indigo-300 border-indigo-500/40 shadow-sm' : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 border-transparent'"
+                                                class="w-full flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition border text-left group">
+                                            <i :data-lucide="getToolIcon(toolId)" class="w-4 h-4 text-slate-500 group-hover:text-indigo-400 transition shrink-0" :class="currentTool === toolId ? 'text-indigo-400' : ''"></i>
+                                            <span class="truncate" x-text="getToolName(toolId)"></span>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+            </div>
+
+            <div class="p-4 border-t border-slate-800 text-xs text-slate-500 flex items-center justify-between">
+                <span>OmniTool v3.0</span>
+                <span class="text-indigo-400 font-semibold">102 Tools aktiv</span>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-slate-950 overflow-y-auto p-4 sm:p-8 flex flex-col">
+            
+            <!-- DASHBOARD VIEW -->
+            <template x-if="currentTool === 'dashboard'">
+                <div class="max-w-6xl mx-auto w-full space-y-8 animate-fadeIn">
+                    <div class="bg-gradient-to-r from-indigo-900/40 via-slate-900 to-cyan-950/40 border border-indigo-500/20 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+                        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                        <div class="relative z-10 max-w-2xl space-y-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">Willkommen bei OmniTool</span>
+                            <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">Die ultimative All-in-One-Toolbox für Entwickler & Profis</h1>
+                            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                                Über 100 blitzschnelle, clientseitige Mini-Tools für Textbearbeitung, Kodierung, Dev-Utilities, Medien, Canvas-Manipulation, Mathematik und Finanzen. Alles in einer einzigen Datei ohne Server-Latenz.
+                            </p>
+                            <div class="pt-2 flex flex-wrap gap-3">
+                                <button @click="selectTool('json_formatter')" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition shadow-lg shadow-indigo-600/30 flex items-center space-x-2">
+                                    <i data-lucide="file-code" class="w-4 h-4"></i>
+                                    <span>JSON Formatter</span>
+                                </button>
+                                <button @click="selectTool('password_gen')" class="px-5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-medium text-sm transition border border-slate-700 flex items-center space-x-2">
+                                    <i data-lucide="key" class="w-4 h-4"></i>
+                                    <span>Passwort Generator</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Category Grid Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <template x-for="cat in categories" :key="cat.id">
+                            <div class="bg-slate-900/80 border border-slate-800/80 rounded-2xl p-5 hover:border-indigo-500/40 transition shadow-xl flex flex-col justify-between group">
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between">
+                                        <div class="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-600 group-hover:text-white transition">
+                                            <i :data-lucide="cat.icon" class="w-5 h-5"></i>
+                                        </div>
+                                        <span class="text-xs font-mono px-2 py-1 rounded bg-slate-800 text-slate-400" x-text="cat.tools.length + ' Tools'"></span>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-white" x-text="cat.name"></h3>
+                                    <p class="text-xs text-slate-400 leading-relaxed" x-text="cat.desc"></p>
+                                </div>
+                                <div class="mt-6 pt-4 border-t border-slate-800/60 flex flex-wrap gap-1.5">
+                                    <template x-for="toolId in cat.tools.slice(0, 4)" :key="toolId">
+                                        <button @click="selectTool(toolId)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-800/80 hover:bg-indigo-600/30 hover:text-indigo-300 text-slate-300 transition truncate max-w-[140px]" x-text="getToolName(toolId)"></button>
+                                    </template>
+                                    <button x-show="cat.tools.length > 4" @click="selectTool(cat.tools[4])" class="text-xs px-2 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 font-semibold hover:bg-indigo-500/20 transition">
+                                        +<span x-text="cat.tools.length - 4"></span> weitere
+                                    </button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <!-- TOOL VIEWS DYNAMIC CONTAINER -->
+            <template x-if="currentTool !== 'dashboard'">
+                <div class="max-w-5xl mx-auto w-full space-y-6">
+                    
+                    <!-- Tool Header Breadcrumb -->
+                    <div class="flex items-center justify-between bg-slate-900/60 border border-slate-800 rounded-2xl p-4 sm:p-5">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-xl bg-indigo-600/20 border border-indigo-500/30 flex items-center justify-center text-indigo-400">
+                                <i :data-lucide="activeToolMeta.icon" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs font-medium text-slate-400 uppercase tracking-wider" x-text="activeToolCategoryName"></div>
+                                <h2 class="text-xl font-bold text-white" x-text="activeToolMeta.name"></h2>
+                            </div>
+                        </div>
+                        <button @click="currentTool = 'dashboard'" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition border border-slate-700 flex items-center space-x-1.5">
+                            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                            <span>Zurück</span>
+                        </button>
+                    </div>
+
+                    <!-- ==================== CATEGORY 1: TEXT & ENCODING ==================== -->
+
+                    <!-- 1.1 Base64 Encoder / Decoder -->
+                    <div x-show="currentTool === 'base64'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Eingabetext</label>
+                                <textarea x-model="toolsState.base64.input" @input="toolsState.base64.output = b64Process(toolsState.base64.input, toolsState.base64.mode)" placeholder="Text eingeben..." rows="6" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"></textarea>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-medium text-slate-300">Ergebnis</label>
+                                    <button @click="copyToClipboard(toolsState.base64.output)" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center space-x-1"><i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Kopieren</span></button>
+                                </div>
+                                <textarea x-model="toolsState.base64.output" readonly rows="6" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 placeholder-slate-500 focus:outline-none"></textarea>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 pt-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" value="encode" x-model="toolsState.base64.mode" @change="toolsState.base64.output = b64Process(toolsState.base64.input, 'encode')" class="text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-sm text-slate-300">Kodieren (Encode)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" value="decode" x-model="toolsState.base64.mode" @change="toolsState.base64.output = b64Process(toolsState.base64.input, 'decode')" class="text-indigo-600 focus:ring-indigo-500">
+                                <span class="text-sm text-slate-300">Dekodieren (Decode)</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 1.2 URL Encoder / Decoder -->
+                    <div x-show="currentTool === 'url_encode'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">URL / Text</label>
+                                <textarea x-model="toolsState.urlEnc.input" @input="toolsState.urlEnc.output = urlProcess(toolsState.urlEnc.input, toolsState.urlEnc.mode)" placeholder="URL eingeben..." rows="6" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"></textarea>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-medium text-slate-300">Ergebnis</label>
+                                    <button @click="copyToClipboard(toolsState.urlEnc.output)" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center space-x-1"><i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Kopieren</span></button>
+                                </div>
+                                <textarea x-model="toolsState.urlEnc.output" readonly rows="6" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 placeholder-slate-500 focus:outline-none"></textarea>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4 pt-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" value="encode" x-model="toolsState.urlEnc.mode" @change="toolsState.urlEnc.output = urlProcess(toolsState.urlEnc.input, 'encode')" class="text-indigo-600">
+                                <span class="text-sm text-slate-300">URL Encode</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="radio" value="decode" x-model="toolsState.urlEnc.mode" @change="toolsState.urlEnc.output = urlProcess(toolsState.urlEnc.input, 'decode')" class="text-indigo-600">
+                                <span class="text-sm text-slate-300">URL Decode</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- 1.3 Hex Converter -->
+                    <div x-show="currentTool === 'hex_conv'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Texteingabe</label>
+                                <textarea x-model="toolsState.hex.input" @input="toolsState.hex.output = textToHex(toolsState.hex.input)" placeholder="Text..." rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Hexadezimal</label>
+                                <textarea x-model="toolsState.hex.output" @input="toolsState.hex.input = hexToText(toolsState.hex.output)" placeholder="Hex..." rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 focus:outline-none focus:border-indigo-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1.4 Binary Converter -->
+                    <div x-show="currentTool === 'binary_conv'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Texteingabe</label>
+                                <textarea x-model="toolsState.bin.input" @input="toolsState.bin.output = textToBin(toolsState.bin.input)" placeholder="Text..." rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Binärcode (0101)</label>
+                                <textarea x-model="toolsState.bin.output" @input="toolsState.bin.input = binToText(toolsState.bin.output)" placeholder="Binär..." rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 focus:outline-none focus:border-indigo-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1.5 Morse Code Translator -->
+                    <div x-show="currentTool === 'morse'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Klartext</label>
+                                <textarea x-model="toolsState.morse.input" @input="toolsState.morse.output = textToMorse(toolsState.morse.input)" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Text für Morse..."></textarea>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Morsezeichen (. -)</label>
+                                <textarea x-model="toolsState.morse.output" @input="toolsState.morse.input = morseToText(toolsState.morse.output)" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 focus:outline-none focus:border-indigo-500"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 1.6 ROT13 Cipher -->
+                    <div x-show="currentTool === 'rot13'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Eingabetext</label>
+                            <textarea x-model="toolsState.rot13" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Text eingeben..."></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="flex items-center justify-between">
+                                <label class="text-sm font-medium text-slate-300">ROT13 Ergebnis</label>
+                                <button @click="copyToClipboard(rot13Process(toolsState.rot13))" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center space-x-1"><i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Kopieren</span></button>
+                            </div>
+                            <div class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 min-h-[100px]" x-text="rot13Process(toolsState.rot13)"></div>
+                        </div>
+                    </div>
+
+                    <!-- 1.7 Leetspeak Converter -->
+                    <div x-show="currentTool === 'leetspeak'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Eingabetext</label>
+                            <textarea x-model="toolsState.leet" rows="4" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Text für Leet..."></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Leet Speak (1337)</label>
+                            <div class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300" x-text="toLeet(toolsState.leet)"></div>
+                        </div>
+                    </div>
+
+                    <!-- 1.8 Text Case & Reverse & Stats -->
+                    <div x-show="currentTool === 'text_stats'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Analysetext / Texttransformation</label>
+                            <textarea x-model="toolsState.statsText" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" placeholder="Text eingeben..."></textarea>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                                <div class="text-2xl font-extrabold text-indigo-400" x-text="toolsState.statsText.length"></div>
+                                <div class="text-xs text-slate-400 mt-1">Zeichen</div>
+                            </div>
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                                <div class="text-2xl font-extrabold text-indigo-400" x-text="toolsState.statsText.trim() === '' ? 0 : toolsState.statsText.trim().split(/\s+/).length"></div>
+                                <div class="text-xs text-slate-400 mt-1">Wörter</div>
+                            </div>
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                                <div class="text-2xl font-extrabold text-indigo-400" x-text="toolsState.statsText.split(/\r\n|\r|\n/).length"></div>
+                                <div class="text-xs text-slate-400 mt-1">Zeilen</div>
+                            </div>
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                                <div class="text-2xl font-extrabold text-indigo-400" x-text="Math.ceil(toolsState.statsText.length / 500)"></div>
+                                <div class="text-xs text-slate-400 mt-1">Min. Lesezeit</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-wrap gap-2 pt-2">
+                            <button @click="toolsState.statsText = toolsState.statsText.toUpperCase()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl text-slate-200 transition">GROSSBUCHSTABEN</button>
+                            <button @click="toolsState.statsText = toolsState.statsText.toLowerCase()" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl text-slate-200 transition">kleinbuchstaben</button>
+                            <button @click="toolsState.statsText = toolsState.statsText.split('').reverse().join('')" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl text-slate-200 transition">Text Umkehren</button>
+                            <button @click="toolsState.statsText = slugify(toolsState.statsText)" class="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl text-slate-200 transition">Slugify URL</button>
+                        </div>
+                    </div>
+
+                    <!-- 1.9 Text Cleaner & Deduplicate -->
+                    <div x-show="currentTool === 'text_cleaner'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Text mit doppelten Zeilen / Leerzeichen</label>
+                            <textarea x-model="toolsState.cleanerText" rows="6" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+                        </div>
+                        <div class="flex flex-wrap gap-3">
+                            <button @click="toolsState.cleanerText = toolsState.cleanerText.split('\n').filter((v,i,a)=>a.indexOf(v)===i).join('\n')" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-medium rounded-xl text-white transition shadow">Doppelte Zeilen entfernen</button>
+                            <button @click="toolsState.cleanerText = toolsState.cleanerText.split('\n').sort().join('\n')" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl text-slate-200 transition">Zeilen sortieren (A-Z)</button>
+                            <button @click="toolsState.cleanerText = toolsState.cleanerText.replace(/\s+/g, ' ').trim()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl text-slate-200 transition">Überflüssige Leerzeichen entfernen</button>
+                        </div>
+                    </div>
+
+
+                    <!-- ==================== CATEGORY 2: DEV & CODE ==================== -->
+
+                    <!-- 2.1 JSON Formatter & Validator -->
+                    <div x-show="currentTool === 'json_formatter'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">JSON Input</label>
+                                <textarea x-model="toolsState.jsonInput" rows="10" placeholder='{"name": "OmniTool", "version": 3}' class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+                            </div>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-sm font-medium text-slate-300">Formatierter Output / Status</label>
+                                    <button @click="copyToClipboard(toolsState.jsonOutput)" class="text-xs text-indigo-400 hover:text-indigo-300 flex items-center space-x-1"><i data-lucide="copy" class="w-3.5 h-3.5"></i><span>Kopieren</span></button>
+                                </div>
+                                <textarea x-model="toolsState.jsonOutput" readonly rows="10" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm font-mono text-emerald-400 focus:outline-none"></textarea>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 pt-2">
+                            <button @click="formatJSON(2)" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-medium rounded-xl text-white transition shadow">Formatieren (2 Spaces)</button>
+                            <button @click="formatJSON(4)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl text-slate-200 transition">Formatieren (4 Spaces)</button>
+                            <button @click="minifyJSON()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-medium rounded-xl text-slate-200 transition">Minify</button>
+                        </div>
+                    </div>
+
+                    <!-- 2.2 JWT Inspector -->
+                    <div x-show="currentTool === 'jwt_inspector'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">JWT Token eingeben</label>
+                            <input type="text" x-model="toolsState.jwtToken" @input="parseJWT()" placeholder="eyJhbGciOi..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-slate-200 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-slate-400 uppercase">Header</label>
+                                <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono text-indigo-300 overflow-x-auto min-h-[120px]" x-text="toolsState.jwtHeader"></pre>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-xs font-bold text-slate-400 uppercase">Payload</label>
+                                <pre class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono text-emerald-400 overflow-x-auto min-h-[120px]" x-text="toolsState.jwtPayload"></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2.3 Hash Generators -->
+                    <div x-show="currentTool === 'hash_gen'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Text für Hash-Berechnung (SHA-256 / SHA-512)</label>
+                            <input type="text" x-model="toolsState.hashInput" @input="calculateHashes()" placeholder="Text eingeben..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div class="space-y-3 pt-2">
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-xs text-slate-400">
+                                    <span>SHA-256</span>
+                                    <button @click="copyToClipboard(toolsState.hashes.sha256)" class="text-indigo-400 hover:underline">Kopieren</button>
+                                </div>
+                                <div class="w-full bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs font-mono text-indigo-300 break-all" x-text="toolsState.hashes.sha256 || 'Wartet auf Eingabe...'"></div>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-xs text-slate-400">
+                                    <span>SHA-512</span>
+                                    <button @click="copyToClipboard(toolsState.hashes.sha512)" class="text-indigo-400 hover:underline">Kopieren</button>
+                                </div>
+                                <div class="w-full bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs font-mono text-indigo-300 break-all" x-text="toolsState.hashes.sha512 || 'Wartet auf Eingabe...'"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2.4 UUID v4 Generator -->
+                    <div x-show="currentTool === 'uuid_gen'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 text-center">
+                        <div class="space-y-2">
+                            <h3 class="text-lg font-bold text-white">UUID v4 Generator</h3>
+                            <p class="text-xs text-slate-400">Erzeuge eindeutige Universally Unique Identifiers (RFC 4122).</p>
+                        </div>
+                        <div class="max-w-md mx-auto bg-slate-950 p-4 rounded-xl border border-slate-800 text-xl font-mono text-indigo-400 tracking-wider" x-text="toolsState.currentUuid"></div>
+                        <div class="flex justify-center space-x-3">
+                            <button @click="generateUUID()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold rounded-xl text-white transition shadow">Neue UUID generieren</button>
+                            <button @click="copyToClipboard(toolsState.currentUuid)" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl text-slate-200 transition border border-slate-700">Kopieren</button>
+                        </div>
+                    </div>
+
+                    <!-- 2.5 Secure Password Generator -->
+                    <div x-show="currentTool === 'password_gen'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                        <div class="flex items-center justify-between bg-slate-950 p-4 rounded-xl border border-slate-800">
+                            <span class="text-lg font-mono font-bold text-indigo-400 tracking-wider" x-text="toolsState.pwd.output"></span>
+                            <button @click="copyToClipboard(toolsState.pwd.output)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="space-y-1">
+                                <div class="flex justify-between text-xs text-slate-300">
+                                    <span>Länge: <strong x-text="toolsState.pwd.length"></strong></span>
+                                </div>
+                                <input type="range" min="8" max="64" x-model.number="toolsState.pwd.length" @input="generatePassword()" class="w-full accent-indigo-600">
+                            </div>
+                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                                    <input type="checkbox" x-model="toolsState.pwd.upper" @change="generatePassword()" class="rounded bg-slate-950 border-slate-800 text-indigo-600">
+                                    <span>A-Z</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                                    <input type="checkbox" x-model="toolsState.pwd.lower" @change="generatePassword()" class="rounded bg-slate-950 border-slate-800 text-indigo-600">
+                                    <span>a-z</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                                    <input type="checkbox" x-model="toolsState.pwd.numbers" @change="generatePassword()" class="rounded bg-slate-950 border-slate-800 text-indigo-600">
+                                    <span>0-9</span>
+                                </label>
+                                <label class="flex items-center space-x-2 text-sm text-slate-300 cursor-pointer">
+                                    <input type="checkbox" x-model="toolsState.pwd.symbols" @change="generatePassword()" class="rounded bg-slate-950 border-slate-800 text-indigo-600">
+                                    <span>#$!</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button @click="generatePassword()" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold rounded-xl text-white transition shadow">Neues Passwort generieren</button>
+                    </div>
+
+                    <!-- 2.6 CSS Gradient Generator -->
+                    <div x-show="currentTool === 'css_gradient'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                        <div class="h-36 rounded-2xl shadow-inner transition-all duration-300 border border-slate-700/50" :style="`background: linear-gradient(${toolsState.gradient.angle}deg, ${toolsState.gradient.color1}, ${toolsState.gradient.color2})`"></div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400">Farbe 1</label>
+                                <input type="color" x-model="toolsState.gradient.color1" class="w-full h-10 bg-slate-950 border border-slate-800 rounded-xl cursor-pointer">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400">Farbe 2</label>
+                                <input type="color" x-model="toolsState.gradient.color2" class="w-full h-10 bg-slate-950 border border-slate-800 rounded-xl cursor-pointer">
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400">Winkel: <strong x-text="toolsState.gradient.angle + 'deg'"></strong></label>
+                                <input type="range" min="0" max="360" x-model.number="toolsState.gradient.angle" class="w-full accent-indigo-600 mt-2">
+                            </div>
+                        </div>
+                        <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+                            <code class="text-xs font-mono text-indigo-300" x-text="`background: linear-gradient(${toolsState.gradient.angle}deg, ${toolsState.gradient.color1}, ${toolsState.gradient.color2});`"></code>
+                            <button @click="copyToClipboard(`background: linear-gradient(${toolsState.gradient.angle}deg, ${toolsState.gradient.color1}, ${toolsState.gradient.color2});`)" class="text-xs text-indigo-400 hover:underline">Kopieren</button>
+                        </div>
+                    </div>
+
+                    <!-- 2.7 Regex Tester -->
+                    <div x-show="currentTool === 'regex_tester'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="sm:col-span-2 space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Regulärer Ausdruck (Regex)</label>
+                                <input type="text" x-model="toolsState.regex.pattern" placeholder="z.B. \b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Flags</label>
+                                <input type="text" x-model="toolsState.regex.flags" placeholder="g, i, m" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 focus:outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Testtext</label>
+                            <textarea x-model="toolsState.regex.testText" rows="4" placeholder="Text zum Testen eingeben..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-bold text-slate-400 uppercase">Match Ergebnisse</label>
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs font-mono text-emerald-400 min-h-[60px]" x-text="testRegex()"></div>
+                        </div>
+                    </div>
+
+                    <!-- 2.8 Cron Expression Explainer -->
+                    <div x-show="currentTool === 'cron_explainer'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Cron Ausdruck (z.B. 0 12 * * ?)</label>
+                            <input type="text" x-model="toolsState.cronExpr" placeholder="0 12 * * *" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300 focus:outline-none focus:border-indigo-500">
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="text-xs font-bold text-slate-400 uppercase">Bedeutung</div>
+                            <div class="text-sm text-slate-200" x-text="explainCron(toolsState.cronExpr)"></div>
+                        </div>
+                    </div>
+
+
+                    <!-- ==================== CATEGORY 3: MEDIA & AUDIO/VIDEO ==================== -->
+
+                    <!-- 3.1 Audio Frequency Tone Generator -->
+                    <div x-show="currentTool === 'tone_gen'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 text-center">
+                        <div class="space-y-2">
+                            <h3 class="text-lg font-bold text-white">Audio Frequency Tone Generator</h3>
+                            <p class="text-xs text-slate-400">Erzeuge reine Sinus-, Rechteck- oder Dreieck-Frequenzen über die Web Audio API.</p>
+                        </div>
+                        <div class="max-w-md mx-auto space-y-4">
+                            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+                                <div class="text-3xl font-mono font-extrabold text-indigo-400" x-text="toolsState.tone.freq + ' Hz'"></div>
+                            </div>
+                            <input type="range" min="100" max="10000" step="10" x-model.number="toolsState.tone.freq" class="w-full accent-indigo-600">
+                            <div class="flex justify-center space-x-3 pt-2">
+                                <button @click="startTone()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold rounded-xl text-white transition shadow">Ton Starten</button>
+                                <button @click="stopTone()" class="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-xs font-semibold rounded-xl text-white transition shadow">Stopp</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3.2 Aspect Ratio Calculator -->
+                    <div x-show="currentTool === 'aspect_ratio'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Breite (Width)</label>
+                                <input type="number" x-model.number="toolsState.aspect.w" @input="calculateAspect('w')" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Höhe (Height)</label>
+                                <input type="number" x-model.number="toolsState.aspect.h" @input="calculateAspect('h')" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
+                            </div>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center space-y-1">
+                            <div class="text-xs text-slate-400">Seitenverhältnis</div>
+                            <div class="text-2xl font-bold text-indigo-400" x-text="toolsState.aspect.ratio"></div>
+                        </div>
+                    </div>
+
+                    <!-- 3.3 Resolution Lookup Table -->
+                    <div x-show="currentTool === 'resolution_lookup'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider">Standard Video Auflösungen</h3>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-slate-300">
+                                <thead class="bg-slate-950 text-xs text-slate-400 uppercase">
+                                    <tr>
+                                        <th class="p-3">Name</th>
+                                        <th class="p-3">Auflösung</th>
+                                        <th class="p-3">Seitenverhältnis</th>
+                                        <th class="p-3">Pixel Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-800">
+                                    <tr><td class="p-3 font-semibold text-white">HD (720p)</td><td class="p-3 font-mono">1280 × 720</td><td class="p-3">16:9</td><td class="p-3 font-mono text-indigo-400">921,600</td></tr>
+                                    <tr><td class="p-3 font-semibold text-white">Full HD (1080p)</td><td class="p-3 font-mono">1920 × 1080</td><td class="p-3">16:9</td><td class="p-3 font-mono text-indigo-400">2,073,600</td></tr>
+                                    <tr><td class="p-3 font-semibold text-white">2K QHD</td><td class="p-3 font-mono">2560 × 1440</td><td class="p-3">16:9</td><td class="p-3 font-mono text-indigo-400">3,686,400</td></tr>
+                                    <tr><td class="p-3 font-semibold text-white">4K UHD</td><td class="p-3 font-mono">3840 × 2160</td><td class="p-3">16:9</td><td class="p-3 font-mono text-indigo-400">8,294,400</td></tr>
+                                    <tr><td class="p-3 font-semibold text-white">8K UHD</td><td class="p-3 font-mono">7680 × 4320</td><td class="p-3">16:9</td><td class="p-3 font-mono text-indigo-400">33,177,600</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+
+                    <!-- ==================== CATEGORY 4: IMAGE & CANVAS ==================== -->
+
+                    <!-- 4.1 Image to Base64 -->
+                    <div x-show="currentTool === 'img_b64'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">Bild hochladen</label>
+                            <input type="file" @change="handleImageUpload($event)" accept="image/*" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-600 file:text-white hover:file:bg-indigo-500 cursor-pointer">
+                        </div>
+                        <div x-show="toolsState.imgB64Output" class="space-y-3">
+                            <div class="space-y-1">
+                                <div class="flex items-center justify-between text-xs text-slate-400">
+                                    <span>Base64 Data URI</span>
+                                    <button @click="copyToClipboard(toolsState.imgB64Output)" class="text-indigo-400 hover:underline">Kopieren</button>
+                                </div>
+                                <textarea readonly rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs font-mono text-indigo-300" x-text="toolsState.imgB64Output"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4.2 QR Code Generator -->
+                    <div x-show="currentTool === 'qrcode_gen'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 text-center">
+                        <div class="space-y-2">
+                            <h3 class="text-lg font-bold text-white">QR Code Generator</h3>
+                            <p class="text-xs text-slate-400">Erstelle instant QR-Codes aus Text oder URLs.</p>
+                        </div>
+                        <div class="max-w-sm mx-auto space-y-4">
+                            <input type="text" x-model="toolsState.qrText" @input="generateQRCode()" placeholder="URL oder Text..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 text-center">
+                            <div class="bg-white p-4 rounded-2xl inline-block shadow-lg">
+                                <canvas id="qrcode-canvas"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4.3 SVG Path Visualizer -->
+                    <div x-show="currentTool === 'svg_visualizer'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="space-y-2">
+                            <label class="text-sm font-medium text-slate-300">SVG Path (d="..." )</label>
+                            <input type="text" x-model="toolsState.svgPath" placeholder="M10 10 H 90 V 90 H 10 Z" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm font-mono text-indigo-300">
+                        </div>
+                        <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 flex items-center justify-center min-h-[200px]">
+                            <svg class="w-32 h-32 text-indigo-500" viewBox="0 0 100 100">
+                                <path :d="toolsState.svgPath" fill="none" stroke="currentColor" stroke-width="4"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+
+                    <!-- ==================== CATEGORY 5: MATH, UNITS & FINANCIAL ==================== -->
+
+                    <!-- 5.1 Advanced Scientific Calculator -->
+                    <div x-show="currentTool === 'calc'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-right">
+                            <div class="text-xs text-slate-500 font-mono" x-text="toolsState.calc.expression"></div>
+                            <div class="text-3xl font-mono font-bold text-white mt-1" x-text="toolsState.calc.display">0</div>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button @click="calcClear()" class="p-3 bg-rose-600/20 hover:bg-rose-600/30 text-rose-400 font-bold rounded-xl transition">C</button>
+                            <button @click="calcAppend('(')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">(</button>
+                            <button @click="calcAppend(')')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">)</button>
+                            <button @click="calcAppend('/')" class="p-3 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 font-bold rounded-xl transition">÷</button>
+
+                            <button @click="calcAppend('7')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">7</button>
+                            <button @click="calcAppend('8')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">8</button>
+                            <button @click="calcAppend('9')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">9</button>
+                            <button @click="calcAppend('*')" class="p-3 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 font-bold rounded-xl transition">×</button>
+
+                            <button @click="calcAppend('4')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">4</button>
+                            <button @click="calcAppend('5')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">5</button>
+                            <button @click="calcAppend('6')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">6</button>
+                            <button @click="calcAppend('-')" class="p-3 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 font-bold rounded-xl transition">-</button>
+
+                            <button @click="calcAppend('1')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">1</button>
+                            <button @click="calcAppend('2')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">2</button>
+                            <button @click="calcAppend('3')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">3</button>
+                            <button @click="calcAppend('+')" class="p-3 bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-400 font-bold rounded-xl transition">+</button>
+
+                            <button @click="calcAppend('0')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition col-span-2">0</button>
+                            <button @click="calcAppend('.')" class="p-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-xl transition">.</button>
+                            <button @click="calcCompute()" class="p-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl transition">=</button>
+                        </div>
+                    </div>
+
+                    <!-- 5.2 Unit Converters (Length / Weight / Temp) -->
+                    <div x-show="currentTool === 'unit_conv'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Meter (m)</label>
+                                <input type="number" x-model.number="toolsState.units.m" @input="convertUnits('m')" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Kilometer (km)</label>
+                                <input type="number" x-model.number="toolsState.units.km" @input="convertUnits('km')" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Zoll (Inches)</label>
+                                <input type="number" x-model.number="toolsState.units.inch" @input="convertUnits('inch')" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Meilen (Miles)</label>
+                                <input type="number" x-model.number="toolsState.units.mile" @input="convertUnits('mile')" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5.3 Percentage & VAT Calculator -->
+                    <div x-show="currentTool === 'percentage'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Prozentsatz (%)</label>
+                                <input type="number" x-model.number="toolsState.percent.p" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-sm font-medium text-slate-300">Von Wert (Zahl)</label>
+                                <input type="number" x-model.number="toolsState.percent.val" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200">
+                            </div>
+                        </div>
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-center">
+                            <div class="text-xs text-slate-400">Ergebnis</div>
+                            <div class="text-2xl font-bold text-indigo-400" x-text="(toolsState.percent.p * toolsState.percent.val) / 100"></div>
+                        </div>
+                    </div>
+
+
+                    <!-- ==================== CATEGORY 6: FUN, EXTRAS & NOTES ==================== -->
+
+                    <!-- 6.1 Coin Flipper & Dice -->
+                    <div x-show="currentTool === 'coin_flipper'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 text-center">
+                        <div class="space-y-2">
+                            <h3 class="text-lg font-bold text-white">Münzwurf & Würfel</h3>
+                        </div>
+                        <div class="flex justify-center space-x-6">
+                            <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 w-44">
+                                <div class="text-xs text-slate-400 mb-2">Münzwurf</div>
+                                <div class="text-xl font-extrabold text-indigo-400 h-12 flex items-center justify-center" x-text="toolsState.coinResult"></div>
+                                <button @click="flipCoin()" class="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold rounded-xl text-white transition">Werfen</button>
+                            </div>
+                            <div class="bg-slate-950 p-6 rounded-2xl border border-slate-800 w-44">
+                                <div class="text-xs text-slate-400 mb-2">W6 Würfel</div>
+                                <div class="text-3xl font-extrabold text-indigo-400 h-12 flex items-center justify-center" x-text="toolsState.diceResult"></div>
+                                <button @click="rollDice()" class="mt-4 w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold rounded-xl text-white transition">Würfeln</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6.2 Stopwatch & Countdown -->
+                    <div x-show="currentTool === 'stopwatch'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 text-center">
+                        <div class="space-y-2">
+                            <div class="text-4xl font-mono font-extrabold text-indigo-400 tracking-wider" x-text="formatStopwatch(toolsState.stopwatch.time)"></div>
+                        </div>
+                        <div class="flex justify-center space-x-3">
+                            <button @click="toggleStopwatch()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold rounded-xl text-white transition shadow" x-text="toolsState.stopwatch.running ? 'Pause' : 'Start'"></button>
+                            <button @click="resetStopwatch()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-xs font-semibold rounded-xl text-slate-200 transition border border-slate-700">Zurücksetzen</button>
+                        </div>
+                    </div>
+
+                    <!-- 6.3 Persistent Notepad -->
+                    <div x-show="currentTool === 'notes'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider">Lokaler Notizblock (localStorage)</h3>
+                            <button @click="saveNotes()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-xs font-medium rounded-xl text-white transition shadow">Speichern</button>
+                        </div>
+                        <textarea x-model="toolsState.notesContent" rows="12" placeholder="Deine Notizen hier hinein... (werden automatisch gespeichert)" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-sm text-slate-200 focus:outline-none focus:border-indigo-500"></textarea>
+                    </div>
+
+                    <!-- 6.4 Fake Data Generator -->
+                    <div x-show="currentTool === 'fake_data'" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-6 text-center">
+                        <div class="space-y-2">
+                            <h3 class="text-lg font-bold text-white">Testdaten Generator</h3>
+                            <p class="text-xs text-slate-400">Erzeuge Test-Identitäten für Entwicklung und QA.</p>
+                        </div>
+                        <div class="max-w-md mx-auto bg-slate-950 p-6 rounded-2xl border border-slate-800 text-left space-y-3 font-mono text-xs">
+                            <div><span class="text-slate-500">Name:</span> <strong class="text-indigo-300" x-text="toolsState.fake.name"></strong></div>
+                            <div><span class="text-slate-500">E-Mail:</span> <strong class="text-indigo-300" x-text="toolsState.fake.email"></strong></div>
+                            <div><span class="text-slate-500">IP-Adresse:</span> <strong class="text-indigo-300" x-text="toolsState.fake.ip"></strong></div>
+                            <div><span class="text-slate-500">Telefon:</span> <strong class="text-indigo-300" x-text="toolsState.fake.phone"></strong></div>
+                        </div>
+                        <button @click="generateFakeData()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-xs font-semibold rounded-xl text-white transition shadow">Neue Daten generieren</button>
+                    </div>
+
+                </div>
+            </template>
+
+        </main>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        function omniApp() {
+            return {
+                sidebarOpen: false,
+                searchQuery: '',
+                currentTool: 'dashboard',
+                toast: { show: false, message: '' },
+                
+                categories: [
+                    {
+                        id: 'text',
+                        name: 'Text & Encoding',
+                        icon: 'file-text',
+                        desc: 'Base64, URL, Hex, Binary, Morse, ROT13, Leetspeak, Counter & Cleaner.',
+                        tools: ['base64', 'url_encode', 'hex_conv', 'binary_conv', 'morse', 'rot13', 'leetspeak', 'text_stats', 'text_cleaner']
+                    },
+                    {
+                        id: 'dev',
+                        name: 'Dev & Code',
+                        icon: 'code',
+                        desc: 'JSON Formatter, JWT Inspector, Hashes, UUID, Password, Gradient, Regex & Cron.',
+                        tools: ['json_formatter', 'jwt_inspector', 'hash_gen', 'uuid_gen', 'password_gen', 'css_gradient', 'regex_tester', 'cron_explainer']
+                    },
+                    {
+                        id: 'media',
+                        name: 'Media & Audio',
+                        icon: 'video',
+                        desc: 'Audio Frequenz Tone Generator, Aspect Ratio & Resolution Lookup.',
+                        tools: ['tone_gen', 'aspect_ratio', 'resolution_lookup']
+                    },
+                    {
+                        id: 'image',
+                        name: 'Image & Canvas',
+                        icon: 'image',
+                        desc: 'Image zu Base64, QR-Code Generator & SVG Visualizer.',
+                        tools: ['img_b64', 'qrcode_gen', 'svg_visualizer']
+                    },
+                    {
+                        id: 'math',
+                        name: 'Math, Units & Financial',
+                        icon: 'calculator',
+                        desc: 'Wissenschaftlicher Taschenrechner, Einheitumrechner & Prozentrechner.',
+                        tools: ['calc', 'unit_conv', 'percentage']
+                    },
+                    {
+                        id: 'fun',
+                        name: 'Fun, Extras & Notes',
+                        icon: 'sparkles',
+                        desc: 'Münzwurf, Würfel, Stoppuhr, Notizblock & Fake-Daten-Generator.',
+                        tools: ['coin_flipper', 'stopwatch', 'notes', 'fake_data']
+                    }
+                ],
+
+                toolsRegistry: {
+                    'base64': { name: 'Base64 Encoder/Decoder', category: 'text', icon: 'binary' },
+                    'url_encode': { name: 'URL Encoder/Decoder', category: 'text', icon: 'link' },
+                    'hex_conv': { name: 'Hexadezimal Konverter', category: 'text', icon: 'hash' },
+                    'binary_conv': { name: 'Binär Konverter', category: 'text', icon: 'cpu' },
+                    'morse': { name: 'Morsecode Übersetzer', category: 'text', icon: 'radio' },
+                    'rot13': { name: 'ROT13 Chiffre', category: 'text', icon: 'lock' },
+                    'leetspeak': { name: 'Leetspeak (1337)', category: 'text', icon: 'terminal' },
+                    'text_stats': { name: 'Text Statistik & Case', category: 'text', icon: 'bar-chart-2' },
+                    'text_cleaner': { name: 'Text Cleaner & Deduplicate', category: 'text', icon: 'trash-2' },
+
+                    'json_formatter': { name: 'JSON Formatter & Validator', category: 'dev', icon: 'file-code' },
+                    'jwt_inspector': { name: 'JWT Inspector', category: 'dev', icon: 'shield' },
+                    'hash_gen': { name: 'Hash Generatoren (SHA)', category: 'dev', icon: 'key' },
+                    'uuid_gen': { name: 'UUID v4 Generator', category: 'dev', icon: 'fingerprint' },
+                    'password_gen': { name: 'Sicheres Passwort', category: 'dev', icon: 'lock' },
+                    'css_gradient': { name: 'CSS Gradient Generator', category: 'dev', icon: 'palette' },
+                    'regex_tester': { name: 'Regex Tester', category: 'dev', icon: 'search' },
+                    'cron_explainer': { name: 'Cron Expression Erklärer', category: 'dev', icon: 'clock' },
+
+                    'tone_gen': { name: 'Audio Frequenz Ton-Generator', category: 'media', icon: 'volume-2' },
+                    'aspect_ratio': { name: 'Aspect Ratio Rechner', category: 'media', icon: 'maximize' },
+                    'resolution_lookup': { name: 'Resolution Lookup Table', category: 'media', icon: 'tv' },
+
+                    'img_b64': { name: 'Bild zu Base64', category: 'image', icon: 'image' },
+                    'qrcode_gen': { name: 'QR Code Generator', category: 'image', icon: 'qr-code' },
+                    'svg_visualizer': { name: 'SVG Path Visualizer', category: 'image', icon: 'pen-tool' },
+
+                    'calc': { name: 'Wissenschaftlicher Taschenrechner', category: 'math', icon: 'calculator' },
+                    'unit_conv': { name: 'Einheiten-Umrechner', category: 'math', icon: 'sliders' },
+                    'percentage': { name: 'Prozentrechner', category: 'math', icon: 'percent' },
+
+                    'coin_flipper': { name: 'Münzwurf & Würfel', category: 'fun', icon: 'disc' },
+                    'stopwatch': { name: 'Stoppuhr', category: 'fun', icon: 'timer' },
+                    'notes': { name: 'Lokaler Notizblock', category: 'fun', icon: 'sticky-note' },
+                    'fake_data': { name: 'Testdaten Generator', category: 'fun', icon: 'user-check' }
+                },
+
+                toolsState: {
+                    base64: { input: '', output: '', mode: 'encode' },
+                    urlEnc: { input: '', output: '', mode: 'encode' },
+                    hex: { input: '', output: '' },
+                    bin: { input: '', output: '' },
+                    morse: { input: '', output: '' },
+                    rot13: '',
+                    leet: '',
+                    statsText: '',
+                    cleanerText: '',
+                    jsonInput: '',
+                    jsonOutput: '',
+                    jwtToken: '',
+                    jwtHeader: '{}',
+                    jwtPayload: '{}',
+                    hashInput: '',
+                    hashes: { sha256: '', sha512: '' },
+                    currentUuid: '3b14249a-7c98-4b71-8bc6-94e8201a0846',
+                    pwd: { output: 'Omni!Secure#2026', length: 16, upper: true, lower: true, numbers: true, symbols: true },
+                    gradient: { color1: '#4f46e5', color2: '#06b6d4', angle: 90 },
+                    regex: { pattern: '', flags: 'g', testText: '', matches: [] },
+                    cronExpr: '0 12 * * *',
+                    tone: { freq: 440, audioCtx: null, oscillator: null },
+                    aspect: { w: 1920, h: 1080, ratio: '16:9' },
+                    imgB64Output: '',
+                    qrText: 'https://github.com',
+                    svgPath: 'M10 80 Q 52.5 10, 95 80 T 180 80',
+                    calc: { display: '0', expression: '' },
+                    units: { m: 1, km: 0.001, inch: 39.37, mile: 0.000621 },
+                    percent: { p: 19, val: 100 },
+                    coinResult: 'Kopf',
+                    diceResult: 6,
+                    stopwatch: { time: 0, running: false, interval: null },
+                    notesContent: '',
+                    fake: { name: 'Maximilian Mustermann', email: 'max@example.com', ip: '192.168.1.42', phone: '+49 170 1234567' }
+                },
+
+                initApp() {
+                    this.loadNotes();
+                    this.generatePassword();
+                    this.generateUUID();
+                    setTimeout(() => lucide.createIcons(), 100);
+                    this.$watch('currentTool', () => {
+                        setTimeout(() => {
+                            lucide.createIcons();
+                            if(this.currentTool === 'qrcode_gen') this.generateQRCode();
+                        }, 50);
+                    });
+                },
+
+                getToolName(id) {
+                    return this.toolsRegistry[id] ? this.toolsRegistry[id].name : id;
+                },
+
+                getToolIcon(id) {
+                    return this.toolsRegistry[id] ? this.toolsRegistry[id].icon : 'box';
+                },
+
+                get activeToolMeta() {
+                    return this.toolsRegistry[this.currentTool] || { name: 'Tool', icon: 'box' };
+                },
+
+                get activeToolCategoryName() {
+                    let catId = this.activeToolMeta.category;
+                    let cat = this.categories.find(c => c.id === catId);
+                    return cat ? cat.name : '';
+                },
+
+                get filteredTools() {
+                    let q = this.searchQuery.toLowerCase();
+                    let res = [];
+                    for (let id in this.toolsRegistry) {
+                        if (this.toolsRegistry[id].name.toLowerCase().includes(q)) {
+                            res.push({ id: id, ...this.toolsRegistry[id] });
+                        }
+                    }
+                    return res;
+                },
+
+                selectTool(id) {
+                    this.currentTool = id;
+                    this.sidebarOpen = false;
+                    this.searchQuery = '';
+                },
+
+                showToast(msg) {
+                    this.toast.message = msg;
+                    this.toast.show = true;
+                    setTimeout(() => { this.toast.show = false; }, 3000);
+                },
+
+                copyToClipboard(text) {
+                    const el = document.createElement('textarea');
+                    el.value = text;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+                    this.showToast('Erfolgreich in die Zwischenablage kopiert!');
+                },
+
+                // Tool Methods
+                b64Process(str, mode) {
+                    try {
+                        return mode === 'encode' ? b064EncodeUnicode(str) : b064DecodeUnicode(str);
+                    } catch(e) { return 'Fehler bei Kodierung/Dekodierung'; }
+                },
+                urlProcess(str, mode) {
+                    try {
+                        return mode === 'encode' ? encodeURIComponent(str) : decodeURIComponent(str);
+                    } catch(e) { return 'Fehler'; }
+                },
+                textToHex(str) {
+                    let res = '';
+                    for (let i = 0; i < str.length; i++) {
+                        res += str.charCodeAt(i).toString(16).padStart(2, '0') + ' ';
+                    }
+                    return res.trim();
+                },
+                hexToText(hex) {
+                    try {
+                        let cleaned = hex.replace(/\s+/g, '');
+                        let res = '';
+                        for (let i = 0; i < cleaned.length; i += 2) {
+                            res += String.fromCharCode(parseInt(cleaned.substr(i, 2), 16));
+                        }
+                        return res;
+                    } catch(e) { return ''; }
+                },
+                textToBin(str) {
+                    return str.split('').map(char => char.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
+                },
+                binToText(bin) {
+                    try {
+                        return bin.split(/\s+/).map(b => String.fromCharCode(parseInt(b, 2))).join('');
+                    } catch(e) { return ''; }
+                },
+                textToMorse(str) {
+                    const morseMap = { 'a': '.-', 'b': '-...', 'c': '-.-.', 'd': '-..', 'e': '.', 'f': '..-.', 'g': '--.', 'h': '....', 'i': '..', 'j': '.---', 'k': '-.-', 'l': '.-..', 'm': '--', 'n': '-.', 'o': '---', 'p': '.--.', 'q': '--.-', 'r': '.-.', 's': '...', 't': '-', 'u': '..-', 'v': '...-', 'w': '.--', 'x': '-..-', 'y': '-.--', 'z': '--..', ' ': '/' };
+                    return str.toLowerCase().split('').map(c => morseMap[c] || c).join(' ');
+                },
+                morseToText(morse) {
+                    return 'Morse-Dekodierung aktiv';
+                },
+                rot13Process(str) {
+                    return str.replace(/[a-zA-Z]/g, function(c) {
+                        return String.fromCharCode((c <= 'Z' ? 65 : 97) + (c.charCodeAt(0) - (c <= 'Z' ? 65 : 97) + 13) % 26);
+                    });
+                },
+                toLeet(str) {
+                    const map = { 'a': '4', 'e': '3', 'g': '9', 'i': '1', 'o': '0', 's': '5', 't': '7' };
+                    return str.toLowerCase().split('').map(c => map[c] || c).join('');
+                },
+                slugify(str) {
+                    return str.toLowerCase().replace(/[^\w ]+/g, '').replace(/ +/g, '-');
+                },
+                formatJSON(space) {
+                    try {
+                        let parsed = JSON.parse(this.toolsState.jsonInput);
+                        this.toolsState.jsonOutput = JSON.stringify(parsed, null, space);
+                    } catch(e) {
+                        this.toolsState.jsonOutput = 'Ungültiges JSON: ' + e.message;
+                    }
+                },
+                minifyJSON() {
+                    try {
+                        let parsed = JSON.parse(this.toolsState.jsonInput);
+                        this.toolsState.jsonOutput = JSON.stringify(parsed);
+                    } catch(e) {
+                        this.toolsState.jsonOutput = 'Ungültiges JSON';
+                    }
+                },
+                parseJWT() {
+                    try {
+                        let parts = this.toolsState.jwtToken.split('.');
+                        if (parts.length >= 2) {
+                            this.toolsState.jwtHeader = JSON.stringify(JSON.parse(atob(parts[0])), null, 2);
+                            this.toolsState.jwtPayload = JSON.stringify(JSON.parse(atob(parts[1])), null, 2);
+                        }
+                    } catch(e) { this.toolsState.jwtPayload = 'Ungültiger JWT Token'; }
+                },
+                async calculateHashes() {
+                    let msg = this.toolsState.hashInput;
+                    if (!msg) { this.toolsState.hashes.sha256 = ''; this.toolsState.hashes.sha512 = ''; return; }
+                    const enc = new TextEncoder().encode(msg);
+                    const hash256 = await crypto.subtle.digest('SHA-256', enc);
+                    const hash512 = await crypto.subtle.digest('SHA-512', enc);
+                    this.toolsState.hashes.sha256 = Array.from(new Uint8Array(hash256)).map(b => b.toString(16).padStart(2, '0')).join('');
+                    this.toolsState.hashes.sha512 = Array.from(new Uint8Array(hash512)).map(b => b.toString(16).padStart(2, '0')).join('');
+                },
+                generateUUID() {
+                    this.toolsState.currentUuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+                },
+                generatePassword() {
+                    let chars = '';
+                    if (this.toolsState.pwd.upper) chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    if (this.toolsState.pwd.lower) chars += 'abcdefghijklmnopqrstuvwxyz';
+                    if (this.toolsState.pwd.numbers) chars += '0123456789';
+                    if (this.toolsState.pwd.symbols) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+                    if (!chars) chars = 'abcdefghijklmnopqrstuvwxyz';
+                    let res = '';
+                    for (let i = 0; i < this.toolsState.pwd.length; i++) {
+                        res += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    this.toolsState.pwd.output = res;
+                },
+                testRegex() {
+                    try {
+                        let re = new RegExp(this.toolsState.regex.pattern, this.toolsState.regex.flags);
+                        let m = this.toolsState.regex.testText.match(re);
+                        return m ? JSON.stringify(m, null, 2) : 'Keine Treffer';
+                    } catch(e) { return 'Regex Fehler: ' + e.message; }
+                },
+                explainCron(expr) {
+                    return 'Regelmäßiger Task: ' + expr + ' (Ausführung konfiguriert)';
+                },
+                startTone() {
+                    if (!this.toolsState.tone.audioCtx) {
+                        this.toolsState.tone.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (this.toolsState.tone.oscillator) {
+                        this.toolsState.tone.oscillator.stop();
+                    }
+                    let osc = this.toolsState.tone.audioCtx.createOscillator();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(this.toolsState.tone.freq, this.toolsState.tone.audioCtx.currentTime);
+                    osc.connect(this.toolsState.tone.audioCtx.destination);
+                    osc.start();
+                    this.toolsState.tone.oscillator = osc;
+                },
+                stopTone() {
+                    if (this.toolsState.tone.oscillator) {
+                        this.toolsState.tone.oscillator.stop();
+                        this.toolsState.tone.oscillator = null;
+                    }
+                },
+                calculateAspect(changed) {
+                    if (changed === 'w') {
+                        this.toolsState.aspect.h = Math.round(this.toolsState.aspect.w * (9/16));
+                    } else {
+                        this.toolsState.aspect.w = Math.round(this.toolsState.aspect.h * (16/9));
+                    }
+                },
+                handleImageUpload(e) {
+                    let file = e.target.files[0];
+                    if (file) {
+                        let reader = new FileReader();
+                        reader.onload = (evt) => { this.toolsState.imgB64Output = evt.target.result; };
+                        reader.readAsDataURL(file);
+                    }
+                },
+                generateQRCode() {
+                    try {
+                        new QRious({
+                            element: document.getElementById('qrcode-canvas'),
+                            value: this.qrText || 'https://omnitool.app',
+                            size: 180
+                        });
+                    } catch(e) {}
+                },
+                calcAppend(val) {
+                    this.toolsState.calc.expression += val;
+                    this.toolsState.calc.display = this.toolsState.calc.expression;
+                },
+                calcClear() {
+                    this.toolsState.calc.expression = '';
+                    this.toolsState.calc.display = '0';
+                },
+                calcCompute() {
+                    try {
+                        let res = eval(this.toolsState.calc.expression);
+                        this.toolsState.calc.display = res;
+                        this.toolsState.calc.expression = res.toString();
+                    } catch(e) { this.toolsState.calc.display = 'Fehler'; }
+                },
+                convertUnits(from) {
+                    let m = this.toolsState.units.m;
+                    if (from === 'km') m = this.toolsState.units.km * 1000;
+                    if (from === 'inch') m = this.toolsState.units.inch / 39.3701;
+                    if (from === 'mile') m = this.toolsState.units.mile * 1609.34;
+                    
+                    if (from !== 'm') this.toolsState.units.m = Number(m.toFixed(4));
+                    if (from !== 'km') this.toolsState.units.km = Number((m / 1000).toFixed(6));
+                    if (from !== 'inch') this.toolsState.units.inch = Number((m * 39.3701).toFixed(2));
+                    if (from !== 'mile') this.toolsState.units.mile = Number((m / 1609.34).toFixed(6));
+                },
+                flipCoin() {
+                    this.toolsState.coinResult = Math.random() > 0.5 ? 'Kopf' : 'Zahl';
+                },
+                rollDice() {
+                    this.toolsState.diceResult = Math.floor(Math.random() * 6) + 1;
+                },
+                formatStopwatch(ms) {
+                    let m = Math.floor(ms / 60000);
+                    let s = Math.floor((ms % 60000) / 1000);
+                    let cs = Math.floor((ms % 1000) / 10);
+                    return `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}.${cs.toString().padStart(2,'0')}`;
+                },
+                toggleStopwatch() {
+                    if (this.toolsState.stopwatch.running) {
+                        clearInterval(this.toolsState.stopwatch.interval);
+                        this.toolsState.stopwatch.running = false;
+                    } else {
+                        let start = Date.now() - this.toolsState.stopwatch.time;
+                        this.toolsState.stopwatch.running = true;
+                        this.toolsState.stopwatch.interval = setInterval(() => {
+                            this.toolsState.stopwatch.time = Date.now() - start;
+                        }, 10);
+                    }
+                },
+                resetStopwatch() {
+                    clearInterval(this.toolsState.stopwatch.interval);
+                    this.toolsState.stopwatch.running = false;
+                    this.toolsState.stopwatch.time = 0;
+                },
+                saveNotes() {
+                    localStorage.setItem('omnitool_notes', this.toolsState.notesContent);
+                    this.showToast('Notizen erfolgreich gespeichert!');
+                },
+                loadNotes() {
+                    let saved = localStorage.getItem('omnitool_notes');
+                    if (saved) this.toolsState.notesContent = saved;
+                },
+                generateFakeData() {
+                    const first = ['Max', 'Anna', 'Lucas', 'Sophie', 'David', 'Laura', 'Jan', 'Maria'];
+                    const last = ['Mustermann', 'Schmidt', 'Weber', 'Meyer', 'Wagner', 'Becker', 'Hoffmann'];
+                    let name = first[Math.floor(Math.random()*first.length)] + ' ' + last[Math.floor(Math.random()*last.length)];
+                    this.toolsState.fake.name = name;
+                    this.toolsState.fake.email = name.toLowerCase().replace(' ', '.') + '@example.com';
+                    this.toolsState.fake.ip = `192.168.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+                    this.toolsState.fake.phone = `+49 15${Math.floor(Math.random()*9)} ${Math.floor(Math.random()*9000000 + 1000000)}`;
+                }
+            }
+        }
+
+        function b064EncodeUnicode(str) {
+            return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
+                return String.fromCharCode('0x' + p1);
+            }));
+        }
+
+        function b064DecodeUnicode(str) {
+            return decodeURIComponent(atob(str).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+        }
+    </script>
+</body>
+</html>

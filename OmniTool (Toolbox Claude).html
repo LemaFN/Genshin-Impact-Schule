@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OmniTool – Die All-in-One-Toolbox</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/JsBarcode/3.11.6/JsBarcode.all.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.19.0/js/md5.min.js"></script>
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);background:#020617}
+html,body{height:100%;margin:0;background:#020617;color:#e2e8f0;font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+.inp{width:100%;background:#0f172a;border:1px solid #334155;border-radius:.5rem;padding:.5rem .75rem;color:#e2e8f0;margin-top:.25rem}
+.inp:focus{outline:2px solid #6366f1;border-color:transparent}
+.btn{background:#4f46e5;color:#fff;border-radius:.5rem;padding:.45rem .9rem;font-size:.875rem}.btn:hover{background:#6366f1}
+.btn2{background:#1e293b;border:1px solid #334155}.btn2:hover{background:#334155}
+table{border-collapse:collapse;width:100%;font-size:.85rem}td,th{border:1px solid #334155;padding:.3rem .5rem;text-align:left}
+</style>
+<script>
+const T=[],add=(c,n,fn,f,o,b)=>T.push({c,n,fn,f:f||[TA],o:o||'t',b});
+const TA={k:'t',l:'Eingabe',t:'a'},P=(k,l,d,t,s)=>({k,l,d,t,s});
+const tx=(c,n,f,x,o)=>add(c,n,v=>f(v.t,v),[TA,...(x||[])],o);
+const hx=b=>b.toString(16).padStart(2,'0'),enc=s=>new TextEncoder().encode(s);
+const IM=s=>new Promise((r,j)=>{const i=new Image();i.onload=()=>r(i);i.onerror=j;i.src=s}),
+NF=fn=>async v=>v.f?fn(v):'Bitte ein Bild wählen.',F=P('f','Bild wählen',0,'f');
+const esc=s=>String(s).replace(/[&<>]/g,c=>'&#'+c.charCodeAt(0)+';');
+const R=a=>a[crypto.getRandomValues(new Uint32Array(1))[0]%a.length];
+const beep=()=>{try{const a=new AudioContext(),o=a.createOscillator();o.connect(a.destination);o.start();o.stop(a.currentTime+.6)}catch(e){}};
+const fmt=ms=>{const s=ms/1000;return String(Math.floor(s/60)).padStart(2,'0')+':'+(s%60).toFixed(2).padStart(5,'0')};
+// ---- TEXT ----
+const X='Text & Encoding',D='Dev & Code',MD='Media & Audio',IMG='Bild & Canvas',MA='Mathe & Finanzen',FN='Fun & Extras';
+const M=Object.fromEntries('A.-|B-...|C-.-.|D-..|E.|F..-.|G--.|H....|I..|J.---|K-.-|L.-..|M--|N-.|O---|P.--.|Q--.-|R.-.|S...|T-|U..-|V...-|W.--|X-..-|Y-.--|Z--..|0-----|1.----|2..---|3...--|4....-|5.....|6-....|7--...|8---..|9----.'.split('|').map(x=>[x[0],x.slice(1)]));
+const MI=Object.fromEntries(Object.entries(M).map(([a,b])=>[b,a]));
+tx(X,'Base64 kodieren',s=>btoa(unescape(encodeURIComponent(s))));
+tx(X,'Base64 dekodieren',s=>decodeURIComponent(escape(atob(s.trim()))));
+tx(X,'URL kodieren',encodeURIComponent);tx(X,'URL dekodieren',decodeURIComponent);
+tx(X,'Text → Hex',s=>[...enc(s)].map(hx).join(' '));
+tx(X,'Hex → Text',s=>new TextDecoder().decode(new Uint8Array(s.match(/[0-9a-f]{2}/gi).map(h=>parseInt(h,16)))));
+tx(X,'Text → Binär',s=>[...enc(s)].map(b=>b.toString(2).padStart(8,'0')).join(' '));
+tx(X,'Binär → Text',s=>new TextDecoder().decode(new Uint8Array(s.match(/[01]{8}/g).map(b=>parseInt(b,2)))));
+tx(X,'Morse kodieren',s=>s.toUpperCase().split('').map(c=>M[c]||(c==' '?'/':'')).join(' '));
+tx(X,'Morse dekodieren',s=>s.trim().split(' ').map(x=>x=='/'?' ':MI[x]||'?').join(''));
+tx(X,'ROT13',s=>s.replace(/[a-z]/gi,c=>String.fromCharCode((c<='Z'?90:122)>=(c=c.charCodeAt(0)+13)?c:c-26)));
+tx(X,'Caesar-Chiffre',(s,v)=>s.replace(/[a-z]/gi,c=>{const b=c<='Z'?65:97;return String.fromCharCode((c.charCodeAt(0)-b+(+v.n%26)+26)%26+b)}),[P('n','Verschiebung',3,'n')]);
+tx(X,'Leetspeak',s=>s.replace(/[aeiost]/gi,c=>({a:4,e:3,i:1,o:0,s:5,t:7})[c.toLowerCase()]));
+tx(X,'Text umkehren',s=>[...s].reverse().join(''));
+tx(X,'Wörter umkehren',s=>s.split(/\s+/).reverse().join(' '));
+tx(X,'GROSSBUCHSTABEN',s=>s.toUpperCase());tx(X,'kleinbuchstaben',s=>s.toLowerCase());
+tx(X,'Title Case',s=>s.toLowerCase().replace(/(^|\s)\S/g,c=>c.toUpperCase()));
+tx(X,'camelCase',s=>s.toLowerCase().replace(/[^a-z0-9]+(.)/g,(_,c)=>c.toUpperCase()));
+tx(X,'snake_case',s=>s.trim().replace(/[\s-]+/g,'_').toLowerCase());
+tx(X,'kebab-case',s=>s.trim().replace(/[\s_]+/g,'-').toLowerCase());
+tx(X,'Wort-/Zeichenzähler',s=>`${s.length} Zeichen\n${s.replace(/\s/g,'').length} ohne Leerzeichen\n${s.trim()?s.trim().split(/\s+/).length:0} Wörter\n${s.split('\n').length} Zeilen`);
+tx(X,'Slugify',s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/ß/g,'ss').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''));
+tx(X,'HTML-Entities kodieren',s=>s.replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';'));
+tx(X,'HTML-Entities dekodieren',s=>{const e=document.createElement('textarea');e.innerHTML=s;return e.value});
+tx(X,'Unicode-Codepoints',s=>[...s].map(c=>'U+'+c.codePointAt(0).toString(16).toUpperCase().padStart(4,'0')).join(' '));
+tx(X,'Zalgo-Text',s=>s.replace(/./g,c=>c+Array.from({length:4},()=>String.fromCharCode(0x300+Math.random()*60|0)).join('')));
+tx(X,'Text-Cleaner',s=>s.split('\n').map(l=>l.trim().replace(/\s+/g,' ')).filter(Boolean).join('\n'));
+tx(X,'Doppelte Zeilen entfernen',s=>[...new Set(s.split('\n'))].join('\n'));
+tx(X,'Zeilen sortieren A–Z',s=>s.split('\n').sort((a,b)=>a.localeCompare(b)).join('\n'));
+tx(X,'Zeilen sortieren Z–A',s=>s.split('\n').sort((a,b)=>b.localeCompare(a)).join('\n'));
+tx(X,'Zeilen mischen',s=>s.split('\n').sort(()=>Math.random()-.5).join('\n'));
+tx(X,'Zeilen nummerieren',s=>s.split('\n').map((l,i)=>i+1+'. '+l).join('\n'));
+tx(X,'Wörter ersetzen',(s,v)=>v.a?s.split(v.a).join(v.b):s,[P('a','Suchen',''),P('b','Ersetzen durch','')]);
+tx(X,'Leerzeichen entfernen',s=>s.replace(/\s+/g,''));
+tx(X,'Palindrom-Check',s=>{const c=s.toLowerCase().replace(/[^a-z0-9äöüß]/g,'');return c&&c==[...c].reverse().join('')?'✅ Palindrom':'❌ Kein Palindrom'});
+tx(X,'E-Mails extrahieren',s=>(s.match(/[\w.+-]+@[\w-]+\.[\w.-]+/g)||[]).join('\n'));
+tx(X,'URLs extrahieren',s=>(s.match(/https?:\/\/[^\s"'<>]+/g)||[]).join('\n'));
+// ---- DEV ----
+tx(D,'JSON formatieren/validieren',s=>JSON.stringify(JSON.parse(s),null,2));
+tx(D,'JSON minifizieren',s=>JSON.stringify(JSON.parse(s)));
+tx(D,'XML validieren',s=>{const e=new DOMParser().parseFromString(s,'application/xml').querySelector('parsererror');return e?'❌ '+e.textContent.slice(0,250):'✅ Gültiges XML'});
+tx(D,'JWT Inspector',s=>s.trim().split('.').slice(0,2).map(p=>JSON.stringify(JSON.parse(decodeURIComponent(escape(atob(p.replace(/-/g,'+').replace(/_/g,'/'))))),null,2)).join('\n\n'));
+tx(D,'MD5 Hash',s=>md5(s));
+[['SHA-1','SHA-1'],['SHA-256','SHA-256'],['SHA-384','SHA-384'],['SHA-512','SHA-512']].forEach(([n,a])=>tx(D,n+' Hash',async s=>[...new Uint8Array(await crypto.subtle.digest(a,enc(s)))].map(hx).join('')));
+add(D,'UUID v4 Generator',v=>Array.from({length:+v.n||1},()=>crypto.randomUUID()).join('\n'),[P('n','Anzahl',5,'n')]);
+add(D,'Passwort-Hash (PBKDF2)',async v=>{const salt=crypto.getRandomValues(new Uint8Array(16)),k=await crypto.subtle.importKey('raw',enc(v.t),'PBKDF2',false,['deriveBits']),h=await crypto.subtle.deriveBits({name:'PBKDF2',salt,iterations:+v.i,hash:'SHA-256'},k,256);return `pbkdf2-sha256$${v.i}$${[...salt].map(hx).join('')}$${[...new Uint8Array(h)].map(hx).join('')}`},[{k:'t',l:'Passwort',t:'i',d:''},P('i','Iterationen',100000,'n')]);
+add(D,'Passwort-Generator',v=>{let p=(v.lo?'abcdefghijkmnopqrstuvwxyz':'')+(v.up?'ABCDEFGHJKLMNPQRSTUVWXYZ':'')+(v.di?'23456789':'')+(v.sy?'!@#$%^&*()-_=+[]{};:,.?':'');if(!p)return'Wähle Zeichenarten.';return Array.from({length:+v.n||1},()=>Array.from({length:+v.l},()=>R([...p])).join('')).join('\n')},[P('l','Länge',16,'n'),P('n','Anzahl',3,'n'),P('lo','Kleinbuchstaben',true,'k'),P('up','Großbuchstaben',true,'k'),P('di','Ziffern',true,'k'),P('sy','Symbole',true,'k')]);
+add(D,'Lorem-Ipsum-Generator',v=>{const w='lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat'.split(' ');return Array.from({length:+v.n||1},()=>{let s=Array.from({length:40+Math.random()*30|0},()=>R(w)).join(' ');return s[0].toUpperCase()+s.slice(1)+'.'}).join('\n\n')},[P('n','Absätze',3,'n')]);
+add(D,'CSS-Gradient-Generator',v=>{const g=`linear-gradient(${v.a}deg, ${v.c1}, ${v.c2})`;return `<div style="height:120px;border-radius:12px;background:${g}"></div><pre class="mt-2 text-cyan-300 text-sm">background: ${g};</pre>`},[P('c1','Farbe 1','#6366f1','c'),P('c2','Farbe 2','#22d3ee','c'),P('a','Winkel',135,'n')],'h');
+add(D,'Box-Shadow-Generator',v=>{const h=v.c,r=parseInt(h.slice(1,3),16),g=parseInt(h.slice(3,5),16),b=parseInt(h.slice(5,7),16),s=`${v.x}px ${v.y}px ${v.b}px ${v.s}px rgba(${r},${g},${b},${v.o})`;return `<div class="p-8 flex justify-center"><div style="width:120px;height:80px;border-radius:12px;background:#1e293b;box-shadow:${s}"></div></div><pre class="text-cyan-300 text-sm">box-shadow: ${s};</pre>`},[P('x','X',0,'n'),P('y','Y',10,'n'),P('b','Blur',25,'n'),P('s','Spread',0,'n'),P('c','Farbe','#6366f1','c'),P('o','Deckkraft',0.5,'n')],'h');
+tx(D,'Farb-Konverter (HEX→RGB/HSL/CMYK)',s=>{const h=s.trim().replace('#',''),n=parseInt(h.length==3?h.replace(/./g,'$&$&'):h,16);let r=n>>16,g=n>>8&255,b=n&255;const a=[r/255,g/255,b/255],mx=Math.max(...a),mn=Math.min(...a),d=mx-mn,l=(mx+mn)/2,sa=d?d/(1-Math.abs(2*l-1)):0;let hu=0;if(d)hu=mx==a[0]?((a[1]-a[2])/d)%6:mx==a[1]?(a[2]-a[0])/d+2:(a[0]-a[1])/d+4;const k=1-mx,c=k<1?(1-a[0]-k)/(1-k):0,m=k<1?(1-a[1]-k)/(1-k):0,y=k<1?(1-a[2]-k)/(1-k):0,p=x=>Math.round(x*100);return `RGB: rgb(${r}, ${g}, ${b})\nHSL: hsl(${Math.round((hu*60+360)%360)}, ${p(sa)}%, ${p(l)}%)\nCMYK: ${p(c)}%, ${p(m)}%, ${p(y)}%, ${p(k)}%`},[],0);
+T[T.length-1].f=[P('t','HEX-Farbe','#6366f1')];
+add(D,'Regex-Tester',v=>{const m=[...v.t.matchAll(new RegExp(v.p,v.fl.includes('g')?v.fl:v.fl+'g'))];return m.length?m.map((x,i)=>`#${i+1} @${x.index}: ${x[0]}${x.length>1?'  | Gruppen: '+x.slice(1).join(', '):''}`).join('\n'):'Keine Treffer'},[P('p','Muster','\\b\\w{4}\\b'),P('fl','Flags','g'),TA]);
+tx(D,'Cron-Erklärer',s=>{const n=['Minute','Stunde','Tag','Monat','Wochentag'],p=s.trim().split(/\s+/);if(p.length!=5)return'Erwarte 5 Felder: min std tag monat wochentag';return p.map((x,i)=>n[i]+': '+(x=='*'?'jede/r':x.startsWith('*/')?'alle '+x.slice(2):x.includes(',')?'bei '+x:x.includes('-')?'von '+x.replace('-',' bis '):x)).join('\n')});
+T[T.length-1].f=[P('t','Cron (z. B. */15 9-17 * * 1-5)','*/15 9-17 * * 1-5')];
+tx(D,'SQL-Formatter',s=>s.replace(/\s+/g,' ').replace(/\b(FROM|WHERE|GROUP BY|ORDER BY|HAVING|LIMIT|LEFT JOIN|INNER JOIN|JOIN|UNION)\b/gi,'\n$1').replace(/\b(AND|OR)\b/gi,'\n  $1').replace(/\b(select|insert|update|delete|from|where)\b/gi,m=>m.toUpperCase()).trim());
+tx(D,'Minifier (HTML/CSS/JS, einfach)',(s,v)=>v.m=='HTML'?s.replace(/<!--[\s\S]*?-->/g,'').replace(/>\s+</g,'><').replace(/\s+/g,' '):s.replace(/\/\*[\s\S]*?\*\//g,'').replace(/\s+/g,' ').replace(/\s*([{}:;,=+])\s*/g,'$1').trim(),[P('m','Typ','CSS','s',['CSS','JS','HTML'])]);
+tx(D,'Timestamp-Konverter',s=>{const n=+s,d=isNaN(n)?new Date(s):new Date(n>1e11?n:n*1000);return isNaN(d)?'Ungültig':`ISO: ${d.toISOString()}\nLokal: ${d.toLocaleString('de-DE')}\nUnix: ${Math.floor(d/1000)}`});
+T[T.length-1].f=[P('t','Unix-Zeit oder Datum',Math.floor(Date.now()/1000))];
+add(D,'Zahlenbasis-Umrechner',v=>{const n=parseInt(v.t,v.b);return isNaN(n)?'Ungültig':`Bin: ${n.toString(2)}\nOkt: ${n.toString(8)}\nDez: ${n}\nHex: ${n.toString(16).toUpperCase()}`},[P('t','Zahl','255'),P('b','Eingabebasis',10,'s',[2,8,10,16])]);
+tx(D,'CSV → JSON',s=>{const r=s.trim().split('\n').map(l=>l.split(/[,;\t]/)),h=r.shift();return JSON.stringify(r.map(x=>Object.fromEntries(h.map((k,i)=>[k.trim(),(x[i]||'').trim()]))),null,2)});
+// ---- MEDIA ----
+const sec=t=>t.split(':').reverse().reduce((a,x,i)=>a+x*60**i,0);
+add(MD,'Video/Audio-Cutter (ffmpeg-Befehl)',v=>`Dauer: ${(sec(v.e)-sec(v.s)).toFixed(1)} s\n\nffmpeg -i "${v.n}" -ss ${v.s} -to ${v.e} -c copy "cut_${v.n}"`,[P('n','Dateiname','video.mp4'),P('s','Start (hh:mm:ss)','00:00:10'),P('e','Ende (hh:mm:ss)','00:00:40')]);
+add(MD,'Seitenverhältnis-Rechner',v=>{const g=(a,b)=>b?g(b,a%b):a,d=g(+v.w,+v.h);return `Verhältnis: ${v.w/d}:${v.h/d}\nBei Breite ${v.w2}: Höhe = ${Math.round(v.w2*v.h/v.w)}`},[P('w','Breite',1920,'n'),P('h','Höhe',1080,'n'),P('w2','Neue Breite',1280,'n')]);
+add(MD,'Auflösungs-Tabelle',()=>'<table><tr><th>Name</th><th>Pixel</th><th>Verh.</th></tr>'+[['240p','426×240'],['360p','640×360'],['480p','854×480'],['720p HD','1280×720'],['1080p FHD','1920×1080'],['1440p QHD','2560×1440'],['4K UHD','3840×2160'],['8K','7680×4320'],['Instagram Story','1080×1920'],['YouTube Thumb','1280×720']].map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${(a=>a[0]/a[1]).call(0,r[1].split('×')).toFixed(2)}</td></tr>`).join('')+'</table>',[],'h');
+add(MD,'Bitrate-Rechner',v=>`Dateigröße: ${(v.k*v.d/8/1024).toFixed(2)} MB\nBei Zielgröße ${v.m} MB: ${(v.m*8192/v.d).toFixed(0)} kbit/s`,[P('k','Bitrate (kbit/s)',5000,'n'),P('d','Dauer (s)',600,'n'),P('m','Zielgröße (MB)',100,'n')]);
+add(MD,'Framerate-Konverter',v=>`Dauer: ${(v.f/v.a).toFixed(2)} s\nBei ${v.b} fps: ${(v.f/v.a*v.b).toFixed(0)} Frames (Dauer gleich)\nBei ${v.b} fps abgespielt: ${(v.f/v.b).toFixed(2)} s`,[P('f','Frames',1800,'n'),P('a','Original-fps',30,'n'),P('b','Ziel-fps',60,'n')]);
+add(MD,'Ton-Generator (Sinus)',v=>`${v.f} Hz, ${v.w}`,[P('f','Frequenz (Hz)',440,'n'),P('w','Wellenform','sine','s',['sine','square','sawtooth','triangle']),P('g','Lautstärke %',20,'n')],'t',[['▶ Abspielen',v=>{window.ac=window.ac||new AudioContext();try{window.os&&window.os.stop()}catch(e){}const o=ac.createOscillator(),g=ac.createGain();o.type=v.w;o.frequency.value=v.f;g.gain.value=v.g/100;o.connect(g).connect(ac.destination);o.start();window.os=o;return `Spielt ${v.f} Hz`}],['■ Stopp',()=>{try{window.os.stop()}catch(e){}return'Gestoppt'}]]);
+add(MD,'Lautstärke-Normalizer (Simulator)',v=>{const g=v.t-v.c;return `Gain: ${g>0?'+':''}${g.toFixed(1)} dB\nFaktor: ×${(10**(g/20)).toFixed(3)}\n${v.p+g>0?'⚠ Clipping-Gefahr: Peak würde '+(+v.p+g).toFixed(1)+' dBFS erreichen':'✅ Kein Clipping erwartet'}`},[P('c','Aktuell (LUFS)',-20,'n'),P('t','Ziel (LUFS)',-14,'n'),P('p','Peak (dBFS)',-3,'n')]);
+// ---- BILD ----
+add(IMG,'Bild → Base64',NF(v=>v.f),[F]);
+add(IMG,'Farbpalette aus Bild',NF(async v=>{const i=await IM(v.f),c=document.createElement('canvas');c.width=c.height=50;const x=c.getContext('2d');x.drawImage(i,0,0,50,50);const d=x.getImageData(0,0,50,50).data,m={};for(let j=0;j<d.length;j+=4){const k=[d[j]>>5,d[j+1]>>5,d[j+2]>>5].join();(m[k]=m[k]||[0,0,0,0]);m[k][0]+=d[j];m[k][1]+=d[j+1];m[k][2]+=d[j+2];m[k][3]++}return '<div class="flex flex-wrap gap-2">'+Object.values(m).sort((a,b)=>b[3]-a[3]).slice(0,8).map(a=>{const h='#'+[0,1,2].map(i=>hx(Math.round(a[i]/a[3]))).join('');return `<div class="text-center text-xs"><div style="background:${h};width:64px;height:64px;border-radius:10px"></div>${h}</div>`}).join('')+'</div>'}),[F],'h');
+add(IMG,'Bild-Größenänderer',NF(async v=>{const i=await IM(v.f),w=+v.w||i.width,h=+v.h||Math.round(i.height*w/i.width),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(i,0,0,w,h);return `<img src="${c.toDataURL('image/png')}" class="max-w-full rounded"><p class="text-xs text-slate-400 mt-2">${w}×${h}px – lange drücken / Rechtsklick zum Speichern</p>`}),[F,P('w','Breite (px)',800,'n'),P('h','Höhe (leer = proportional)','','n')],'h');
+add(IMG,'Wasserzeichen-Tester',NF(async v=>{const i=await IM(v.f),c=document.createElement('canvas');c.width=i.width;c.height=i.height;const x=c.getContext('2d');x.drawImage(i,0,0);x.globalAlpha=v.o;x.fillStyle='#fff';x.font=`bold ${Math.max(16,i.width/12)}px sans-serif`;x.textAlign='center';x.translate(i.width/2,i.height/2);x.rotate(-.4);x.fillText(v.t,0,0);return `<img src="${c.toDataURL('image/png')}" class="max-w-full rounded">`}),[F,P('t','Text','© OmniTool'),P('o','Deckkraft',0.5,'n')],'h');
+add(IMG,'SVG-Path-Visualisierer',v=>`<svg viewBox="${v.vb}" class="w-full max-w-sm bg-slate-900 rounded-lg"><path d="${esc(v.d).replace(/"/g,'')}" fill="${v.f}33" stroke="${v.f}" stroke-width="2"/></svg>`,[P('d','Path (d)','M10 80 Q 52.5 10, 95 80 T 180 80'),P('vb','viewBox','0 0 200 100'),P('f','Farbe','#22d3ee','c')],'h');
+tx(IMG,'QR-Code Generator',s=>{if(!s)return'';const q=qrcode(0,'M');q.addData(s);q.make();return `<div class="bg-white p-3 inline-block rounded-lg">${q.createSvgTag(6)}</div>`},[],'h');
+add(IMG,'Barcode Generator',v=>{const s=document.createElementNS('http://www.w3.org/2000/svg','svg');try{JsBarcode(s,v.t,{format:v.fm,background:'#fff'})}catch(e){return'Ungültige Eingabe für '+v.fm}return `<div class="bg-white p-2 inline-block rounded-lg">${s.outerHTML}</div>`},[P('t','Inhalt','123456789012'),P('fm','Format','CODE128','s',['CODE128','EAN13','UPC','CODE39','ITF14'])],'h');
+// ---- MATHE ----
+const calc=s=>{const r=s.toLowerCase().replace(/,/g,'.');if(!/^[\d\s+\-*/%^().e]*$/.test(r.replace(/\b(sin|cos|tan|asin|acos|atan|sqrt|log|ln|abs|exp|floor|ceil|round|pi)\b/g,'')))throw Error('Ungültiger Ausdruck');return +Function('"use strict";return('+r.replace(/\^/g,'**').replace(/\bpi\b/g,'Math.PI').replace(/\bln\b/g,'Math.log').replace(/\blog\b/g,'Math.log10').replace(/\b(sin|cos|tan|asin|acos|atan|sqrt|abs|exp|floor|ceil|round)\b/g,'Math.$1')+')')().toPrecision(12)};
+tx(MA,'Taschenrechner',calc);T[T.length-1].f=[P('t','Ausdruck','(12+8)*3/4')];
+tx(MA,'Wissenschaftlicher Rechner',calc);T[T.length-1].f=[P('t','Ausdruck (sin, cos, tan, sqrt, log, ln, pi, ^)','sqrt(2)*sin(pi/4)^2')];
+const U=(n,u)=>{const k=Object.keys(u);add(MA,n,v=>(+(v.v*u[v.a]/u[v.b]).toPrecision(10))+' '+v.b,[P('v','Wert',1,'n'),P('a','Von',k[0],'s',k),P('b','Nach',k[1],'s',k)])};
+U('Länge',{m:1,km:1000,cm:.01,mm:.001,mi:1609.344,yd:.9144,ft:.3048,in:.0254});U('Gewicht',{kg:1,g:.001,mg:1e-6,t:1000,lb:.45359237,oz:.0283495});
+U('Datenmenge',{B:1,KB:1e3,MB:1e6,GB:1e9,TB:1e12,KiB:1024,MiB:1048576,GiB:1073741824,TiB:1099511627776});U('Geschwindigkeit',{'km/h':1,'m/s':3.6,mph:1.609344,kn:1.852});
+U('Fläche',{'m²':1,'km²':1e6,ha:1e4,'cm²':1e-4,acre:4046.8564,'ft²':.092903});U('Volumen',{l:1,ml:.001,'m³':1e3,gal:3.78541,qt:.946353,cup:.236588,'fl oz':.0295735});U('Zeit',{s:1,min:60,h:3600,Tag:86400,Woche:604800,Jahr:31557600});
+add(MA,'Temperatur',v=>{const c=v.a=='°C'?+v.v:v.a=='°F'?(v.v-32)*5/9:v.v-273.15;return (+(v.b=='°C'?c:v.b=='°F'?c*9/5+32:c+273.15).toFixed(2))+' '+v.b},[P('v','Wert',20,'n'),P('a','Von','°C','s',['°C','°F','K']),P('b','Nach','°F','s',['°C','°F','K'])]);
+add(MA,'Prozentrechner',v=>v.m==0?`${v.a}% von ${v.b} = ${v.a*v.b/100}`:v.m==1?`${v.a} sind ${(v.a/v.b*100).toFixed(2)}% von ${v.b}`:`Änderung von ${v.a} auf ${v.b}: ${((v.b-v.a)/v.a*100).toFixed(2)}%`,[P('m','Modus',0,'s',[0,1,2]),P('a','A',20,'n'),P('b','B',150,'n')]);
+T[T.length-1].f[0].l='Modus (0: A% von B · 1: A ist wie viel % von B · 2: Änderung A→B)';
+add(MA,'Dreisatz',v=>`${v.a} → ${v.b}\n${v.c} → ${(+(v.c*v.b/v.a).toFixed(6))}`,[P('a','Wenn A',4,'n'),P('b','gleich B',10,'n'),P('c','dann C',6,'n')]);
+add(MA,'MwSt.-Rechner',v=>{const r=1+v.r/100,n=v.m=='netto'?+v.a:v.a/r,b=n*r;return `Netto: ${n.toFixed(2)}\nMwSt: ${(b-n).toFixed(2)}\nBrutto: ${b.toFixed(2)}`},[P('a','Betrag',100,'n'),P('m','Betrag ist','netto','s',['netto','brutto']),P('r','Satz %',19,'n')]);
+add(MA,'Zeitzonen-Vergleich',v=>['Europe/Berlin','Europe/London','UTC','America/New_York','America/Los_Angeles','Asia/Dubai','Asia/Kolkata','Asia/Tokyo','Australia/Sydney'].map(z=>z.padEnd(22)+new Date(v.d||Date.now()).toLocaleString('de-DE',{timeZone:z})).join('\n'),[P('d','Zeitpunkt (leer = jetzt)','','d')]);
+add(MA,'Datums-Differenz',v=>{const d=Math.round((new Date(v.b)-new Date(v.a))/864e5);return `${d} Tage\n≈ ${(d/7).toFixed(1)} Wochen\n≈ ${(d/30.4375).toFixed(1)} Monate\n≈ ${(d/365.25).toFixed(2)} Jahre`},[P('a','Von',new Date().toISOString().slice(0,10),'D'),P('b','Bis',new Date(Date.now()+864e5*30).toISOString().slice(0,10),'D')]);
+add(MA,'Zinseszins',v=>{const e=v.k*(1+v.p/100)**v.n;return `Endkapital: ${e.toFixed(2)}\nZinsen: ${(e-v.k).toFixed(2)}`},[P('k','Startkapital',10000,'n'),P('p','Zins % p. a.',5,'n'),P('n','Jahre',10,'n')]);
+tx(MA,'Primfaktoren',s=>{let n=+s,f=[],d=2;if(n<2)return'Zahl ≥ 2 eingeben';while(n>1&&d*d<=n){while(n%d==0){f.push(d);n/=d}d++}if(n>1)f.push(n);return f.length==1?'Primzahl ✅':f.join(' × ')});T[T.length-1].f=[P('t','Zahl',360,'n')];
+add(MA,'ggT & kgV',v=>{const g=(a,b)=>b?g(b,a%b):a,d=g(+v.a,+v.b);return `ggT: ${d}\nkgV: ${v.a*v.b/d}`},[P('a','A',48,'n'),P('b','B',18,'n')]);
+tx(MA,'Römische Zahlen',s=>{let n=+s,r='';[[1000,'M'],[900,'CM'],[500,'D'],[400,'CD'],[100,'C'],[90,'XC'],[50,'L'],[40,'XL'],[10,'X'],[9,'IX'],[5,'V'],[4,'IV'],[1,'I']].forEach(([v,c])=>{while(n>=v){r+=c;n-=v}});return r});T[T.length-1].f=[P('t','Zahl (1–3999)',2026,'n')];
+tx(MA,'Statistik (Zahlenliste)',s=>{const a=(s.match(/-?\d+([.,]\d+)?/g)||[]).map(x=>+x.replace(',','.')).sort((x,y)=>x-y);if(!a.length)return'Keine Zahlen';const sum=a.reduce((x,y)=>x+y,0),m=a.length>>1;return `Anzahl: ${a.length}\nSumme: ${sum}\nMittelwert: ${(sum/a.length).toFixed(4)}\nMedian: ${a.length%2?a[m]:(a[m-1]+a[m])/2}\nMin/Max: ${a[0]} / ${a.at(-1)}`});
+add(MA,'BMI-Rechner',v=>{const b=v.w/(v.h/100)**2;return `BMI: ${b.toFixed(1)} (${b<18.5?'Untergewicht':b<25?'Normalgewicht':b<30?'Übergewicht':'Adipositas'})`},[P('w','Gewicht (kg)',70,'n'),P('h','Größe (cm)',175,'n')]);
+// ---- FUN ----
+add(FN,'Münzwurf',()=>R(['🪙 Kopf','🪙 Zahl']),[]);
+add(FN,'Würfel (W4–W100)',v=>{const r=Array.from({length:+v.n},()=>1+crypto.getRandomValues(new Uint32Array(1))[0]%v.s);return r.join(' · ')+'\nSumme: '+r.reduce((a,b)=>a+b,0)},[P('n','Anzahl',2,'n'),P('s','Seiten',6,'s',[4,6,8,10,12,20,100])]);
+add(FN,'Ja/Nein-Entscheider',()=>R(['✅ Ja','❌ Nein']),[]);
+add(FN,'Magische 8-Kugel',()=>'🎱 '+R(['Sehr wahrscheinlich','Auf jeden Fall','Frag später nochmal','Besser nicht','Eher nein','Die Zeichen stehen gut','Unklar – konzentrier dich neu','Definitiv nicht']),[]);
+tx(FN,'Zufalls-Auswahl aus Liste',s=>R(s.split('\n').filter(Boolean)||['']));
+tx(FN,'Team-Splitter',(s,v)=>{const n=s.split('\n').map(x=>x.trim()).filter(Boolean).sort(()=>Math.random()-.5),t=Array.from({length:+v.k},()=>[]);n.forEach((x,i)=>t[i%v.k].push(x));return t.map((x,i)=>`Team ${i+1}: ${x.join(', ')}`).join('\n')},[P('k','Teams',2,'n')]);
+add(FN,'Zufallszahl',v=>String(+v.a+crypto.getRandomValues(new Uint32Array(1))[0]%(v.b-v.a+1)),[P('a','Min',1,'n'),P('b','Max',100,'n')]);
+add(FN,'Zufallsfarbe',()=>{const h='#'+hx(Math.random()*256|0)+hx(Math.random()*256|0)+hx(Math.random()*256|0);return `<div style="background:${h};height:90px;border-radius:12px"></div><p class="mt-2 font-mono">${h}</p>`},[],'h');
+add(FN,'Stoppuhr',()=>window.sw?fmt(window.sw.el):'00:00.00',[],'t',[['▶ Start',(v,a)=>{const s=window.sw=window.sw||{el:0};clearInterval(a.iv);const t0=Date.now()-s.el;a.iv=setInterval(()=>{s.el=Date.now()-t0;a.out=fmt(s.el)},40);return fmt(s.el)}],['■ Stopp',(v,a)=>{clearInterval(a.iv);return fmt(window.sw.el)}],['↺ Reset',(v,a)=>{clearInterval(a.iv);window.sw={el:0};return'00:00.00'}]]);
+add(FN,'Countdown-Timer',v=>fmt(v.s*1000),[P('s','Sekunden',60,'n')],'t',[['▶ Start',(v,a)=>{clearInterval(a.iv);const e=Date.now()+v.s*1000;a.iv=setInterval(()=>{const l=e-Date.now();if(l<=0){clearInterval(a.iv);a.out='⏰ Zeit abgelaufen!';beep()}else a.out=fmt(l)},50);return fmt(v.s*1000)}],['■ Stopp',(v,a)=>{clearInterval(a.iv);return'Gestoppt'}]]);
+add(FN,'Notizblock (lokal gespeichert)',v=>{try{localStorage.setItem('omni_notes',v.t)}catch(e){}return v.t.length+' Zeichen gespeichert (nur in diesem Browser)'},[{k:'t',l:'Notizen',t:'a',d:()=>{try{return localStorage.getItem('omni_notes')||''}catch(e){return''}}}]);
+tx(FN,'ASCII-Art Generator',s=>{const c=document.createElement('canvas'),x=c.getContext('2d');x.font='bold 40px monospace';c.width=Math.min(Math.ceil(x.measureText(s).width)+4,160);c.height=50;x.font='bold 40px monospace';x.textBaseline='top';x.fillText(s,2,2);const d=x.getImageData(0,0,c.width,50).data;let o='';for(let y=0;y<50;y+=2){let l='';for(let i=0;i<c.width;i++)l+=d[(y*c.width+i)*4+3]>110?'█':' ';o+=l.trimEnd()+'\n'}return o});T[T.length-1].f=[P('t','Kurzer Text','Hi!')];
+add(FN,'Fake-Daten-Generator',v=>{const F=['Anna','Ben','Clara','David','Emma','Felix','Greta','Hannes','Ida','Jonas'],L=['Müller','Schmidt','Weber','Wagner','Becker','Hoffmann','Koch','Richter'];return Array.from({length:+v.n},()=>{const a=R(F),b=R(L),m=`${a}.${b}@example.com`.toLowerCase().replace('ü','ue');return v.t=='IPs'?[1,2,3,4].map(()=>Math.random()*256|0).join('.'):v.t=='E-Mails'?m:v.t=='Namen'?`${a} ${b}`:`${a} ${b} | ${m} | ${[10,172,192].at(Math.random()*3|0)}.${Math.random()*256|0}.${Math.random()*256|0}.${Math.random()*256|0}`}).join('\n')},[P('t','Typ','Alle','s',['Alle','Namen','E-Mails','IPs']),P('n','Anzahl',10,'n')]);
+add(FN,'🥚 Easter Egg',()=>'🥚 Du hast es gefunden!\nTipp: Klick auf „Party!“ – und nochmal zum Beenden.',[],'t',[['🎉 Party!',()=>{const e=document.documentElement;e.style.transition='filter 1s';e.style.filter=e.style.filter?'':'hue-rotate(160deg) saturate(1.5)';return e.style.filter?'🌈 Party läuft!':'Zurück zur Normalität.'}]]);
+function app(){return{open:innerWidth>=1024,q:'',cur:T[0],v:{},out:'',iv:0,T,cats:[...new Set(T.map(t=>t.c))],
+init(){const m=location.hash.match(/^#t(\d+)$/);this.pick(T[m&&T[m[1]]?m[1]:0],1);this.$nextTick(()=>lucide.createIcons())},
+get list(){const q=this.q.toLowerCase();return T.filter(t=>(t.n+' '+t.c).toLowerCase().includes(q))},
+pick(t,first){clearInterval(this.iv);try{window.os&&window.os.stop()}catch(e){}this.cur=t;this.v={};t.f.forEach(f=>this.v[f.k]=typeof f.d=='function'?f.d():f.d??(f.t=='k'?false:''));this.out='';if(!first&&innerWidth<1024)this.open=false;try{location.hash='t'+T.indexOf(t)}catch(e){}this.run()},
+async run(){try{const r=await this.cur.fn(this.v);this.out=r==null?'':String(r)}catch(e){this.out='⚠ '+(e.message||e)}},
+async act(i){try{this.out=String(await this.cur.b[i][1](this.v,this))}catch(e){this.out='⚠ '+e.message}},
+file(e,k){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{this.v[k]=r.result;this.run()};r.readAsDataURL(f)},
+async copy(){try{await navigator.clipboard.writeText(this.out.replace(/<[^>]+>/g,''))}catch(e){}}}}
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
+</head>
+<body>
+<div x-data="app()" x-init="init()" class="flex flex-col h-full">
+ <header class="flex items-center gap-3 px-4 h-14 shrink-0 border-b border-slate-800 bg-slate-900">
+  <button @click="open=!open;$nextTick(()=>lucide.createIcons())" aria-label="Menü" class="btn2 rounded-lg p-2"><i data-lucide="menu" class="w-5 h-5"></i></button>
+  <div class="flex items-center gap-2 font-bold"><i data-lucide="wrench" class="w-5 h-5 text-cyan-400"></i><span class="bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">OmniTool</span></div>
+  <div class="relative flex-1 max-w-md ml-auto"><input x-model="q" placeholder="Tool suchen…" class="inp !mt-0 !py-1.5"></div>
+  <span class="hidden sm:block text-xs text-slate-400" x-text="T.length+' Tools'"></span>
+ </header>
+ <div class="flex flex-1 min-h-0 relative">
+  <div x-show="open" @click="open=false" class="lg:hidden absolute inset-0 bg-black/60 z-20" x-cloak></div>
+  <aside x-show="open" x-cloak class="absolute lg:static inset-y-0 left-0 z-30 w-72 max-w-[85%] overflow-y-auto bg-slate-900 border-r border-slate-800 p-3">
+   <template x-for="c in cats" :key="c"><div x-show="list.some(t=>t.c==c)" class="mb-4">
+    <div class="text-xs uppercase tracking-wider text-cyan-400 mb-1 px-2" x-text="c"></div>
+    <template x-for="t in list.filter(t=>t.c==c)" :key="t.n"><button @click="pick(t)" :class="cur===t?'bg-indigo-600 text-white':'hover:bg-slate-800 text-slate-300'" class="block w-full text-left text-sm rounded-md px-2 py-1.5" x-text="t.n"></button></template>
+   </div></template>
+   <p x-show="!list.length" class="text-sm text-slate-500 px-2">Nichts gefunden.</p>
+  </aside>
+  <main class="flex-1 overflow-y-auto p-4 sm:p-6">
+   <div class="max-w-3xl mx-auto">
+    <p class="text-xs text-cyan-400" x-text="cur.c"></p>
+    <h1 class="text-2xl font-bold mb-4" x-text="cur.n"></h1>
+    <template x-for="f in cur.f" :key="cur.n+f.k"><label class="block mb-3 text-xs text-slate-400"><span x-text="f.l" x-show="f.t!='k'"></span>
+     <template x-if="f.t=='a'"><textarea rows="6" class="inp font-mono text-sm" x-model="v[f.k]" @input="run()"></textarea></template>
+     <template x-if="f.t=='s'"><select class="inp" x-model="v[f.k]" @change="run()"><template x-for="o in f.s" :key="o"><option :value="o" x-text="o"></option></template></select></template>
+     <template x-if="f.t=='f'"><input type="file" accept="image/*" class="inp" @change="file($event,f.k)"></template>
+     <template x-if="f.t=='k'"><span class="flex items-center gap-2 text-sm text-slate-200"><input type="checkbox" x-model="v[f.k]" @change="run()"><span x-text="f.l"></span></span></template>
+     <template x-if="!['a','s','f','k'].includes(f.t)"><input :type="{n:'number',c:'color',d:'datetime-local',D:'date'}[f.t]||'text'" class="inp" x-model="v[f.k]" @input="run()"></template>
+    </label></template>
+    <div class="flex flex-wrap gap-2 my-4">
+     <button class="btn" @click="run()">Ausführen / Neu</button>
+     <template x-for="(b,i) in (cur.b||[])" :key="i"><button class="btn btn2" @click="act(i)" x-text="b[0]"></button></template>
+    </div>
+    <div class="flex items-center justify-between text-xs text-slate-400"><span>Ergebnis</span><button @click="copy()" class="hover:text-cyan-400">Kopieren</button></div>
+    <template x-if="cur.o=='h'"><div class="mt-1 p-3 rounded-lg bg-slate-900 border border-slate-800 overflow-x-auto" x-html="out"></div></template>
+    <template x-if="cur.o!='h'"><textarea readonly rows="8" class="inp font-mono text-sm" :value="out"></textarea></template>
+   </div>
+  </main>
+ </div>
+</div>
+<style>[x-cloak]{display:none!important}</style>
+</body></html>
