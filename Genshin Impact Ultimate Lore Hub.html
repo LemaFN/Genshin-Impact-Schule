@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Characters Of Genshin Impact - Ultimate Lore Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        abyss: {
+                            950: '#07090e',
+                            900: '#0f141d',
+                            800: '#182232',
+                            700: '#23304a',
+                        },
+                        genshin: {
+                            gold: '#D4AF37',
+                            goldLight: '#f6e05e',
+                            violet: '#7c3aed',
+                            cyan: '#38bdf8',
+                        }
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'glow-gold': '0 0 20px rgba(212, 175, 55, 0.3)',
+                        'glow-violet': '0 0 25px rgba(124, 58, 237, 0.4)',
+                        'glow-cyan': '0 0 25px rgba(56, 189, 248, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #07090e;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+
+        .glass-panel {
+            background: rgba(24, 34, 50, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel-gold {
+            background: rgba(24, 34, 50, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f141d;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7c3aed;
+        }
+
+        /* Floating particles background effect */
+        .particle {
+            position: absolute;
+            background: rgba(56, 189, 248, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: floatUp 10s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.8; }
+            100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="min-h-screen relative selection:bg-purple-500 selection:text-white">
+
+    <!-- Background Ambient Glows & Particles -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-purple-600/20 rounded-full blur-[120px]"></div>
+        <div class="absolute top-1/3 -right-40 w-96 h-96 bg-cyan-600/15 rounded-full blur-[140px]"></div>
+        <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-amber-600/10 rounded-full blur-[140px]"></div>
+        <!-- Particle container -->
+        <div id="particles-container" class="absolute inset-0"></div>
+    </div>
+
+    <!-- Header Section -->
+    <header class="relative z-10 pt-16 pb-10 px-4 sm:px-6 lg:px-8 text-center max-w-7xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass-panel text-cyan-400 text-xs sm:text-sm font-semibold mb-4 tracking-widest uppercase shadow-glow-cyan">
+            <i class="fa-solid fa-compass animate-spin-slow"></i> Teyvat Lore & Character Compendium
+        </div>
+        <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-purple-400 via-cyan-300 to-amber-300 bg-clip-text text-transparent drop-shadow-sm">
+            The Characters Of Genshin Impact
+        </h1>
+        <p class="text-gray-400 text-lg sm:text-xl max-w-2xl mx-auto font-light">
+            A comprehensive journey across Teyvat, featuring legendary heroes, enigmatic travelers, and the supreme Fatui Harbingers.
+        </p>
+
+        <!-- Search & Filter Controls -->
+        <div class="mt-8 max-w-3xl mx-auto flex flex-col sm:flex-row gap-4 items-center justify-between">
+            <div class="relative w-full sm:w-2/3">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="searchInput" placeholder="Search characters, harbingers, titles or lore..." 
+                    class="w-full pl-11 pr-4 py-3 rounded-xl glass-panel text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-all text-sm sm:text-base">
+            </div>
+            <div class="flex gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
+                <button onclick="filterCategory('all')" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-medium transition-all bg-cyan-500 text-gray-950 font-semibold shadow-glow-cyan shrink-0" data-filter="all">All</button>
+                <button onclick="filterCategory('character')" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-medium transition-all glass-panel text-gray-300 hover:bg-cyan-500/20 hover:text-cyan-300 shrink-0" data-filter="character">Characters</button>
+                <button onclick="filterCategory('fatui')" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-medium transition-all glass-panel text-gray-300 hover:bg-purple-500/20 hover:text-purple-300 shrink-0" data-filter="fatui">Fatui Harbingers</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+        
+        <!-- Section Title: Characters -->
+        <div class="flex items-center gap-3 mb-8 mt-4 category-heading-characters">
+            <div class="h-8 w-1.5 bg-cyan-400 rounded-full shadow-glow-cyan"></div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-100">Featured Characters</h2>
+        </div>
+
+        <!-- Grid for Characters -->
+        <div id="charactersGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            
+            <!-- 1. Flins -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-cyan border border-white/10 group" data-category="character" data-search="flins lighthouse keeper nod-krai snowland fae abyss traveler">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbtPo5kf08rAThm1c8SajhF6vHJSFE6teI7Iy0hOUXTXfEsbHmVih1NYfy&s=10" alt="Flins" 
+                        onerror="this.src='https://placehold.co/600x600/182232/38bdf8?text=Flins';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">Nod-Krai</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">Flins</h3>
+                    <div class="text-cyan-400 font-medium text-sm mb-4 uppercase tracking-wider">Lighthouse Keeper of Nod-Krai</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-cyan-400 pl-2">The Lore of Flins</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        <mark class="bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded font-medium">Flins</mark> is the last surviving Snowland Fae, serving as the reclusive <mark class="bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded font-medium">Lighthouse Keeper</mark> of Nod-Krai.
+                        Haunted by the traumatic loss of his fallen comrades against the Abyss, he escaped reality into a long, deep slumber.
+                        After finally awakening, his path crosses with the <mark class="bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded font-medium">Traveler</mark>, to whom he surprisingly reveals his true mystical nature.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 2. Raiden Shogun -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-cyan border border-white/10 group" data-category="character" data-search="shogun raiden shogun electro archon eternity inazuma traveler">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://static.wikia.nocookie.net/genshin-impact/images/e/ec/Raiden_Karte.jpg/revision/latest?cb=20211123185857&path-prefix=de" alt="Raiden Shogun" 
+                        onerror="this.src='https://placehold.co/600x600/182232/38bdf8?text=Raiden+Shogun';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 backdrop-blur-md">Inazuma</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">Shogun</h3>
+                    <div class="text-cyan-400 font-medium text-sm mb-4 uppercase tracking-wider">Ruler of the Land of Eternity</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-cyan-400 pl-2">Her Lore</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        Here we got <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Shogun</mark> (The ruler of the Land of Eternity).
+                        The <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Raiden Shogun</mark> is the vessel of the Electro Archon, seeking a frozen <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">"Eternity"</mark> for Inazuma after losing her loved ones to tragedy.
+                        To escape the erosion of time, she shut her soul inside a sword and created a puppet to rule the nation.
+                        Her ruthless isolation was finally broken when the <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Traveler</mark> arrived and challenged her ideals.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 3. The Traveler -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-cyan border border-white/10 group" data-category="character" data-search="traveler world-hopping twin teyvat seven nations elements">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Genshin_Impact_Travelers.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="Travelers" 
+                        onerror="this.src='https://placehold.co/600x600/182232/38bdf8?text=The+Traveler';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30 backdrop-blur-md">Outlander</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">The Traveler</h3>
+                    <div class="text-cyan-400 font-medium text-sm mb-4 uppercase tracking-wider">World-Hopping Twin (Aether / Lumine)</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-cyan-400 pl-2">Their Journey</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        And here would be The Traveler (you can choose between them). 
+                        The <mark class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-medium">Traveler</mark> is a world-hopping twin who lost their sibling to a mysterious deity upon arriving in Teyvat. 
+                        Stripped of their original power and stuck in an unfamiliar world, they embark on a grand journey across all <mark class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-medium">seven nations</mark>. 
+                        Along the way, they master multiple <mark class="bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-medium">elements</mark> without a Vision while searching for answers and their lost family.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 4. Odette -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-cyan border border-white/10 group" data-category="character" data-search="odette teyvat mysterious figure secrets vendetta">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png/revision/latest?cb=20260703040217" alt="Odette" 
+                        onerror="this.src='https://placehold.co/600x600/182232/38bdf8?text=Odette';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30 backdrop-blur-md">Fontaine / Teyvat</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">Odette</h3>
+                    <div class="text-cyan-400 font-medium text-sm mb-4 uppercase tracking-wider">Mysterious New Figure</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-cyan-400 pl-2">Her Lore</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        But there are some Characters that just got released Like <mark class="bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded font-medium">Odette</mark>: 
+                        Odette is a mysterious new figure in <mark class="bg-rose-500/20 text-rose-300 px-1.5 py-0.5 rounded font-medium">Teyvat</mark> whose past is still shrouded in dark secrets.
+                        Driven by a personal vendetta, she navigates the shadows of the nations while hiding her true motivations from those around her.
+                        Her unexpected arrival catches the attention of the Traveler, as her fate seems deeply tied to the upcoming conflicts.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 5. Varesa -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-cyan border border-white/10 group" data-category="character" data-search="varesa natlan collective of plenty masked hero orchard owner appetite">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://static.wikia.nocookie.net/gensin-impact/images/a/a7/Varesa_Card.png/revision/latest?cb=20250217100445" alt="Varesa" 
+                        onerror="this.src='https://placehold.co/600x600/182232/38bdf8?text=Varesa';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">Natlan</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">Varesa</h3>
+                    <div class="text-cyan-400 font-medium text-sm mb-4 uppercase tracking-wider">Masked Hero of Natlan</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-cyan-400 pl-2">Her Lore</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        <mark class="bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-medium">Varesa</mark> is an easy-going warrior and orchard owner from Natlan's <mark class="bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-medium">Collective of Plenty</mark>. 
+                        Adored by local children as the "Masked Hero", she possesses immense martial strength alongside a legendary, <mark class="bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-medium">insatiable appetite</mark> for food. 
+                        Despite her relaxed lifestyle, she is highly dedicated to defending her nation against any incoming threats.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section Title: Fatui Harbingers -->
+        <div class="flex items-center gap-3 mb-8 mt-12 category-heading-fatui">
+            <div class="h-8 w-1.5 bg-purple-500 rounded-full shadow-glow-violet"></div>
+            <h2 class="text-2xl sm:text-3xl font-bold text-gray-100">The Fatui Harbingers & Archon</h2>
+        </div>
+
+        <!-- Grid for Fatui Harbingers -->
+        <div id="fatuiGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+
+            <!-- 6. Arlecchino -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-violet border border-white/10 group" data-category="fatui" data-search="arlecchino 4th harbinger fatui knave ally">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://imgs.search.brave.com/GQ-o90hsLTV5GFoWBftSi9W0ssspoURDK6dglUDS-fI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zMy56/ZXJvY2hhbi5uZXQv/MjQwLzE0LzM5LzQy/MDY5NjQuYXZpZg" alt="Arlecchino" 
+                        onerror="this.src='https://placehold.co/600x600/182232/7c3aed?text=Arlecchino';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 backdrop-blur-md">4th Harbinger</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors">Arlecchino</h3>
+                    <div class="text-purple-400 font-medium text-sm mb-4 uppercase tracking-wider">The Knave</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-purple-400 pl-2">Alliance & Story</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        The 4th Harbinger: <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">"Arlecchino"</mark>
+                        <br><br>
+                        In the Story, she becomes your Ally. As the director of the House of the Hearth, her formidable pyro power and calculated demeanor mask a deep protective instinct for her children.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 7. Columbina -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-violet border border-white/10 group" data-category="fatui" data-search="columbina 3rd harbinger kutaار mondmädchen hyposelenia moon maiden nod-krai dottore">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://imgs.search.brave.com/qLveY8nLmopxEuz4hnSoJNXtWzU4NKkAc6wUVt_G1G4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/dWhkcGFwZXIuY29t/L3dhbGxwYXBlci9j/b2x1bWJpbmEtZ2Vu/c2hpbi1pbXBhY3Qt/NjQzQDVAbA" alt="Columbina" 
+                        onerror="this.src='https://placehold.co/600x600/182232/7c3aed?text=Columbina';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 backdrop-blur-md">3rd Harbinger</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors">Columbina</h3>
+                    <div class="text-purple-400 font-medium text-sm mb-4 uppercase tracking-wider">Damselette</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-purple-400 pl-2">Names & Lore</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        Then the 3rd Harbinger: <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">"Columbina"</mark>
+                        <br><br>
+                        Columbina is your biggest Friend in the Nod Krai Storyquest... You fight against Il Dottore and much more.
+                        <br><br>
+                        She has multiple Names: <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Kutaar(Mondmädchen)</mark> <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Columbina Hyposelenia</mark> and <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Moon Maiden</mark>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 8. Il Dottore -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-violet border border-white/10 group" data-category="fatui" data-search="dottore 2nd harbinger sumeru god 3 moons nod-krai">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://imgs.search.brave.com/mcuc8t3sK7DbQEtaphV5UMVz2g8KAB4qOnM9Cq-YXh8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2RkLzY5/LzU4L2RkNjk1ODQy/MGNiOGY3NThlYzhj/NWViODJjMjE1ZjRl/LmpwZw" alt="Il Dottore" 
+                        onerror="this.src='https://placehold.co/600x600/182232/7c3aed?text=Il+Dottore';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 backdrop-blur-md">2nd Harbinger</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors">Il Dottore</h3>
+                    <div class="text-purple-400 font-medium text-sm mb-4 uppercase tracking-wider">The Doctor</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-purple-400 pl-2">His Lore</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        The 2nd Harbinger: <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">"Il Dottore"</mark>
+                        <br><br>
+                        <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Dottore</mark> is the 2nd Harbinger... In the Sumeru Storyline he almost creates a new God, and in the Nod Krai Storyquest he collects the Power of the <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">3 Moons</mark> and almost became a Godlike Human.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 9. Capitano -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-violet border border-white/10 group" data-category="fatui" data-search="capitano 1st harbinger natlan mavuika pyro archon gnosis heavenly principles">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://imgs.search.brave.com/4c31LVaO5SGsWSmdDsnBiqI5a3ihsN3eGzW5xT8MUtI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzQyL2Jh/LzI3LzQyYmEyNzRk/N2Q4ZmUyMjYyZTQ3/Njc1OWU1NjIzYzRh/LmpwZw" alt="Capitano" 
+                        onerror="this.src='https://placehold.co/600x600/182232/7c3aed?text=Capitano';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 backdrop-blur-md">1st Harbinger</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors">Capitano</h3>
+                    <div class="text-purple-400 font-medium text-sm mb-4 uppercase tracking-wider">The Captain</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-purple-400 pl-2">His Lore</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        The 1st Harbinger: <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">"Capitano"</mark>
+                        <br><br>
+                        In Natlan Storyline he fights against <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Mavuika (The Pyro Archon)</mark>, but all he wants is her <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Gnosis</mark>, to fight against the <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Heavenly Principles</mark>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 10. Pierro -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-violet border border-white/10 group" data-category="fatui" data-search="pierro director fatui harbingers tsaritsa snezhnaya">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-black/40">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmKr7sziUCPo3a6z1bHaEgagvbu7MatctY2UIy3zTsgazX61Wli-Hswd8&s=10" alt="Pierro" 
+                        onerror="this.src='https://placehold.co/600x600/182232/7c3aed?text=Pierro';"
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-purple-500/20 text-purple-300 border border-purple-500/30 backdrop-blur-md">The Jester</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-purple-300 transition-colors">Pierro</h3>
+                    <div class="text-purple-400 font-medium text-sm mb-4 uppercase tracking-wider">Director of the Harbingers</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-purple-400 pl-2">His Lore</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        And the Chef of the Harbingers: <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">"Pierro"</mark>
+                        <br><br>
+                        <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Pierro</mark> is the <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Director</mark> of The Fatui Harbingers and with that the direct contact Person for the <mark class="bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-medium">Tsaritsa</mark>.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 11. The Tsaritsa -->
+            <div class="character-card glass-panel rounded-2xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:-translate-y-2 hover:shadow-glow-violet border border-white/10 group" data-category="fatui" data-search="tsaritsa archon snezhnaya cryo archon">
+                <div class="relative h-72 sm:h-80 overflow-hidden bg-gradient-to-br from-blue-900/40 to-slate-900 flex items-center justify-center">
+                    <i class="fa-solid fa-snowflake text-6xl text-cyan-300/40 animate-pulse"></i>
+                    <div class="absolute inset-0 bg-gradient-to-t from-[#182232] via-transparent to-transparent opacity-80"></div>
+                    <span class="absolute top-4 right-4 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 backdrop-blur-md">Cryo Archon</span>
+                </div>
+                <div class="p-6 flex flex-col flex-grow">
+                    <h3 class="text-2xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">The Tsaritsa</h3>
+                    <div class="text-cyan-400 font-medium text-sm mb-4 uppercase tracking-wider">Archon of Snezhnaya</div>
+                    <div class="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-2 border-l-2 border-cyan-400 pl-2">Her Lore</div>
+                    <p class="text-gray-300 text-sm leading-relaxed mb-4 flex-grow">
+                        <mark class="bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded font-medium">The Tsaritsa</mark> is the Archon of Snezhnaya, commanding her Fatui Harbingers to gather all gnoses for her ultimate rebellion against the divine order.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- No search results message -->
+        <div id="noResults" class="hidden text-center py-16">
+            <i class="fa-solid fa-ghost text-5xl text-gray-500 mb-4"></i>
+            <h3 class="text-xl font-semibold text-gray-300">No characters or harbingers found</h3>
+            <p class="text-gray-500 text-sm mt-1">Try adjusting your search query or filter settings.</p>
+        </div>
+
+        <!-- Footer / External Links Section with Golden Box -->
+        <div class="mt-20 max-w-2xl mx-auto space-y-6">
+            
+            <!-- Akasha Build Button -->
+            <div class="text-center">
+                <a href="https://akasha.cv/profile/786665222" target="_blank" rel="noopener noreferrer" 
+                   class="inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 via-indigo-600 to-cyan-600 text-white font-bold py-3.5 px-8 rounded-2xl shadow-glow-violet hover:shadow-glow-cyan transition-all duration-300 hover:scale-105 border border-white/20">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>You can Find my Flins Build Here: Akasha System</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-80"></i>
+                </a>
+            </div>
+
+            <!-- Original Gold Box Container -->
+            <div class="glass-panel-gold p-6 rounded-2xl shadow-glow-gold text-center relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-amber-500/10 rounded-full blur-xl pointer-events-none"></div>
+                <p class="text-gray-200 text-base sm:text-lg font-medium leading-relaxed mb-4">
+                    Das wars mit meine Info... Für weitere Infos Game spielen oder
+                </p>
+                <a href="https://genshin-impact.fandom.com/de/wiki/Genshin_Impact_Wiki" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500 hover:text-gray-950 font-semibold transition-all duration-300 shadow-lg">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Genshin Wiki</span>
+                    <i class="fa-solid fa-external-link text-xs"></i>
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="text-center py-8 text-gray-500 text-xs sm:text-sm border-t border-white/5 relative z-10">
+        <p>Genshin Impact Lore Compendium &bull; Designed with High-End Glassmorphism & Complete Archive.</p>
+    </footer>
+
+    <!-- JavaScript for Interactivity, Search and Particles -->
+    <script>
+        // Generate ambient background particles
+        const particlesContainer = document.getElementById('particles-container');
+        const particleCount = 25;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            const size = Math.random() * 4 + 2;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationDuration = `${Math.random() * 12 + 6}s`;
+            particle.style.animationDelay = `${Math.random() * 5}s`;
+            particlesContainer.appendChild(particle);
+        }
+
+        // Search and Filter Logic
+        const searchInput = document.getElementById('searchInput');
+        const characterCards = document.querySelectorAll('.character-card');
+        const noResultsEl = document.getElementById('noResults');
+        const charactersGrid = document.getElementById('charactersGrid');
+        const fatuiGrid = document.getElementById('fatuiGrid');
+        const headingChars = document.querySelector('.category-heading-characters');
+        const headingFatui = document.querySelector('.category-heading-fatui');
+
+        let currentCategory = 'all';
+        let currentSearchQuery = '';
+
+        function filterItems() {
+            let visibleCount = 0;
+
+            characterCards.forEach(card => {
+                const category = card.getAttribute('data-category');
+                const searchText = card.getAttribute('data-search');
+                
+                const matchesCategory = (currentCategory === 'all' || category === currentCategory);
+                const matchesSearch = searchText.includes(currentSearchQuery);
+
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Toggle category headings visibility depending on filter
+            if (currentCategory === 'character') {
+                headingChars.style.display = 'flex';
+                headingFatui.style.display = 'none';
+            } else if (currentCategory === 'fatui') {
+                headingChars.style.display = 'none';
+                headingFatui.style.display = 'flex';
+            } else {
+                headingChars.style.display = 'flex';
+                headingFatui.style.display = 'flex';
+            }
+
+            if (visibleCount === 0) {
+                noResultsEl.classList.remove('hidden');
+            } else {
+                noResultsEl.classList.add('hidden');
+            }
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            currentSearchQuery = e.target.value.toLowerCase().trim();
+            filterItems();
+        });
+
+        function filterCategory(category) {
+            currentCategory = category;
+            
+            // Update active button styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-cyan-500', 'text-gray-950', 'font-semibold', 'shadow-glow-cyan');
+                btn.classList.add('glass-panel', 'text-gray-300');
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.classList.remove('glass-panel', 'text-gray-300');
+                    btn.classList.add('bg-cyan-500', 'text-gray-950', 'font-semibold', 'shadow-glow-cyan');
+                }
+            });
+
+            filterItems();
+        }
+    </script>
+</body>
+</html>
