@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumUpscale Pro | Cloud Sync & Remote Node</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090d16',
+                        cardBg: '#131c2e',
+                        accent: '#6366f1',
+                        accentHover: '#4f46e5'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(19, 28, 46, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow { box-shadow: 0 0 30px -5px rgba(99, 102, 241, 0.25); }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col selection:bg-accent selection:text-white">
+
+    <!-- Header -->
+    <header class="glass border-b border-slate-800/80 sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-accent to-indigo-400 p-2.5 rounded-xl text-white shadow-lg shadow-accent/30 font-bold text-lg">⚡ Q-Upscale</div>
+            <div>
+                <h1 class="font-bold text-sm tracking-wide text-slate-200">Cloud Sync & Remote Suite</h1>
+                <p class="text-[10px] text-slate-400">GitHub Pages + Supabase Cloud Auth</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div id="nodeRoleBadge" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse" id="roleDot"></span>
+                <span id="roleText" class="text-slate-300">Standalone Modus</span>
+            </div>
+            <button onclick="openAuthModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-700/80 transition shadow-sm">
+                <span id="authButtonText">Konto / Login (Cloud)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Sidebar -->
+        <div class="lg:col-span-4 space-y-6">
+            
+            <!-- Remote PC Controller Box -->
+            <div class="glass rounded-2xl p-5 glow">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-300">🖥️ PC-Fernsteuerung (Node)</h2>
+                    <span id="meshStatus" class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400 border border-slate-800">Offline</span>
+                </div>
+                <p class="text-xs text-slate-400 mb-4">Aktiviere diesen Modus auf deinem PC. Wenn du dich auf Handy und PC mit demselben Cloud-Konto anmeldest, kannst du vom Handy aus Upscales starten, die dein PC berechnet.</p>
+                
+                <div class="space-y-3">
+                    <button onclick="togglePCNodeMode()" id="pcNodeToggleBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2">
+                        <span>💻 Als PC-Rechen-Node bereitstellen</span>
+                    </button>
+                    <div id="meshLog" class="p-3 bg-slate-950/90 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-400 h-28 overflow-y-auto">
+                        [System] Bereit.<br>
+                        [Info] Bitte zuerst oben in der Cloud anmelden.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hardware & Backend -->
+            <div class="glass rounded-2xl p-5">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3">⚙️ Inferenz-Hardware</h2>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block text-slate-400 mb-1 font-medium">Hardware-Beschleuniger</label>
+                        <select id="hardwareBackend" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-accent">
+                            <option value="webgpu">WebGPU (Hardware GPU)</option>
+                            <option value="webnn">WebNN / NPU</option>
+                            <option value="wasm">WASM / CPU (Fallback)</option>
+                        </select>
+                    </div>
+                    <div id="hwDiag" class="p-2.5 bg-slate-900/50 rounded-xl border border-slate-800 text-[11px] text-slate-400">
+                        Prüfe Hardware...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Workspace -->
+        <div class="lg:col-span-8 space-y-6 flex flex-col">
+            
+            <!-- Dropzone -->
+            <div id="dropZone" class="glass border-2 border-dashed border-slate-700/80 hover:border-accent rounded-3xl p-8 text-center transition flex flex-col items-center justify-center cursor-pointer min-h-[340px] relative overflow-hidden group">
+                <input type="file" id="fileInput" class="hidden" accept="image/*">
+                <div class="w-16 h-16 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center text-3xl mb-4 text-accent">
+                    ✨
+                </div>
+                <p class="text-slate-200 font-semibold text-base mb-1">Bild für Upscale hier ablegen</p>
+                <p class="text-xs text-slate-400">Wird an deinen verbundenen PC-Node oder lokal verarbeitet</p>
+            </div>
+
+            <!-- Action Toolbar -->
+            <div class="glass rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-xs text-slate-400" id="fileMeta">Keine Datei ausgewählt</div>
+                <div class="flex items-center space-x-3 w-full sm:w-auto">
+                    <select id="executionRoute" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300">
+                        <option value="auto">Automatisch (PC-Node bevorzugen)</option>
+                        <option value="local">Nur lokal auf diesem Gerät</option>
+                    </select>
+                    <button onclick="executeUpscale()" id="processBtn" disabled class="flex-1 sm:flex-none bg-accent hover:bg-accentHover disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-lg shadow-accent/25 cursor-pointer">
+                        Upscale Starten 🚀
+                    </button>
+                </div>
+            </div>
+
+            <!-- Preview Box -->
+            <div class="glass rounded-2xl p-5 hidden" id="previewBox">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">Ergebnis</h3>
+                <div class="relative w-full h-80 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+                    <img id="resultImg" class="max-h-full max-w-full object-contain" alt="Ergebnis">
+                </div>
+                <a id="downloadLink" download="upscaled.png" class="inline-block mt-3 text-xs text-accent hover:underline">⬇ Ergebnis speichern</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Auth Modal (Cloud Sync) -->
+    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass border border-slate-700/80 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-100">Cloud-Konto & Geräte-Sync</h3>
+                <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+            </div>
+            <p class="text-xs text-slate-400">Registriere dich einmalig auf einem Gerät (z.B. Handy). Mit exakt denselben Daten kannst du dich danach auf jedem anderen Gerät (z.B. PC) anmelden.</p>
+            
+            <div class="space-y-3">
+                <input type="text" id="usernameInput" placeholder="Benutzername (z.B. Lema)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-accent">
+                <input type="password" id="passwordInput" placeholder="Passwort" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-accent">
+            </div>
+
+            <div id="authStatus" class="hidden text-xs text-emerald-400"></div>
+            <div id="authForm" class="flex space-x-3 pt-2">
+                <button onclick="cloudRegister()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-xl text-xs font-bold border border-slate-700 transition">Registrieren</button>
+                <button onclick="cloudLogin()" class="flex-1 bg-accent hover:bg-accentHover text-white py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-accent/20">Anmelden</button>
+            </div>
+            <button id="logoutBtn" onclick="cloudLogout()" class="hidden w-full bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 py-3 rounded-xl text-xs font-bold border border-rose-700 transition">Abmelden</button>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        // =====================================================
+        // KONFIGURATION – hier deine Supabase-Daten eintragen
+        // (Project Settings → API → Project URL + anon/public key)
+        // Der anon-Key darf öffentlich im Code stehen, die Sicherheit
+        // kommt von Supabase Auth + den Storage-Policies.
+        // =====================================================
+        const SUPABASE_URL = 'https://grytrwrlfcnowpvtosqp.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_jit0mGL-CNV3uHrkBS-a7A_5UlPk5rs';
+        const EMAIL_DOMAIN = 'quantum-upscale.app'; // nur intern, es werden keine Mails verschickt
+        const BUCKET = 'upscale';
+        const JOB_TIMEOUT_MS = 90000;
+
+        const configured = !SUPABASE_URL.startsWith('DEINE') && !SUPABASE_ANON_KEY.startsWith('DEIN');
+        const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+        // ---------- State ----------
+        let currentUser = null;           // Supabase-User
+        let meshChannel = null;
+        let isPCNodeActive = false;
+        let remoteNodeOnline = false;
+        let selectedFile = null;
+        const pendingJobs = {};           // jobId -> {timer}
+        const deviceId = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2));
+
+        const $ = (id) => document.getElementById(id);
+
+        // ---------- Hardware Check ----------
+        function checkHW() {
+            $('hwDiag').innerHTML = navigator.gpu
+                ? '<span class="text-emerald-400 font-bold">✔ WebGPU</span> verfügbar.'
+                : '<span class="text-amber-400 font-bold">⚠ WebGPU inaktiv</span> (Canvas-Fallback).';
+        }
+        checkHW();
+
+        function addLog(txt) {
+            const log = $('meshLog');
+            log.innerHTML += `[${new Date().toLocaleTimeString()}] ${txt}<br>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function setMeshStatus(online) {
+            const el = $('meshStatus');
+            el.innerText = online ? 'Online' : 'Offline';
+            el.className = online
+                ? 'text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800'
+                : 'text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400 border border-slate-800';
+        }
+
+        // ---------- Modal ----------
+        function openAuthModal() {
+            if (!configured) {
+                return alert('Supabase ist noch nicht konfiguriert.\nTrage SUPABASE_URL und SUPABASE_ANON_KEY oben im Script ein.');
+            }
+            $('authModal').classList.remove('hidden');
+            $('authModal').classList.add('flex');
+        }
+        function closeAuthModal() {
+            $('authModal').classList.add('hidden');
+            $('authModal').classList.remove('flex');
+        }
+
+        // ---------- Auth ----------
+        function toEmail(username) {
+            const u = username.trim().toLowerCase();
+            if (/^[a-z0-9._-]{3,30}$/.test(u)) return `${u}@${EMAIL_DOMAIN}`;
+            const hex = [...new TextEncoder().encode(u)].map(b => b.toString(16).padStart(2, '0')).join('');
+            return `u${hex.slice(0, 56)}@${EMAIL_DOMAIN}`;
+        }
+
+        function readForm() {
+            const user = $('usernameInput').value.trim();
+            const pass = $('passwordInput').value;
+            if (!user || !pass) { alert('Bitte Benutzername und Passwort eingeben.'); return null; }
+            if (user.length < 3) { alert('Der Benutzername muss mindestens 3 Zeichen haben.'); return null; }
+            if (pass.length < 6) { alert('Das Passwort muss mindestens 6 Zeichen haben.'); return null; }
+            return { user, pass };
+        }
+
+        async function cloudRegister() {
+            const f = readForm(); if (!f) return;
+            const { data, error } = await sb.auth.signUp({
+                email: toEmail(f.user),
+                password: f.pass,
+                options: { data: { username: f.user } }
+            });
+            if (error) {
+                if (/already/i.test(error.message)) return alert('Dieser Benutzername existiert bereits. Bitte melde dich an.');
+                return alert('Registrierung fehlgeschlagen: ' + error.message);
+            }
+            if (!data.session) {
+                return alert('Konto angelegt, aber Supabase verlangt noch eine E-Mail-Bestätigung.\nDeaktiviere in Supabase: Authentication → Providers → Email → "Confirm email".');
+            }
+            alert('Registriert und angemeldet als "' + f.user + '". Dieselben Daten funktionieren jetzt auf jedem Gerät.');
+            closeAuthModal();
+        }
+
+        async function cloudLogin() {
+            const f = readForm(); if (!f) return;
+            const { error } = await sb.auth.signInWithPassword({ email: toEmail(f.user), password: f.pass });
+            if (error) {
+                if (/invalid login/i.test(error.message)) return alert('Benutzername oder Passwort falsch (oder Konto existiert noch nicht).');
+                if (/confirm/i.test(error.message)) return alert('E-Mail-Bestätigung ist in Supabase noch aktiv. Bitte "Confirm email" deaktivieren.');
+                return alert('Login fehlgeschlagen: ' + error.message);
+            }
+            closeAuthModal();
+        }
+
+        async function cloudLogout() {
+            if (isPCNodeActive) togglePCNodeMode();
+            await sb.auth.signOut();
+            closeAuthModal();
+        }
+
+        async function applySession(session) {
+            currentUser = session ? session.user : null;
+            if (currentUser) {
+                const name = (currentUser.user_metadata && currentUser.user_metadata.username) || currentUser.email.split('@')[0];
+                $('authButtonText').innerText = 'Konto: ' + name;
+                $('authStatus').innerText = 'Angemeldet als ' + name;
+                $('authStatus').classList.remove('hidden');
+                $('authForm').classList.add('hidden');
+                $('usernameInput').classList.add('hidden');
+                $('passwordInput').classList.add('hidden');
+                $('logoutBtn').classList.remove('hidden');
+                await connectMesh();
+            } else {
+                $('authButtonText').innerText = 'Konto / Login (Cloud)';
+                $('authStatus').classList.add('hidden');
+                $('authForm').classList.remove('hidden');
+                $('usernameInput').classList.remove('hidden');
+                $('passwordInput').classList.remove('hidden');
+                $('logoutBtn').classList.add('hidden');
+                $('passwordInput').value = '';
+                await disconnectMesh();
+            }
+        }
+
+        if (configured) {
+            sb.auth.getSession().then(({ data }) => applySession(data.session));
+            let lastUid = null;
+            sb.auth.onAuthStateChange((event, session) => {
+                const uid = session ? session.user.id : null;
+                if (uid === lastUid && event === 'TOKEN_REFRESHED') return;
+                if (event === 'INITIAL_SESSION') { lastUid = uid; return; }
+                lastUid = uid;
+                applySession(session);
+            });
+        } else {
+            addLog('⚠ Supabase nicht konfiguriert – Cloud-Login deaktiviert.');
+        }
+
+        // ---------- Mesh (Realtime über Supabase) ----------
+        async function disconnectMesh() {
+            if (meshChannel) { await sb.removeChannel(meshChannel); meshChannel = null; }
+            remoteNodeOnline = false;
+            setMeshStatus(false);
+        }
+
+        async function connectMesh() {
+            await disconnectMesh();
+            const uid = currentUser.id;
+            meshChannel = sb.channel('mesh:' + uid, {
+                config: { broadcast: { self: false }, presence: { key: deviceId } }
+            });
+
+            meshChannel
+                .on('broadcast', { event: 'job' }, ({ payload }) => handleJob(payload))
+                .on('broadcast', { event: 'result' }, ({ payload }) => handleResult(payload))
+                .on('presence', { event: 'sync' }, updatePresence)
+                .subscribe(async (status) => {
+                    if (status === 'SUBSCRIBED') {
+                        setMeshStatus(true);
+                        addLog('Verbunden mit Cloud-Kanal.');
+                        await trackPresence();
+                    } else if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].includes(status)) {
+                        setMeshStatus(false);
+                        addLog('⚠ Cloud-Kanal getrennt (' + status + ').');
+                    }
+                });
+        }
+
+        async function trackPresence() {
+            if (!meshChannel) return;
+            await meshChannel.track({ role: isPCNodeActive ? 'node' : 'client', device: deviceId });
+        }
+
+        function updatePresence() {
+            if (!meshChannel) return;
+            const all = Object.values(meshChannel.presenceState()).flat();
+            const nodes = all.filter(p => p.role === 'node' && p.device !== deviceId);
+            const was = remoteNodeOnline;
+            remoteNodeOnline = nodes.length > 0;
+            if (was !== remoteNodeOnline) {
+                addLog(remoteNodeOnline ? '🟢 PC-Node ist online.' : '⚪ Kein PC-Node online.');
+            }
+        }
+
+        async function togglePCNodeMode() {
+            if (!currentUser) return alert('Bitte zuerst in der Cloud anmelden, um den PC zu verknüpfen.');
+            isPCNodeActive = !isPCNodeActive;
+            const btn = $('pcNodeToggleBtn'), dot = $('roleDot'), text = $('roleText');
+
+            if (isPCNodeActive) {
+                btn.innerHTML = '<span>🛑 PC-Node stoppen</span>';
+                btn.className = 'w-full bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 py-2.5 rounded-xl text-xs font-semibold border border-rose-700 transition flex items-center justify-center space-x-2';
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-ping';
+                text.innerText = 'PC-Node aktiv (Rechenknecht)';
+                addLog('💻 Dieser PC wartet jetzt auf Aufträge. Tab offen lassen!');
+            } else {
+                btn.innerHTML = '<span>💻 Als PC-Rechen-Node bereitstellen</span>';
+                btn.className = 'w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2';
+                dot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse';
+                text.innerText = 'Standalone Modus';
+                addLog('🛑 PC-Node deaktiviert.');
+            }
+            await trackPresence();
+        }
+
+        // ---------- Upscale-Kern (Canvas, 2x) ----------
+        async function upscaleBlob(blob, scale = 2) {
+            const bmp = await createImageBitmap(blob);
+            const MAX = 8192;
+            let s = scale;
+            while ((bmp.width * s > MAX || bmp.height * s > MAX) && s > 1) s -= 0.5;
+            const w = Math.round(bmp.width * s), h = Math.round(bmp.height * s);
+            const canvas = document.createElement('canvas');
+            canvas.width = w; canvas.height = h;
+            const ctx = canvas.getContext('2d');
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(bmp, 0, 0, w, h);
+            bmp.close();
+            return await new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error('toBlob fehlgeschlagen')), 'image/png'));
+        }
+
+        // ---------- Datei-Handling ----------
+        const dropZone = $('dropZone');
+        const fileInput = $('fileInput');
+
+        dropZone.onclick = () => fileInput.click();
+        dropZone.ondragover = (e) => { e.preventDefault(); };
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+        };
+        fileInput.onchange = (e) => { if (e.target.files[0]) setFile(e.target.files[0]); };
+
+        function setFile(f) {
+            if (!f.type.startsWith('image/')) return alert('Bitte ein Bild auswählen.');
+            selectedFile = f;
+            $('fileMeta').innerText = `Ausgewählt: ${f.name} (${(f.size / 1024 / 1024).toFixed(1)} MB)`;
+            $('processBtn').disabled = false;
+        }
+
+        // ---------- Auftrag starten (Handy) ----------
+        async function executeUpscale() {
+            if (!selectedFile) return alert('Kein Bild ausgewählt.');
+            const route = $('executionRoute').value;
+            const useRemote = route === 'auto' && currentUser && meshChannel && !isPCNodeActive && remoteNodeOnline;
+
+            if (route === 'auto' && !useRemote && currentUser && !isPCNodeActive) {
+                addLog('ℹ Kein PC-Node online – rechne lokal.');
+            }
+            return useRemote ? runRemote() : runLocal();
+        }
+
+        async function runLocal() {
+            $('processBtn').disabled = true;
+            try {
+                addLog('⚡ Führe Upscale lokal aus...');
+                const out = await upscaleBlob(selectedFile);
+                showResult(URL.createObjectURL(out));
+                addLog('✔ Lokaler Upscale fertig.');
+            } catch (e) {
+                addLog('❌ Fehler: ' + e.message);
+            }
+            $('processBtn').disabled = false;
+        }
+
+        async function runRemote() {
+            const jobId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+            const ext = (selectedFile.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '') || 'png';
+            const path = `${currentUser.id}/in/${jobId}.${ext}`;
+            $('processBtn').disabled = true;
+
+            addLog('🚀 Lade Bild in die Cloud...');
+            const up = await sb.storage.from(BUCKET).upload(path, selectedFile, { contentType: selectedFile.type });
+            if (up.error) {
+                addLog('❌ Upload fehlgeschlagen: ' + up.error.message + ' – rechne lokal.');
+                $('processBtn').disabled = false;
+                return runLocal();
+            }
+
+            pendingJobs[jobId] = {
+                timer: setTimeout(async () => {
+                    delete pendingJobs[jobId];
+                    addLog('⏱ PC-Node hat nicht geantwortet – rechne lokal.');
+                    await sb.storage.from(BUCKET).remove([path]);
+                    runLocal();
+                }, JOB_TIMEOUT_MS)
+            };
+
+            const res = await meshChannel.send({ type: 'broadcast', event: 'job', payload: { jobId, path, from: deviceId } });
+            addLog(res === 'ok' ? '📤 Auftrag an PC-Node gesendet. Warte auf Ergebnis...' : '⚠ Senden unsicher: ' + res);
+        }
+
+        // ---------- Auftrag bearbeiten (PC-Node) ----------
+        async function handleJob(job) {
+            if (!isPCNodeActive || !job || !job.jobId) return;
+            addLog('📥 Auftrag empfangen. PC berechnet Bild...');
+            const store = sb.storage.from(BUCKET);
+            try {
+                const dl = await store.download(job.path);
+                if (dl.error) throw dl.error;
+                const out = await upscaleBlob(dl.data);
+                const outPath = `${currentUser.id}/out/${job.jobId}.png`;
+                const up = await store.upload(outPath, out, { contentType: 'image/png', upsert: true });
+                if (up.error) throw up.error;
+                await store.remove([job.path]);
+                await meshChannel.send({ type: 'broadcast', event: 'result', payload: { jobId: job.jobId, path: outPath } });
+                addLog('✨ Fertig – Ergebnis zurückgesendet.');
+            } catch (e) {
+                addLog('❌ Fehler bei Berechnung: ' + (e.message || e));
+                await meshChannel.send({ type: 'broadcast', event: 'result', payload: { jobId: job.jobId, error: String(e.message || e) } });
+            }
+        }
+
+        // ---------- Ergebnis empfangen (Handy) ----------
+        async function handleResult(res) {
+            const pending = res && pendingJobs[res.jobId];
+            if (!pending) return;
+            clearTimeout(pending.timer);
+            delete pendingJobs[res.jobId];
+
+            if (res.error) {
+                addLog('❌ PC-Node meldet Fehler: ' + res.error + ' – rechne lokal.');
+                $('processBtn').disabled = false;
+                return runLocal();
+            }
+            const store = sb.storage.from(BUCKET);
+            const dl = await store.download(res.path);
+            if (dl.error) {
+                addLog('❌ Ergebnis konnte nicht geladen werden: ' + dl.error.message);
+                $('processBtn').disabled = false;
+                return;
+            }
+            showResult(URL.createObjectURL(dl.data));
+            addLog('🎉 Fertiges Bild vom PC-Node empfangen!');
+            await store.remove([res.path]);
+            $('processBtn').disabled = false;
+        }
+
+        function showResult(url) {
+            $('previewBox').classList.remove('hidden');
+            $('resultImg').src = url;
+            $('downloadLink').href = url;
+        }
+    </script>
+</body>
+</html>
