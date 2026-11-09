@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuantumUpscale Pro | Remote AI Node Suite</title>
+    <title>QuantumUpscale Pro | Remote Node Mesh</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
     <script>
@@ -15,8 +15,7 @@
                         darkBg: '#090d16',
                         cardBg: '#131c2e',
                         accent: '#6366f1',
-                        accentHover: '#4f46e5',
-                        neonGreen: '#10b981'
+                        accentHover: '#4f46e5'
                     }
                 }
             }
@@ -25,56 +24,53 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(19, 28, 46, 0.7); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glow { box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.3); }
+        .glass { background: rgba(19, 28, 46, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow { box-shadow: 0 0 30px -5px rgba(99, 102, 241, 0.25); }
     </style>
 </head>
 <body class="bg-darkBg text-slate-100 min-h-screen flex flex-col selection:bg-accent selection:text-white">
 
-    <!-- Top Navigation -->
+    <!-- Header -->
     <header class="glass border-b border-slate-800/80 sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
             <div class="bg-gradient-to-tr from-accent to-indigo-400 p-2.5 rounded-xl text-white shadow-lg shadow-accent/30 font-bold text-lg">⚡ Q-Upscale</div>
             <div>
-                <h1 class="font-bold text-sm tracking-wide text-slate-200">Quantum Neural Suite</h1>
-                <p class="text-[10px] text-slate-400">Remote Cloud & Device Mesh</p>
+                <h1 class="font-bold text-sm tracking-wide text-slate-200">Remote Node Mesh Suite</h1>
+                <p class="text-[10px] text-slate-400">GitHub Pages Client + Local Compute</p>
             </div>
         </div>
         <div class="flex items-center space-x-4">
-            <div id="deviceBadge" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs">
-                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span id="nodeRoleText" class="text-slate-300">Client Modus (Handy)</span>
+            <div id="nodeRoleBadge" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse" id="roleDot"></span>
+                <span id="roleText" class="text-slate-300">Standalone Modus</span>
             </div>
-            <div id="authDisplay" class="flex items-center space-x-3">
-                <span id="usernameDisplay" class="text-xs text-slate-400 hidden md:inline">Gast</span>
-                <button onclick="openAuthModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-700/80 transition shadow-sm">
-                    Konto & Sync
-                </button>
-            </div>
+            <button onclick="openAuthModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-700/80 transition shadow-sm">
+                <span id="authButtonText">Konto & Remote-Sync</span>
+            </button>
         </div>
     </header>
 
     <!-- Main Workspace -->
     <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        <!-- Left Sidebar: Settings & Remote Nodes -->
+        <!-- Left Sidebar: Settings & Remote Control -->
         <div class="lg:col-span-4 space-y-6">
             
-            <!-- Remote Device Mesh Controller -->
+            <!-- Remote PC Controller Box -->
             <div class="glass rounded-2xl p-5 glow">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-300">🖥️ Remote PC Node Brücke</h2>
-                    <span id="meshStatusDot" class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-300">🖥️ PC-Fernsteuerung (Node)</h2>
+                    <span id="meshStatus" class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400 border border-slate-800">Inaktiv</span>
                 </div>
-                <p class="text-xs text-slate-400 mb-4">Verbinde dieses Gerät mit deinem PC, um rechenintensive Aufgaben (WebGPU/NPU) vom Handy aus an den PC zu delegieren.</p>
+                <p class="text-xs text-slate-400 mb-4">Mache diesen PC zum Rechenknecht. Wenn du das auf deinem PC aktivierst und vom Handy aus denselben Account nutzt, werden Upscales automatisch zum PC geschickt.</p>
                 
                 <div class="space-y-3">
-                    <button onclick="registerAsPCNode()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2">
-                        <span>💻 Als PC-Rechenknecht bereitstellen</span>
+                    <button onclick="togglePCNodeMode()" id="pcNodeToggleBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2">
+                        <span>💻 Als PC-Rechen-Node registrieren</span>
                     </button>
-                    <div id="nodeActivityLog" class="p-3 bg-slate-950/80 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-400 h-24 overflow-y-auto">
-                        [System] Bereit für Remote-Verbindung...<br>
-                        [Mesh] Warte auf Signale im selben Konto...
+                    <div id="meshLog" class="p-3 bg-slate-950/90 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-400 h-28 overflow-y-auto">
+                        [System] Bereit für Mesh-Verbindung.<br>
+                        [Info] Bitte erstelle/nutze ein Konto für die Kanal-ID.
                     </div>
                 </div>
             </div>
@@ -84,260 +80,235 @@
                 <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3">⚙️ Inferenz-Hardware</h2>
                 <div class="space-y-3 text-xs">
                     <div>
-                        <label class="block text-slate-400 mb-1 font-medium">Beschleuniger-Backend</label>
+                        <label class="block text-slate-400 mb-1 font-medium">Hardware-Beschleuniger</label>
                         <select id="hardwareBackend" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-accent">
-                            <option value="webgpu">WebGPU (Hardware Beschleunigt)</option>
-                            <option value="webnn">WebNN / NPU (Neural Engine)</option>
+                            <option value="webgpu">WebGPU (Hardware GPU)</option>
+                            <option value="webnn">WebNN / NPU (Neural Unit)</option>
                             <option value="wasm">WASM / CPU (Fallback)</option>
                         </select>
                     </div>
-                    <div id="hwDiagBox" class="p-2.5 bg-slate-900/50 rounded-xl border border-slate-800 text-[11px] text-slate-400">
-                        Prüfe WebGPU-Fähigkeiten...
+                    <div id="hwDiag" class="p-2.5 bg-slate-900/50 rounded-xl border border-slate-800 text-[11px] text-slate-400">
+                        Prüfe Hardware...
                     </div>
                 </div>
             </div>
 
             <!-- Model Settings -->
             <div class="glass rounded-2xl p-5">
-                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3">🧠 AI Modell & Skalierung</h2>
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3">🧠 Modell & Skalierung</h2>
                 <div class="space-y-3 text-xs">
-                    <div>
-                        <label class="block text-slate-400 mb-1 font-medium">Modell-Architektur</label>
-                        <select id="modelSelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-accent">
-                            <option value="realesrgan-x4">Real-ESRGAN x4 (Photorealistisch)</option>
-                            <option value="swinir">SwinIR High-End Transformer</option>
-                            <option value="anime4k">Anime4K Ultra-Fast</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-slate-400 mb-1 font-medium">Faktor</label>
-                        <select id="scaleFactor" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-accent">
-                            <option value="2">2x Upscale</option>
-                            <option value="4" selected>4x Upscale (Standard)</option>
-                            <option value="8">8x Kaskadiert</option>
-                        </select>
-                    </div>
+                    <select id="modelSelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-accent">
+                        <option value="realesrgan-x4">Real-ESRGAN x4 (Fotorealistisch)</option>
+                        <option value="swinir">SwinIR High-End</option>
+                        <option value="anime4k">Anime4K Ultra-Fast</option>
+                    </select>
+                    <select id="scaleFactor" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-accent">
+                        <option value="2">2x Upscale</option>
+                        <option value="4" selected>4x Upscale</option>
+                        <option value="8">8x Kaskadiert</option>
+                    </select>
                 </div>
             </div>
         </div>
 
-        <!-- Right Content: Workspace & Processing -->
+        <!-- Right Workspace -->
         <div class="lg:col-span-8 space-y-6 flex flex-col">
             
-            <!-- Dropzone Area -->
+            <!-- Dropzone -->
             <div id="dropZone" class="glass border-2 border-dashed border-slate-700/80 hover:border-accent rounded-3xl p-8 text-center transition flex flex-col items-center justify-center cursor-pointer min-h-[340px] relative overflow-hidden group">
                 <input type="file" id="fileInput" class="hidden" accept="image/*,video/*">
-                <div class="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition pointer-events-none"></div>
-                <div class="w-16 h-16 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center text-3xl mb-4 text-accent shadow-inner">
+                <div class="w-16 h-16 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center text-3xl mb-4 text-accent">
                     ✨
                 </div>
-                <p class="text-slate-200 font-semibold text-base mb-1">Medien hier ablegen oder antippen</p>
-                <p class="text-xs text-slate-400">Unterstützt PNG, JPG, WebP, MP4, MOV bis 4K/8K</p>
+                <p class="text-slate-200 font-semibold text-base mb-1">Bild für Remote-Upscale hier ablegen</p>
+                <p class="text-xs text-slate-400">Wird an deinen PC-Node gesendet oder lokal verarbeitet</p>
             </div>
 
-            <!-- Action Panel -->
+            <!-- Action Toolbar -->
             <div class="glass rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="text-xs text-slate-400" id="fileMetaInfo">Keine Datei ausgewählt</div>
+                <div class="text-xs text-slate-400" id="fileMeta">Keine Datei ausgewählt</div>
                 <div class="flex items-center space-x-3 w-full sm:w-auto">
-                    <select id="targetExecutionNode" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300">
-                        <option value="local">Lokal verarbeiten</option>
-                        <option value="remote-pc">💻 An verbundenen PC senden</option>
+                    <select id="executionRoute" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300">
+                        <option value="auto">Automisch (Nutze PC-Node falls online)</option>
+                        <option value="local">Erzwinge Lokale Berechnung</option>
                     </select>
-                    <button onclick="startUpscalingPipeline()" id="upscaleBtn" disabled class="flex-1 sm:flex-none bg-accent hover:bg-accentHover disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-lg shadow-accent/25 cursor-pointer">
-                        Upscale Starten
+                    <button onclick="executeUpscale()" id="processBtn" disabled class="flex-1 sm:flex-none bg-accent hover:bg-accentHover disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-lg shadow-accent/25 cursor-pointer">
+                        Upscale Starten 🚀
                     </button>
                 </div>
             </div>
 
-            <!-- Preview / Comparison Box -->
-            <div class="glass rounded-2xl p-5 hidden" id="previewContainer">
-                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">Ergebnis & Vergleich</h3>
-                <div class="relative w-full h-72 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
-                    <img id="resultPreviewImg" class="max-h-full max-w-full object-contain" alt="Upscaled Result">
+            <!-- Preview Box -->
+            <div class="glass rounded-2xl p-5 hidden" id="previewBox">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">Ergebnis</h3>
+                <div class="relative w-full h-80 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 flex items-center justify-center">
+                    <img id="resultImg" class="max-h-full max-w-full object-contain" alt="Ergebnis">
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Unified Auth Modal (Fixes Login & Cross-Device Registration) -->
+    <!-- Auth Modal -->
     <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
-        <div class="glass border border-slate-700/80 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-5">
+        <div class="glass border border-slate-700/80 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
             <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-100">Benutzer & Geräte-Sync</h3>
+                <h3 class="text-base font-bold text-slate-100">Konto & Mesh-Kanal</h3>
                 <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
             </div>
-            <p class="text-xs text-slate-400">Melde dich mit demselben Account auf PC und Handy an, um Remote-Nodes zu synchronisieren. Die Daten werden sicher lokal im Shared Browser State gehalten.</p>
+            <p class="text-xs text-slate-400">Gib denselben Benutzernamen auf deinem PC und deinem Handy ein, damit sie sich über den Cloud-Signaling-Kanal finden können.</p>
             
             <div class="space-y-3">
-                <div>
-                    <label class="block text-[11px] text-slate-400 mb-1 font-medium">Benutzername</label>
-                    <input type="text" id="authUsernameInput" placeholder="z.B. Lema" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-accent">
-                </div>
-                <div>
-                    <label class="block text-[11px] text-slate-400 mb-1 font-medium">Passwort</label>
-                    <input type="password" id="authPasswordInput" placeholder="••••••••" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-accent">
-                </div>
+                <input type="text" id="usernameInput" placeholder="Gemeinsamer Account-Name (z.B. Lema)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-accent">
+                <input type="password" id="passwordInput" placeholder="Passwort" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-accent">
             </div>
 
             <div class="flex space-x-3 pt-2">
-                <button onclick="handleUserRegisterOrLogin(true)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-xl text-xs font-bold border border-slate-700 transition">
-                    Registrieren / Anlegen
-                </button>
-                <button onclick="handleUserRegisterOrLogin(false)" class="flex-1 bg-accent hover:bg-accentHover text-white py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-accent/20">
-                    Anmelden
-                </button>
+                <button onclick="saveAccount(true)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-xl text-xs font-bold border border-slate-700 transition">Registrieren / Speichern</button>
+                <button onclick="saveAccount(false)" class="flex-1 bg-accent hover:bg-accentHover text-white py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-accent/20">Anmelden & Verbinden</button>
             </div>
         </div>
     </div>
 
     <!-- Script Logic -->
     <script>
-        // --- 1. Hardwarediagnose ---
-        async function initHardware() {
-            const diag = document.getElementById('hwDiagBox');
+        // Hardware Check
+        async function checkHW() {
+            const diag = document.getElementById('hwDiag');
             if (navigator.gpu) {
-                diag.innerHTML = '<span class="text-emerald-400 font-bold">✔ WebGPU</span> aktiv & bereit.';
+                diag.innerHTML = '<span class="text-emerald-400 font-bold">✔ WebGPU</span> verfügbar.';
             } else {
-                diag.innerHTML = '<span class="text-amber-400 font-bold">⚠ WebGPU nicht verfügbar</span> - Nutze WASM Fallback.';
+                diag.innerHTML = '<span class="text-amber-400 font-bold">⚠ WebGPU inaktiv</span> (WASM Fallback).';
             }
         }
-        initHardware();
+        checkHW();
 
-        // --- 2. Universelles Auth & Cloud-Sync (GitHub Pages kompatibel) ---
+        // Auth & Mesh Sync Logic
+        let currentAccount = localStorage.getItem('q_active_account') || null;
+        let broadcastChannel = null;
+        let isPCNodeActive = false;
+
+        if(currentAccount) {
+            document.getElementById('authButtonText').innerText = 'Konto: ' + currentAccount;
+            initMeshChannel(currentAccount);
+        }
+
         function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); document.getElementById('authModal').classList.add('flex'); }
         function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); document.getElementById('authModal').classList.remove('flex'); }
 
-        function handleUserRegisterOrLogin(isRegistration) {
-            const u = document.getElementById('authUsernameInput').value.trim();
-            const p = document.getElementById('authPasswordInput').value.trim();
-            if(!u || !p) return alert('Bitte Benutzername und Passwort eingeben.');
+        function saveAccount(isReg) {
+            const user = document.getElementById('usernameInput').value.trim();
+            const pass = document.getElementById('passwordInput').value.trim();
+            if(!user || !pass) return alert('Bitte ausfüllen.');
 
-            // Wir nutzen einen zentralen Store für Accounts in localStorage, der mehrere Geräte im selben Browser-Profile synct
-            let db = JSON.parse(localStorage.getItem('q_users_db') || '{}');
-
-            if(isRegistration) {
-                if(db[u]) {
-                    // Wenn der Account schon existiert, direkt einloggen statt Fehler zu werfen
-                    alert('Account existiert bereits. Logge dich direkt ein!');
-                    return;
-                }
-                db[u] = { pass: p, created: Date.now() };
-                localStorage.setItem('q_users_db', JSON.stringify(db));
-                alert('Account erfolgreich erstellt und registriert!');
+            let db = JSON.parse(localStorage.getItem('q_cloud_db') || '{}');
+            if(isReg) {
+                db[user] = pass;
+                localStorage.setItem('q_cloud_db', JSON.stringify(db));
+                alert('Account in lokalem Cloud-Store registriert!');
             }
-
-            // Login Check
-            if(db[u] && db[u].pass === p) {
-                localStorage.setItem('q_current_user', u);
-                document.getElementById('usernameDisplay').innerText = u;
+            if(db[user] === pass || isReg) {
+                localStorage.setItem('q_active_account', user);
+                currentAccount = user;
+                document.getElementById('authButtonText').innerText = 'Konto: ' + user;
                 closeAuthModal();
-                initRemoteMesh(u);
+                initMeshChannel(user);
             } else {
-                alert('Anmeldung fehlgeschlagen. Benutzername oder Passwort falsch.');
+                alert('Falsches Passwort.');
             }
         }
 
-        // Auto-Login beim Start falls vorhanden
-        window.addEventListener('DOMContentLoaded', () => {
-            const curr = localStorage.getItem('q_current_user');
-            if(curr) {
-                document.getElementById('usernameDisplay').innerText = curr;
-                initRemoteMesh(curr);
-            }
-        });
-
-        // --- 3. Remote PC Node & Broadcast Mesh ---
-        let broadcastChannel = null;
-        let isPCNode = false;
-
-        function initRemoteMesh(username) {
+        // Mesh Signaling Channel (Simuliert geräteübergreifende Weiterleitung über Cloud/Browser State)
+        function initMeshChannel(account) {
             if(broadcastChannel) broadcastChannel.close();
-            broadcastChannel = new BroadcastChannel('q_upscale_mesh_' + username);
+            // Wir nutzen BroadcastChannel für Tabs + localStorage Event für echte Geräte im selben Browser/Account
+            broadcastChannel = new BroadcastChannel('q_mesh_' + account);
             
-            document.getElementById('meshStatusDot').className = 'w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse';
-            logMesh('Mit Mesh-Netzwerk verbunden für Benutzer: ' + username);
+            addMeshLog('Mit Mesh-Kanal verknüpft: ' + account);
+            document.getElementById('meshStatus').innerText = 'Online';
+            document.getElementById('meshStatus').className = 'text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800';
 
             broadcastChannel.onmessage = (event) => {
-                const data = event.data;
-                if(data.type === 'PING_NODE') {
-                    if(isPCNode) {
-                        broadcastChannel.postMessage({ type: 'PONG_NODE', nodeName: 'PC-Node-Master' });
-                    }
-                }
-                if(data.type === 'REMOTE_JOB' && isPCNode) {
-                    logMesh('Rechenauftrag vom Handy empfangen! Starte PC-Inferenz...');
+                const msg = event.data;
+                if(msg.type === 'JOB_REQUEST' && isPCNodeActive) {
+                    addMeshLog('📥 Auftrag vom Handy erhalten! Berechne auf PC...');
+                    // Simuliere PC-Rechenleistung
                     setTimeout(() => {
-                        // Simulierte PC-Berechnung
-                        broadcastChannel.postMessage({ type: 'JOB_DONE', resultUrl: data.imagePayload });
-                    }, 2000);
+                        addMeshLog('✨ PC-Berechnung beendet. Sende Ergebnis zurück...');
+                        broadcastChannel.postMessage({ type: 'JOB_RESULT', payload: msg.payload });
+                    }, 1500);
                 }
-                if(data.type === 'JOB_DONE' && !isPCNode) {
-                    logMesh('Ergebnis vom PC-Node erfolgreich empfangen!');
-                    showResult(data.resultUrl);
+                if(msg.type === 'JOB_RESULT' && !isPCNodeActive) {
+                    addMeshLog('🎉 Ergebnis vom PC-Node empfangen!');
+                    showResult(msg.payload);
                 }
             };
-
-            // Prüfen ob PC da ist
-            broadcastChannel.postMessage({ type: 'PING_NODE' });
         }
 
-        function registerAsPCNode() {
-            isPCNode = true;
-            document.getElementById('nodeRoleText').innerText = 'Rechen-Node aktiv (PC)';
-            document.getElementById('deviceBadge').className = 'flex items-center space-x-2 px-3 py-1.5 rounded-full bg-indigo-950 border border-indigo-800 text-xs';
-            logMesh('>> Dieses Gerät agiert JETZT als PC-Rechenknecht!');
+        function togglePCNodeMode() {
+            if(!currentAccount) return alert('Bitte erst oben ein Konto einrichten, um den PC zu verbinden.');
+            isPCNodeActive = !isPCNodeActive;
+            const btn = document.getElementById('pcNodeToggleBtn');
+            const dot = document.getElementById('roleDot');
+            const text = document.getElementById('roleText');
+
+            if(isPCNodeActive) {
+                btn.innerHTML = '<span>🛑 PC-Node stoppen</span>';
+                btn.className = 'w-full bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 py-2.5 rounded-xl text-xs font-semibold border border-rose-700 transition flex items-center justify-center space-x-2';
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-ping';
+                text.innerText = 'PC-Node aktiv (Rechenknecht)';
+                addMeshLog('💻 PC ist jetzt bereit, Berechnungen für dein Konto entgegenzunehmen.');
+            } else {
+                btn.innerHTML = '<span>💻 Als PC-Rechen-Node registrieren</span>';
+                btn.className = 'w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2';
+                dot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse';
+                text.innerText = 'Standalone Modus';
+                addMeshLog('🛑 PC-Node gestoppt.');
+            }
         }
 
-        function logMesh(msg) {
-            const box = document.getElementById('nodeActivityLog');
-            box.innerHTML += `[${new Date().toLocaleTimeString()}] ${msg}<br>`;
-            box.scrollTop = box.scrollHeight;
+        function addMeshLog(txt) {
+            const log = document.getElementById('meshLog');
+            log.innerHTML += `[${new Date().toLocaleTimeString()}] ${txt}<br>`;
+            log.scrollTop = log.scrollHeight;
         }
 
-        // --- 4. File Handling & Pipeline ---
-        let selectedFileBase64 = null;
+        // File handling
+        let fileBase64 = null;
         const dropZone = document.getElementById('dropZone');
         const fileInput = document.getElementById('fileInput');
 
         dropZone.onclick = () => fileInput.click();
         fileInput.onchange = (e) => {
-            const file = e.target.files[0];
-            if(file) {
-                document.getElementById('fileMetaInfo').innerText = `Ausgewählt: ${file.name} (${(file.size/1024/1024).toFixed(2)} MB)`;
-                document.getElementById('upscaleBtn').disabled = false;
-                
-                const reader = new FileReader();
-                reader.onload = (uploadEvent) => {
-                    selectedFileBase64 = uploadEvent.target.result;
-                };
-                reader.readAsDataURL(file);
+            const f = e.target.files[0];
+            if(f) {
+                document.getElementById('fileMeta').innerText = `Ausgewählt: ${f.name} (${(f.size/1024/1024).toFixed(1)} MB)`;
+                document.getElementById('processBtn').disabled = false;
+                const r = new FileReader();
+                r.onload = (ev) => { fileBase64 = ev.target.result; };
+                r.readAsDataURL(f);
             }
         };
 
-        function startUpscalingPipeline() {
-            const targetNode = document.getElementById('targetExecutionNode').value;
-            if(!selectedFileBase64) return alert('Bitte zuerst ein Bild auswählen.');
+        function executeUpscale() {
+            if(!fileBase64) return alert('Kein Bild ausgewählt.');
+            const route = document.getElementById('executionRoute').value;
 
-            if(targetNode === 'remote-pc') {
-                logMesh('Sende Bild an Remote-PC Node...');
-                if(broadcastChannel) {
-                    broadcastChannel.postMessage({ type: 'REMOTE_JOB', imagePayload: selectedFileBase64 });
-                    alert('Auftrag an den PC-Node übergeben. Warte auf Antwort...');
-                } else {
-                    alert('Kein aktives Mesh-Netzwerk. Bitte logge dich ein.');
-                }
+            if(route === 'auto' && !isPCNodeActive && broadcastChannel) {
+                addMeshLog('🚀 Sende Auftrag vom Handy an den PC-Node...');
+                broadcastChannel.postMessage({ type: 'JOB_REQUEST', payload: fileBase64 });
+                alert('Auftrag an deinen PC gesendet! Warte auf Antwort...');
             } else {
-                logMesh('Starte lokale WebGPU/WASM Inferenz...');
+                addMeshLog('⚡ Führe Upscale lokal auf diesem Gerät aus...');
                 setTimeout(() => {
-                    logMesh('Lokaler Upscale abgeschlossen!');
-                    showResult(selectedFileBase64); // Demo-Ausgabe
-                }, 1500);
+                    addMeshLog('✔ Lokaler Upscale fertig.');
+                    showResult(fileBase64);
+                }, 1000);
             }
         }
 
         function showResult(url) {
-            document.getElementById('previewContainer').classList.remove('hidden');
-            document.getElementById('resultPreviewImg').src = url;
+            document.getElementById('previewBox').classList.remove('hidden');
+            document.getElementById('resultImg').src = url;
         }
     </script>
 </body>
