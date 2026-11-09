@@ -36,10 +36,10 @@ Her ruthless isolation was finally broken when the <mark>Traveler</mark> arrived
 Driven by a personal vendetta, she navigates the shadows of the nations while hiding her true motivations from those around her.
 Her unexpected arrival catches the attention of the Traveler, as her fate seems deeply tied to the upcoming conflicts. <p/>
 <img
-src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png/revision/latest?cb=20260703040217" alt="Odette">
+src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png/revision/latest?cb=20260703040217" alt="Odette" width="832" height="1216">
+
 <p> And we got Varesa<p/>
-<p>
-  <mark>Varesa</mark> is an easy-going warrior and orchard owner from Natlan's <mark>Collective of Plenty</mark>. 
+<p> <mark>Varesa</mark> is an easy-going warrior and orchard owner from Natlan's <mark>Collective of Plenty</mark>. 
   Adored by local children as the "Masked Hero", she possesses immense martial strength alongside a legendary, <mark>insatiable appetite</mark> for food. 
   Despite her relaxed lifestyle, she is highly dedicated to defending her nation against any incoming threats.
 </p>
