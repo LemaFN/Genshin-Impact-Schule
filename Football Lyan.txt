@@ -36,6 +36,12 @@
 <p>Das älteste Model, der (SPEED CLASSIC YOUTH youth), hat das älteste special design von der heutigen Helm produgtion, ist auch am billigsten und kommt nur mit dem standart Kinnhalter: <p/>
 <img src="https://www.helmonline.de/media/wysiwyg/hoofdomtrek_de.jpg" alt="Helm.img" width="300" hight="300">
 <p>!WICHTIG! wenn man die falsche Helm Größe kauft dann ist es sehr kritisch zu eng tu der Kiefer weh zu locker und beim Hit fligt der helm weg. Da ist die Helmgrößen Tabelle da siht man wie man misst und was zu einem gehört.<p/>
+<style>
+    body {
+      background-color: #121212; /* Dunkler Hintergrund für guten Kontrast */
+      color: #FFFFFF;            /* Weiße Schrift für die gesamte Seite */
+    }
+  </style>
 
 </body>
 </html>
