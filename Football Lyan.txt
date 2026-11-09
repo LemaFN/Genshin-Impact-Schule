@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Page Title</title>
+</head>
+<body>
+
+<h1>...............................Riddell.................................</h1>
+<p>Modell	Kategorie	US-Preis
+<p>AXIOM 3D	Varsity	$1,649.99 <p/>
+<img src="https://bayerteamsports.s8.cdn-upgates.com/_cache/6/6/66eb9a5a0b4a4a0eebd1d27bb299c4c0-axiom-bayer-6110-logo1.png" alt="Helm1.img" width="300" hight="300">
+<p>AXIOM	Varsity	$1,009.99 <p/>
+<img src="https://www.wikingsports.ch/wp-content/uploads/2025/02/57edf56bc23fa127905421b5a632296c-img-6126-logo.png" alt="Helm2.img" width="300" hight="300">
+<p>Die AXIOM Hekmreie ist die neuste, jedoch auch die teuerste Helmreie von RIDDELL hat dafür ein kostenloses, pasendes Visir für den Helm. Der Helm hat vorne so wie an den seiten federschutz. <p/>
+<p>SF ECHO	Varsity	$719.99 <p/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9GAn5MytcegIJY1mDyPsAhOwh56KnZvH6jl-JeZUCfyLKs-1tbmKApaI&s=10" alt="Helm3.img" width="300" hight="300">
+<p>Die SF ECHO Varsity reie ist die modernisrte version vom Speedflex und mit einem spizielem Facemask. <p/>
+<p>SPEEDFLEX	Varsity	$554.99 <p/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN0Jjllfajo6SEQnBPkAOggsqXCgfT64OfBzWgVt3elA&s=10" alt="Helm.img" width="300" hight="300">
+<p>SPEEDFLEX ND6	Youth	$469.99 <p/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8r3-FrW6FyHvcKzaOz3gLA9cJh5O1lsj_FD5qLlsv6Q&s=10" alt="Helm.img" width="300" hight="300">
+<p>SPEEDFLEX YOUTH	Youth	$429.99 <p/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWdN3h8qZ2wdKe4BNoMk7gDbh3JcCaFCnnrFZp1yjBDA&s=10" alt="Helm.img" width="300" hight="300">
+<p>SPEED CLASSIC ICON	Varsity	$414.99 <p/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUCdcviYcoGdgjwNUNlfeGGEyQVJt8L5z9SztJwejkzA&s" alt="Helm.img" width="300" hight="300">
+<p>SPEED ICON	Varsity	$399.99 <p/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTADs5u4TBl8eo2GHpHRrmrwcE27ianTotGzl8plGbFaQ&s=10" alt="Helm.img" width="300" hight="300">
+<p>SPEED ND6	Youth	$309.99 <p/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4hn8TvzA7bapq5uK2fWXLO0L6CsdJeDYww2xXdSaMQw&s=10" alt="Helm.img" width="300" hight="300">
+<p>Die Speed reie ist die am häufigsten verkaufte Helm art von RIDDELL, der Speedflex ist der bekannteste Helm von RIDDEL und die ICON klasse ist die ältere version die auch billig ist, jedoch nicht soviel schutz bietet. die CLASSIC reie ist einfach nur eine nachbildung vom altem design und wird mit einer der alten Facemask ausgestattet. <p/>
+<p>JET ND6	Youth	$229.99 <p/>
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTySdht__DHe_s6M0lRAqgp_pZj4LC1y47z4ll4G6CiVg&s=10" alt="Helm.img" width="300" hight="300">
+<p>Die JET reie ist die kleinste reie mit nur einer art der helme anders wie beim SF ECHO hat der helm spizielle Facemasks. Beim Jet ist es nur der helm mit wenig schutz aber gute Luftschlitze damit der kopf atmen kann. <p/>
+<p>SPEED CLASSIC YOUTH	Youth	$224.99 <p/>
+<img src="https://www.forelle.com/static/uploads-cms2/57190036_-_Riddell_Speed_Icon_Classic_Helmets_-_navy_-_1.jpg?timestamp=1749543595926" alt="Helm.img" width="300" height="300">
+<p>Das älteste Model, der (SPEED CLASSIC YOUTH youth), hat das älteste special design von der heutigen Helm produgtion, ist auch am billigsten und kommt nur mit dem standart Kinnhalter: <p/>
+<img src="https://www.helmonline.de/media/wysiwyg/hoofdomtrek_de.jpg" alt="Helm.img" width="300" hight="300">
+<p>!WICHTIG! wenn man die falsche Helm Größe kauft dann ist es sehr kritisch zu eng tu der Kiefer weh zu locker und beim Hit fligt der helm weg. Da ist die Helmgrößen Tabelle da siht man wie man misst und was zu einem gehört.<p/>
+
+</body>
+</html>
+
+
