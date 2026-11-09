@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumUpscale Pro | Cloud Sync & Remote Node</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.min.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090d16',
+                        cardBg: '#131c2e',
+                        accent: '#6366f1',
+                        accentHover: '#4f46e5'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass { background: rgba(19, 28, 46, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow { box-shadow: 0 0 30px -5px rgba(99, 102, 241, 0.25); }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 min-h-screen flex flex-col selection:bg-accent selection:text-white">
+
+    <!-- Header -->
+    <header class="glass border-b border-slate-800/80 sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="bg-gradient-to-tr from-accent to-indigo-400 p-2.5 rounded-xl text-white shadow-lg shadow-accent/30 font-bold text-lg">⚡ Q-Upscale</div>
+            <div>
+                <h1 class="font-bold text-sm tracking-wide text-slate-200">Cloud Sync & Remote Suite</h1>
+                <p class="text-[10px] text-slate-400">GitHub Pages + Supabase Cloud Auth</p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4">
+            <div id="nodeRoleBadge" class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse" id="roleDot"></span>
+                <span id="roleText" class="text-slate-300">Standalone Modus</span>
+            </div>
+            <button onclick="openAuthModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-700/80 transition shadow-sm">
+                <span id="authButtonText">Konto / Login (Cloud)</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Sidebar -->
+        <div class="lg:col-span-4 space-y-6">
+            
+            <!-- Remote PC Controller Box -->
+            <div class="glass rounded-2xl p-5 glow">
+                <div class="flex items-center justify-between mb-3">
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-indigo-300">🖥️ PC-Fernsteuerung (Node)</h2>
+                    <span id="meshStatus" class="text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400 border border-slate-800">Offline</span>
+                </div>
+                <p class="text-xs text-slate-400 mb-4">Aktiviere diesen Modus auf deinem PC. Wenn du dich auf Handy und PC mit demselben Cloud-Konto anmeldest, kannst du vom Handy aus Upscales starten, die dein PC berechnet.</p>
+                
+                <div class="space-y-3">
+                    <button onclick="togglePCNodeMode()" id="pcNodeToggleBtn" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2">
+                        <span>💻 Als PC-Rechen-Node bereitstellen</span>
+                    </button>
+                    <div id="meshLog" class="p-3 bg-slate-950/90 rounded-xl border border-slate-800/80 text-[11px] font-mono text-slate-400 h-28 overflow-y-auto">
+                        [System] Bereit.<br>
+                        [Info] Bitte zuerst oben in der Cloud anmelden.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hardware & Backend -->
+            <div class="glass rounded-2xl p-5">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-300 mb-3">⚙️ Inferenz-Hardware</h2>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="block text-slate-400 mb-1 font-medium">Hardware-Beschleuniger</label>
+                        <select id="hardwareBackend" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-slate-200 focus:outline-none focus:border-accent">
+                            <option value="webgpu">WebGPU (Hardware GPU)</option>
+                            <option value="webnn">WebNN / NPU</option>
+                            <option value="wasm">WASM / CPU (Fallback)</option>
+                        </select>
+                    </div>
+                    <div id="hwDiag" class="p-2.5 bg-slate-900/50 rounded-xl border border-slate-800 text-[11px] text-slate-400">
+                        Prüfe Hardware...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Workspace -->
+        <div class="lg:col-span-8 space-y-6 flex flex-col">
+            
+            <!-- Dropzone -->
+            <div id="dropZone" class="glass border-2 border-dashed border-slate-700/80 hover:border-accent rounded-3xl p-8 text-center transition flex flex-col items-center justify-center cursor-pointer min-h-[340px] relative overflow-hidden group">
+                <input type="file" id="fileInput" class="hidden" accept="image/*,video/*">
+                <div class="w-16 h-16 rounded-2xl bg-accent/10 border border-accent/20 flex items-center justify-center text-3xl mb-4 text-accent">
+                    ✨
+                </div>
+                <p class="text-slate-200 font-semibold text-base mb-1">Bild oder Video hier ablegen</p>
+                <p class="text-xs text-slate-400">Wird an deinen verbundenen PC-Node oder lokal verarbeitet</p>
+            </div>
+
+            <!-- Einstellungen -->
+        <div class="glass rounded-2xl p-5 space-y-3 text-xs text-slate-400">
+            <div class="flex items-center justify-between"><span class="font-bold uppercase tracking-wider text-slate-300">Upscale-Pipeline</span><span>Gesamt: <b id="totalScale" class="text-accent"></b></span></div>
+            <div id="stepList" class="space-y-2"></div>
+            <div class="flex gap-2">
+                <button onclick="addStep()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2 rounded-xl border border-slate-700">+ Schritt</button>
+                <select id="presetSel" onchange="applyPreset(this.value)" class="flex-1 bg-slate-900 border border-slate-800 rounded-xl p-2 text-slate-200">
+                    <option value="">Vorlage…</option><option value="2">2×</option><option value="4">4×</option><option value="2,2">2× → 2× (4×)</option>
+                    <option value="2,2,2">2× → 2× → 2× (8×)</option><option value="2,2,2,2">4 × 2× (16×)</option><option value="1.5,1.5">1,5× → 1,5×</option></select>
+            </div>
+            <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-800">
+                <label class="col-span-2">Zusatz-Schärfe: <span id="v_sharp"></span>%<input type="range" id="o_sharp" min="0" max="100" class="w-full accent-indigo-500"></label>
+                <label>Format (Bild)<select id="o_fmt" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-xl p-2 text-slate-200"><option value="image/png">PNG</option><option value="image/jpeg">JPEG</option><option value="image/webp">WebP</option></select></label>
+                <label class="">Qualität: <span id="v_q"></span>%<input type="range" id="o_q" min="50" max="100" class="w-full accent-indigo-500"></label>
+                <label class="">Helligkeit: <span id="v_bri"></span>%<input type="range" id="o_bri" min="50" max="150" class="w-full accent-indigo-500"></label><label class="">Kontrast: <span id="v_con"></span>%<input type="range" id="o_con" min="50" max="150" class="w-full accent-indigo-500"></label><label class="col-span-2">Sättigung: <span id="v_sat"></span>%<input type="range" id="o_sat" min="0" max="200" class="w-full accent-indigo-500"></label>
+                <label>Video-FPS<select id="o_fps" class="w-full mt-1 bg-slate-900 border border-slate-800 rounded-xl p-2 text-slate-200"><option>24</option><option>30</option><option>60</option></select></label>
+                <label class="">Video-Bitrate: <span id="v_br"></span> Mbit/s<input type="range" id="o_br" min="2" max="40" class="w-full accent-indigo-500"></label>
+            </div>
+            <button onclick="resetCfg()" class="text-[11px] text-slate-500 hover:text-slate-300">↺ Einstellungen zurücksetzen</button>
+        </div>
+
+        <!-- Action Toolbar -->
+        <div class="glass rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-xs text-slate-400" id="fileMeta">Keine Datei ausgewählt</div>
+            <div class="flex items-center space-x-3 w-full sm:w-auto">
+                <select id="execMode" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300"><option value="local">Lokal (dieses Gerät)</option><option value="node">An PC-Node senden</option></select>
+                <select id="executionRoute" class="hidden bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-300 max-w-[170px]"></select>
+                <button onclick="executeUpscale()" id="processBtn" disabled class="flex-1 sm:flex-none bg-accent hover:bg-accentHover disabled:opacity-40 text-white px-6 py-2.5 rounded-xl text-xs font-bold transition shadow-lg shadow-accent/25 cursor-pointer">Upscale Starten 🚀</button>
+            </div>
+        </div>
+
+        <!-- Ergebnis -->
+        <div class="glass rounded-2xl p-5 hidden" id="previewBox">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3">Ergebnis</h3>
+            <div id="cmpWrap" class="relative w-full h-96 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 select-none cursor-ew-resize" style="touch-action:none">
+                <img id="resultImg" alt="Nachher" class="absolute inset-0 w-full h-full object-contain pointer-events-none">
+                <img id="origImg" alt="Vorher" class="absolute inset-0 w-full h-full object-contain pointer-events-none">
+                <div id="cmpLine" class="absolute top-0 bottom-0 w-0.5 bg-white/90 pointer-events-none">
+                    <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-9 h-9 rounded-full bg-white text-slate-900 flex items-center justify-center text-sm font-bold shadow-lg">⇄</div>
+                </div>
+                <span class="absolute top-2 left-2 text-[10px] bg-black/60 px-2 py-0.5 rounded">Vorher</span>
+                <span class="absolute top-2 right-2 text-[10px] bg-black/60 px-2 py-0.5 rounded">Nachher</span>
+            </div>
+            <video id="resVideo" controls class="hidden w-full max-h-96 rounded-xl bg-black"></video>
+            <a id="downloadLink" class="inline-block mt-3 text-xs text-accent hover:underline">⬇ Ergebnis speichern</a>
+        </div>
+        </div>
+    </main>
+
+    <!-- Auth Modal (Cloud Sync) -->
+    <div id="authModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md hidden items-center justify-center z-50 p-4">
+        <div class="glass border border-slate-700/80 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-100">Cloud-Konto & Geräte-Sync</h3>
+                <button onclick="closeAuthModal()" class="text-slate-400 hover:text-white text-sm">✕</button>
+            </div>
+            <p class="text-xs text-slate-400">Registriere dich einmalig auf einem Gerät (z.B. Handy). Mit exakt denselben Daten kannst du dich danach auf jedem anderen Gerät (z.B. PC) anmelden.</p>
+            
+            <div class="space-y-3">
+                <input type="text" id="usernameInput" placeholder="Benutzername (z.B. Lema)" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-accent">
+                <input type="password" id="passwordInput" placeholder="Passwort" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-accent">
+            </div>
+
+            <div id="authStatus" class="hidden text-xs text-emerald-400"></div>
+            <div id="authForm" class="flex space-x-3 pt-2">
+                <button onclick="cloudRegister()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-3 rounded-xl text-xs font-bold border border-slate-700 transition">Registrieren</button>
+                <button onclick="cloudLogin()" class="flex-1 bg-accent hover:bg-accentHover text-white py-3 rounded-xl text-xs font-bold transition shadow-lg shadow-accent/20">Anmelden</button>
+            </div>
+            <button id="logoutBtn" onclick="cloudLogout()" class="hidden w-full bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 py-3 rounded-xl text-xs font-bold border border-rose-700 transition">Abmelden</button>
+        </div>
+    </div>
+
+    <!-- Script Logic -->
+    <script>
+        // =====================================================
+        // KONFIGURATION – hier deine Supabase-Daten eintragen
+        // (Project Settings → API → Project URL + anon/public key)
+        // Der anon-Key darf öffentlich im Code stehen, die Sicherheit
+        // kommt von Supabase Auth + den Storage-Policies.
+        // =====================================================
+        const SUPABASE_URL = 'https://grytrwrlfcnowpvtosqp.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_jit0mGL-CNV3uHrkBS-a7A_5UlPk5rs';
+        const EMAIL_DOMAIN = 'quantum-upscale.app'; // nur intern, es werden keine Mails verschickt
+        const BUCKET = 'upscale';
+        const JOB_TIMEOUT_MS = 90000;
+
+        const configured = !SUPABASE_URL.startsWith('DEINE') && !SUPABASE_ANON_KEY.startsWith('DEIN');
+        const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+        // ---------- State ----------
+        let currentUser = null;           // Supabase-User
+        let meshChannel = null;
+        let isPCNodeActive = false;
+        let remoteNodeOnline = false;
+        let selectedFile = null;
+        const pendingJobs = {};           // jobId -> {timer}
+        const deviceId = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2));
+
+        const $ = (id) => document.getElementById(id);
+
+        // ---------- Hardware Check ----------
+        function checkHW() {
+            $('hwDiag').innerHTML = navigator.gpu
+                ? '<span class="text-emerald-400 font-bold">✔ WebGPU</span> verfügbar.'
+                : '<span class="text-amber-400 font-bold">⚠ WebGPU inaktiv</span> (Canvas-Fallback).';
+        }
+        checkHW();
+
+        function addLog(txt) {
+            const log = $('meshLog');
+            log.innerHTML += `[${new Date().toLocaleTimeString()}] ${txt}<br>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function setMeshStatus(online) {
+            const el = $('meshStatus');
+            el.innerText = online ? 'Online' : 'Offline';
+            el.className = online
+                ? 'text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded border border-emerald-800'
+                : 'text-[10px] bg-slate-900 px-2 py-0.5 rounded text-slate-400 border border-slate-800';
+        }
+
+        // ---------- Modal ----------
+        function openAuthModal() {
+            if (!configured) {
+                return alert('Supabase ist noch nicht konfiguriert.\nTrage SUPABASE_URL und SUPABASE_ANON_KEY oben im Script ein.');
+            }
+            $('authModal').classList.remove('hidden');
+            $('authModal').classList.add('flex');
+        }
+        function closeAuthModal() {
+            $('authModal').classList.add('hidden');
+            $('authModal').classList.remove('flex');
+        }
+
+        // ---------- Auth ----------
+        function toEmail(username) {
+            const u = username.trim().toLowerCase();
+            if (/^[a-z0-9._-]{3,30}$/.test(u)) return `${u}@${EMAIL_DOMAIN}`;
+            const hex = [...new TextEncoder().encode(u)].map(b => b.toString(16).padStart(2, '0')).join('');
+            return `u${hex.slice(0, 56)}@${EMAIL_DOMAIN}`;
+        }
+
+        function readForm() {
+            const user = $('usernameInput').value.trim();
+            const pass = $('passwordInput').value;
+            if (!user || !pass) { alert('Bitte Benutzername und Passwort eingeben.'); return null; }
+            if (user.length < 3) { alert('Der Benutzername muss mindestens 3 Zeichen haben.'); return null; }
+            if (pass.length < 6) { alert('Das Passwort muss mindestens 6 Zeichen haben.'); return null; }
+            return { user, pass };
+        }
+
+        async function cloudRegister() {
+            const f = readForm(); if (!f) return;
+            const { data, error } = await sb.auth.signUp({
+                email: toEmail(f.user),
+                password: f.pass,
+                options: { data: { username: f.user } }
+            });
+            if (error) {
+                if (/already/i.test(error.message)) return alert('Dieser Benutzername existiert bereits. Bitte melde dich an.');
+                return alert('Registrierung fehlgeschlagen: ' + error.message);
+            }
+            if (!data.session) {
+                return alert('Konto angelegt, aber Supabase verlangt noch eine E-Mail-Bestätigung.\nDeaktiviere in Supabase: Authentication → Providers → Email → "Confirm email".');
+            }
+            alert('Registriert und angemeldet als "' + f.user + '". Dieselben Daten funktionieren jetzt auf jedem Gerät.');
+            closeAuthModal();
+        }
+
+        async function cloudLogin() {
+            const f = readForm(); if (!f) return;
+            const { error } = await sb.auth.signInWithPassword({ email: toEmail(f.user), password: f.pass });
+            if (error) {
+                if (/invalid login/i.test(error.message)) return alert('Benutzername oder Passwort falsch (oder Konto existiert noch nicht).');
+                if (/confirm/i.test(error.message)) return alert('E-Mail-Bestätigung ist in Supabase noch aktiv. Bitte "Confirm email" deaktivieren.');
+                return alert('Login fehlgeschlagen: ' + error.message);
+            }
+            closeAuthModal();
+        }
+
+        async function cloudLogout() {
+            if (isPCNodeActive) togglePCNodeMode();
+            await sb.auth.signOut();
+            closeAuthModal();
+        }
+
+        async function applySession(session) {
+            currentUser = session ? session.user : null;
+            if (currentUser) {
+                const name = (currentUser.user_metadata && currentUser.user_metadata.username) || currentUser.email.split('@')[0];
+                $('authButtonText').innerText = 'Konto: ' + name;
+                $('authStatus').innerText = 'Angemeldet als ' + name;
+                $('authStatus').classList.remove('hidden');
+                $('authForm').classList.add('hidden');
+                $('usernameInput').classList.add('hidden');
+                $('passwordInput').classList.add('hidden');
+                $('logoutBtn').classList.remove('hidden');
+                await connectMesh();
+            } else {
+                $('authButtonText').innerText = 'Konto / Login (Cloud)';
+                $('authStatus').classList.add('hidden');
+                $('authForm').classList.remove('hidden');
+                $('usernameInput').classList.remove('hidden');
+                $('passwordInput').classList.remove('hidden');
+                $('logoutBtn').classList.add('hidden');
+                $('passwordInput').value = '';
+                await disconnectMesh();
+            }
+        }
+
+        if (configured) {
+            sb.auth.getSession().then(({ data }) => applySession(data.session));
+            let lastUid = null;
+            sb.auth.onAuthStateChange((event, session) => {
+                const uid = session ? session.user.id : null;
+                if (uid === lastUid && event === 'TOKEN_REFRESHED') return;
+                if (event === 'INITIAL_SESSION') { lastUid = uid; return; }
+                lastUid = uid;
+                applySession(session);
+            });
+        } else {
+            addLog('⚠ Supabase nicht konfiguriert – Cloud-Login deaktiviert.');
+        }
+
+        // ---------- Mesh (Realtime über Supabase) ----------
+        async function disconnectMesh() {
+            if (meshChannel) { await sb.removeChannel(meshChannel); meshChannel = null; }
+            remoteNodeOnline = false; remoteNodes = [];
+            setMeshStatus(false); rebuildTargets();
+        }
+
+        async function connectMesh() {
+            await disconnectMesh();
+            const uid = currentUser.id;
+            meshChannel = sb.channel('mesh:' + uid, {
+                config: { broadcast: { self: false }, presence: { key: deviceId } }
+            });
+
+            meshChannel
+                .on('broadcast', { event: 'job' }, ({ payload }) => handleJob(payload))
+                .on('broadcast', { event: 'result' }, ({ payload }) => handleResult(payload))
+                .on('presence', { event: 'sync' }, updatePresence)
+                .subscribe(async (status) => {
+                    if (status === 'SUBSCRIBED') {
+                        setMeshStatus(true);
+                        addLog('Verbunden mit Cloud-Kanal.');
+                        await trackPresence();
+                    } else if (['CHANNEL_ERROR', 'TIMED_OUT', 'CLOSED'].includes(status)) {
+                        setMeshStatus(false);
+                        addLog('⚠ Cloud-Kanal getrennt (' + status + ').');
+                    }
+                });
+        }
+
+        async function trackPresence() {
+            if (!meshChannel) return;
+            await meshChannel.track({ role: isPCNodeActive ? 'node' : 'client', device: deviceId, name: deviceName });
+        }
+
+        function updatePresence() {
+            if (!meshChannel) return;
+            const all = Object.values(meshChannel.presenceState()).flat();
+            const nodes = all.filter(p => p.role === 'node' && p.device !== deviceId)
+                             .map(p => ({ device: p.device, name: p.name || 'PC-Node' }))
+                             .sort((a, b) => a.device.localeCompare(b.device));
+            const changed = nodes.map(n => n.device).join() !== remoteNodes.map(n => n.device).join();
+            remoteNodes = nodes; remoteNodeOnline = nodes.length > 0;
+            if (changed) { addLog(nodes.length ? '🟢 Nodes online: ' + nodes.map(n => n.name).join(', ') : '⚪ Kein PC-Node online.'); rebuildTargets(); }
+        }
+
+        async function togglePCNodeMode() {
+            if (!currentUser) return alert('Bitte zuerst in der Cloud anmelden, um den PC zu verknüpfen.');
+            isPCNodeActive = !isPCNodeActive;
+            if (isPCNodeActive) {
+                const n = prompt('Name für diesen PC-Node:', deviceName);
+                if (n && n.trim()) { deviceName = n.trim().slice(0, 30); localStorage.setItem('qdevname', deviceName); }
+            }
+            const btn = $('pcNodeToggleBtn'), dot = $('roleDot'), text = $('roleText');
+
+            if (isPCNodeActive) {
+                btn.innerHTML = '<span>🛑 PC-Node stoppen</span>';
+                btn.className = 'w-full bg-rose-900/40 hover:bg-rose-900/60 text-rose-200 py-2.5 rounded-xl text-xs font-semibold border border-rose-700 transition flex items-center justify-center space-x-2';
+                dot.className = 'w-2 h-2 rounded-full bg-emerald-500 animate-ping';
+                text.innerText = 'PC-Node aktiv (Rechenknecht)';
+                addLog('💻 Dieser PC wartet jetzt auf Aufträge. Tab offen lassen!');
+            } else {
+                btn.innerHTML = '<span>💻 Als PC-Rechen-Node bereitstellen</span>';
+                btn.className = 'w-full bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-semibold border border-slate-700 transition flex items-center justify-center space-x-2';
+                dot.className = 'w-2 h-2 rounded-full bg-amber-500 animate-pulse';
+                text.innerText = 'Standalone Modus';
+                addLog('🛑 PC-Node deaktiviert.');
+            }
+            await trackPresence();
+        }
+
+        // ---------- Einstellungen ----------
+        const MODELS = {
+            smooth: { n: 'Weich (bikubisch)', sm: true, s: 0 }, sharp: { n: 'Scharf', sm: true, s: .5 },
+            detail: { n: 'Detail+', sm: true, s: .9 }, pixel: { n: 'Pixel (Nearest)', sm: false, s: 0 },
+            denoise: { n: 'Entrauschen + weich', sm: true, s: .3, b: true }, anime: { n: 'Anime / Linien', sm: true, s: .7 }
+        };
+        let remoteNodes = [];
+        let deviceName = localStorage.getItem('qdevname') || (/Android|iPhone|iPad/i.test(navigator.userAgent) ? 'Handy' : 'PC');
+        const DEF = { steps: [{ f: 2, m: 'smooth' }], sharp: 0, fmt: 'image/png', q: 92, fps: 30, br: 12, bri: 100, con: 100, sat: 100, mode: 'local', route: '' };
+        let cfg = Object.assign({}, DEF, (() => { try { return JSON.parse(localStorage.getItem('qcfg') || '{}'); } catch (e) { return {}; } })());
+        if (!Array.isArray(cfg.steps) || !cfg.steps.length) cfg.steps = DEF.steps;
+        const saveCfg = () => { try { localStorage.setItem('qcfg', JSON.stringify(cfg)); } catch (e) {} };
+        const SEL = 'flex-1 bg-slate-900 border border-slate-800 rounded-xl p-2 text-slate-200';
+
+        function renderSteps() {
+            const L = $('stepList'); L.innerHTML = '';
+            cfg.steps.forEach((st, i) => {
+                const row = document.createElement('div'); row.className = 'flex gap-2 items-center';
+                row.innerHTML = `<span class="w-5 text-slate-500">${i + 1}.</span>
+                    <select data-k="f" class="${SEL}">${[1.5, 2, 3, 4].map(f => `<option value="${f}" ${f == st.f ? 'selected' : ''}>${f}×</option>`).join('')}</select>
+                    <select data-k="m" class="${SEL} min-w-[40%]">${Object.entries(MODELS).map(([k, m]) => `<option value="${k}" ${k == st.m ? 'selected' : ''}>${m.n}</option>`).join('')}</select>
+                    <button data-del class="px-2 text-rose-400">✕</button>`;
+                row.querySelectorAll('select').forEach(el => el.onchange = () => { st[el.dataset.k] = el.dataset.k === 'f' ? +el.value : el.value; saveCfg(); updTotal(); });
+                row.querySelector('[data-del]').onclick = () => { if (cfg.steps.length > 1) { cfg.steps.splice(i, 1); renderSteps(); saveCfg(); } };
+                L.appendChild(row);
+            });
+            updTotal();
+        }
+        const updTotal = () => { $('totalScale').innerText = Math.round(cfg.steps.reduce((a, s) => a * s.f, 1) * 100) / 100 + '×'; };
+        function addStep() { if (cfg.steps.length >= 6) return; cfg.steps.push({ ...cfg.steps[cfg.steps.length - 1] }); renderSteps(); saveCfg(); }
+        function applyPreset(v) { if (!v) return; const m = cfg.steps[0].m; cfg.steps = v.split(',').map(f => ({ f: +f, m })); renderSteps(); saveCfg(); $('presetSel').value = ''; }
+        function resetCfg() { cfg = Object.assign({}, DEF, { steps: [{ f: 2, m: 'smooth' }] }); saveCfg(); bindAll(); }
+
+        function bindAll() {
+            ['sharp', 'q', 'br', 'bri', 'con', 'sat', 'fmt', 'fps'].forEach(k => {
+                const el = $('o_' + k); el.value = cfg[k]; if ($('v_' + k)) $('v_' + k).innerText = cfg[k];
+                el.onchange = el.oninput = () => { cfg[k] = el.value; if ($('v_' + k)) $('v_' + k).innerText = el.value; saveCfg(); };
+            });
+            $('execMode').value = cfg.mode;
+            $('execMode').onchange = () => { cfg.mode = $('execMode').value; saveCfg(); syncMode(); };
+            $('executionRoute').onchange = () => { cfg.route = $('executionRoute').value; saveCfg(); };
+            renderSteps(); rebuildTargets();
+        }
+        const syncMode = () => $('executionRoute').classList.toggle('hidden', $('execMode').value !== 'node');
+        function rebuildTargets() {
+            const r = $('executionRoute');
+            r.innerHTML = (remoteNodes.length > 1 ? '<option value="">– PC-Node wählen –</option>' : '') +
+                (remoteNodes.length ? remoteNodes.map(n => `<option value="${n.device}">💻 ${n.name.replace(/[<>&"]/g, '')}</option>`).join('') : '<option value="">Kein PC-Node online</option>');
+            r.value = [...r.options].some(o => o.value === cfg.route) ? cfg.route : r.options[0].value;
+            cfg.route = r.value; syncMode();
+        }
+
+        function getOpts() {
+            const f = cfg.bri == 100 && cfg.con == 100 && cfg.sat == 100 ? '' : `brightness(${cfg.bri}%) contrast(${cfg.con}%) saturate(${cfg.sat}%)`;
+            return { steps: cfg.steps.map(s => ({ f: +s.f, m: s.m })), sharp: +cfg.sharp, fmt: cfg.fmt, q: +cfg.q / 100, fps: +cfg.fps, br: +cfg.br, flt: f };
+        }
+        function setProg(p) { $('processBtn').innerText = p == null ? 'Upscale Starten 🚀' : '⏳ ' + p + '%'; }
+
+        // ---------- Upscale-Kern ----------
+        function sharpen(canvas, amt) {
+            const x = canvas.getContext('2d'), w = canvas.width, h = canvas.height;
+            const id = x.getImageData(0, 0, w, h), s = id.data, d = new Uint8ClampedArray(s), k = amt * 1.2, w4 = w * 4;
+            for (let y = 1; y < h - 1; y++) for (let c = 1; c < w - 1; c++) {
+                const i = (y * w + c) * 4;
+                for (let ch = 0; ch < 3; ch++) { const j = i + ch; d[j] = s[j] * (1 + 4 * k) - k * (s[j - 4] + s[j + 4] + s[j - w4] + s[j + w4]); }
+            }
+            id.data.set(d); x.putImageData(id, 0, 0);
+        }
+
+        // Pipeline: jeder Schritt = eigener Faktor + eigenes Modell
+        function makeChain(w0, h0, o, video) {
+            const tot = o.steps.reduce((a, s) => a * s.f, 1), lim = video ? 3840 : 8192;
+            let tw = w0 * tot, th = h0 * tot;
+            const k = Math.min(1, lim / tw, lim / th, video ? 1 : Math.sqrt(24e6 / (tw * th)));
+            tw = Math.max(w0, Math.round(tw * k)); th = Math.max(h0, Math.round(th * k));
+            if (video) { tw -= tw % 2; th -= th % 2; }
+            if (k < 1) addLog(`ℹ Ziel auf ${tw}×${th} begrenzt (${video ? '4K-' : 'Speicher'}Limit).`);
+            let w = w0, h = h0;
+            const st = o.steps.map((s, i) => {
+                const last = i === o.steps.length - 1;
+                w = last ? tw : Math.min(tw, Math.round(w * s.f)); h = last ? th : Math.min(th, Math.round(h * s.f));
+                const c = document.createElement('canvas'); c.width = w; c.height = h;
+                return { c, x: c.getContext('2d'), m: MODELS[s.m] || MODELS.smooth };
+            });
+            return {
+                out: st[st.length - 1].c,
+                run(src, sharp) {
+                    let cur = src;
+                    st.forEach((s, i) => {
+                        s.x.imageSmoothingEnabled = s.m.sm; s.x.imageSmoothingQuality = 'high';
+                        s.x.filter = ((s.m.b ? 'blur(.6px) ' : '') + (i === st.length - 1 ? o.flt : '')).trim() || 'none';
+                        s.x.drawImage(cur, 0, 0, s.c.width, s.c.height); s.x.filter = 'none';
+                        if (sharp && s.m.s) sharpen(s.c, s.m.s);
+                        cur = s.c;
+                    });
+                    if (sharp && o.sharp > 0) sharpen(cur, o.sharp / 100);
+                    return cur;
+                }
+            };
+        }
+
+        async function upscaleImage(blob, o) {
+            const bmp = await createImageBitmap(blob);
+            const chain = makeChain(bmp.width, bmp.height, o, false);
+            const out = chain.run(bmp, true); bmp.close();
+            return await new Promise((res, rej) => out.toBlob(b => b ? res(b) : rej(new Error('Export fehlgeschlagen')), o.fmt, o.q));
+        }
+
+        async function upscaleVideo(blob, o) {
+            const v = document.createElement('video'); v.src = URL.createObjectURL(blob); v.playsInline = true; v.preload = 'auto';
+            await new Promise((ok, no) => { v.onloadedmetadata = ok; v.onerror = () => no(new Error('Video nicht lesbar')); });
+            const chain = makeChain(v.videoWidth, v.videoHeight, o, true);
+            const sharp = chain.out.width * chain.out.height <= 2.1e6;   // Schärfen pro Frame nur bei kleinen Zielgrößen
+            const st = chain.out.captureStream(o.fps || 30);
+            try {
+                const ac = new AudioContext(), d = ac.createMediaStreamDestination();
+                ac.createMediaElementSource(v).connect(d);
+                d.stream.getAudioTracks().forEach(t => st.addTrack(t));
+                if (ac.state === 'suspended') ac.resume();
+            } catch (e) {}
+            const mime = ['video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'].find(m => MediaRecorder.isTypeSupported(m)) || '';
+            const rec = new MediaRecorder(st, { mimeType: mime, videoBitsPerSecond: (o.br || 12) * 1e6 });
+            const ch = []; rec.ondataavailable = e => { if (e.data.size) ch.push(e.data); };
+            const stopped = new Promise(r => rec.onstop = r);
+            rec.start(500);
+            try { await v.play(); } catch (e) { v.muted = true; addLog('ℹ Autoplay blockiert – Video ohne Ton.'); await v.play(); }
+            addLog(`🎬 Video ${chain.out.width}×${chain.out.height} wird in Echtzeit verarbeitet – Tab sichtbar lassen!`);
+            const draw = () => {
+                if (v.ended) return;
+                chain.run(v, sharp); setProg(Math.round(v.currentTime / v.duration * 100));
+                v.requestVideoFrameCallback ? v.requestVideoFrameCallback(draw) : requestAnimationFrame(draw);
+            };
+            draw();
+            await new Promise(r => { if (v.ended) r(); else v.onended = r; });
+            rec.stop(); await stopped; URL.revokeObjectURL(v.src);
+            return new Blob(ch, { type: (mime || 'video/webm').split(';')[0] });
+        }
+
+        const processBlob = (blob, o) => blob.type.startsWith('video/') ? upscaleVideo(blob, o) : upscaleImage(blob, o);
+        const extOf = (b) => b.type.split('/')[1].split(';')[0].replace('jpeg', 'jpg') || 'bin';
+
+        bindAll();
+
+        // ---------- Datei-Handling ----------
+        const dropZone = $('dropZone'), fileInput = $('fileInput');
+        dropZone.onclick = () => fileInput.click();
+        dropZone.ondragover = (e) => e.preventDefault();
+        dropZone.ondrop = (e) => { e.preventDefault(); if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); };
+        fileInput.onchange = (e) => { if (e.target.files[0]) setFile(e.target.files[0]); };
+
+        function setFile(f) {
+            if (!/^(image|video)\//.test(f.type)) return alert('Bitte ein Bild oder Video auswählen.');
+            selectedFile = f;
+            $('fileMeta').innerText = `Ausgewählt: ${f.name} (${(f.size / 1024 / 1024).toFixed(1)} MB)`;
+            $('processBtn').disabled = false;
+        }
+
+        // ---------- Auftrag starten ----------
+        function executeUpscale() {
+            if (!selectedFile) return alert('Kein Bild ausgewählt.');
+            const o = getOpts();
+            if ($('execMode').value === 'node') {
+                if (!currentUser || !meshChannel) return alert('Bitte zuerst in der Cloud anmelden.');
+                if (isPCNodeActive) return alert('Dieses Gerät ist selbst PC-Node – bitte "Lokal" wählen.');
+                const t = $('executionRoute').value;
+                if (!t || !remoteNodes.some(n => n.device === t)) return alert('Bitte einen PC-Node auswählen (aktuell keiner gewählt oder online).');
+                return runRemote(o, t);
+            }
+            return runLocal(o);
+        }
+
+        async function runLocal(o = getOpts()) {
+            $('processBtn').disabled = true;
+            try {
+                addLog('⚡ Führe Upscale lokal aus...');
+                showResult(await processBlob(selectedFile, o));
+                addLog('✔ Lokaler Upscale fertig.');
+            } catch (e) { addLog('❌ Fehler: ' + e.message); }
+            setProg(null); $('processBtn').disabled = false;
+        }
+
+        async function runRemote(o, target) {
+            const jobId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+            const ext = (selectedFile.name.split('.').pop() || 'bin').toLowerCase().replace(/[^a-z0-9]/g, '') || 'bin';
+            const path = `${currentUser.id}/in/${jobId}.${ext}`;
+            const name = (remoteNodes.find(n => n.device === target) || {}).name || 'PC-Node';
+            $('processBtn').disabled = true;
+            addLog('🚀 Lade Datei in die Cloud...');
+            const up = await sb.storage.from(BUCKET).upload(path, selectedFile, { contentType: selectedFile.type });
+            if (up.error) {
+                addLog('❌ Upload fehlgeschlagen: ' + up.error.message + ' – rechne lokal.');
+                $('processBtn').disabled = false; return runLocal(o);
+            }
+            const limit = selectedFile.type.startsWith('video/') ? 30 * 60e3 : JOB_TIMEOUT_MS;
+            pendingJobs[jobId] = { o, timer: setTimeout(async () => {
+                delete pendingJobs[jobId];
+                addLog('⏱ ' + name + ' hat nicht geantwortet – rechne lokal.');
+                await sb.storage.from(BUCKET).remove([path]);
+                $('processBtn').disabled = false; runLocal(o);
+            }, limit) };
+            setProg(null); $('processBtn').innerText = '⏳ ' + name + '...';
+            const r = await meshChannel.send({ type: 'broadcast', event: 'job', payload: { jobId, path, from: deviceId, to: target, opts: o } });
+            addLog(r === 'ok' ? '📤 Auftrag an ' + name + ' gesendet. Warte auf Ergebnis...' : '⚠ Senden unsicher: ' + r);
+        }
+
+        // ---------- PC-Node ----------
+        async function handleJob(job) {
+            if (!isPCNodeActive || !job || !job.jobId || (job.to && job.to !== deviceId)) return;
+            addLog('📥 Auftrag empfangen. Berechne...');
+            const store = sb.storage.from(BUCKET);
+            try {
+                const dl = await store.download(job.path); if (dl.error) throw dl.error;
+                const out = await processBlob(dl.data, job.opts || getOpts());
+                const outPath = `${currentUser.id}/out/${job.jobId}.${extOf(out)}`;
+                const up = await store.upload(outPath, out, { contentType: out.type, upsert: true }); if (up.error) throw up.error;
+                await store.remove([job.path]);
+                await meshChannel.send({ type: 'broadcast', event: 'result', payload: { jobId: job.jobId, path: outPath } });
+                addLog('✨ Fertig – Ergebnis zurückgesendet.');
+            } catch (e) {
+                addLog('❌ Fehler: ' + (e.message || e));
+                await meshChannel.send({ type: 'broadcast', event: 'result', payload: { jobId: job.jobId, error: String(e.message || e) } });
+            }
+            setProg(null);
+        }
+
+        async function handleResult(res) {
+            const p = res && pendingJobs[res.jobId]; if (!p) return;
+            clearTimeout(p.timer); delete pendingJobs[res.jobId];
+            if (res.error) { addLog('❌ Node-Fehler: ' + res.error + ' – rechne lokal.'); $('processBtn').disabled = false; return runLocal(p.o); }
+            const store = sb.storage.from(BUCKET), dl = await store.download(res.path);
+            setProg(null); $('processBtn').disabled = false;
+            if (dl.error) return addLog('❌ Ergebnis nicht ladbar: ' + dl.error.message);
+            showResult(dl.data); addLog('🎉 Fertiges Ergebnis vom PC-Node empfangen!');
+            await store.remove([res.path]);
+        }
+
+        // ---------- Ergebnis + Vorher/Nachher ----------
+        let lastUrl = null, origUrl = null;
+        function setCmp(p) {
+            p = Math.max(0, Math.min(100, p));
+            $('origImg').style.clipPath = `inset(0 ${100 - p}% 0 0)`;
+            $('cmpLine').style.left = p + '%';
+        }
+        const cw = $('cmpWrap');
+        const moveCmp = (e) => { const r = cw.getBoundingClientRect(); setCmp((e.clientX - r.left) / r.width * 100); };
+        cw.onpointerdown = (e) => { cw.setPointerCapture(e.pointerId); moveCmp(e); cw.onpointermove = moveCmp; };
+        cw.onpointerup = cw.onpointercancel = () => { cw.onpointermove = null; };
+
+        function showResult(blob) {
+            if (lastUrl) URL.revokeObjectURL(lastUrl);
+            lastUrl = URL.createObjectURL(blob);
+            const isV = blob.type.startsWith('video/');
+            $('previewBox').classList.remove('hidden');
+            cw.classList.toggle('hidden', isV); $('resVideo').classList.toggle('hidden', !isV);
+            if (isV) $('resVideo').src = lastUrl;
+            else {
+                if (origUrl) URL.revokeObjectURL(origUrl);
+                origUrl = URL.createObjectURL(selectedFile);
+                $('resultImg').src = lastUrl; $('origImg').src = origUrl; setCmp(50);
+            }
+            $('downloadLink').href = lastUrl; $('downloadLink').download = 'upscaled.' + extOf(blob);
+        }
+    </script>
+</body>
+</html>
