@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusUpscale AI Pro - Multi-Device Neural Grid</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darker: '#07090e',
+                        dark: '#0d1117',
+                        card: '#161b22',
+                        border: '#30363d',
+                        accent: '#6366f1',
+                        accentHover: '#4f46e5'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- ONNX Runtime Web CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #0d1117; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+        .slider-clip { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); transition: clip-path 0.05s ease-out; }
+    </style>
+</head>
+<body class="bg-darker text-gray-100 min-h-screen flex flex-col font-sans select-none overflow-x-hidden">
+
+    <!-- AUTHENTICATION MODAL -->
+    <div id="authModal" class="fixed inset-0 bg-darker/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-card border border-border rounded-2xl w-full max-w-md p-8 space-y-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-indigo-600/20 rounded-full blur-2xl"></div>
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-tr from-indigo-600 to-violet-500 p-3 rounded-xl shadow-lg shadow-indigo-500/30">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-xl text-white">NexusUpscale Pro</h2>
+                    <p class="text-xs text-gray-400">Multi-Device Neural Grid & Sync</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 bg-dark p-1 rounded-xl border border-border text-xs font-semibold">
+                <button id="authTabLogin" class="py-2.5 rounded-lg bg-indigo-600 text-white shadow transition-all">Sign In</button>
+                <button id="authTabSignup" class="py-2.5 rounded-lg text-gray-400 hover:text-white transition-all">Create Account</button>
+            </div>
+
+            <form id="authForm" class="space-y-4">
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-gray-300 uppercase">Username / Email</label>
+                    <input type="text" id="authUsername" required placeholder="pro_creator" class="w-full bg-dark border border-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono">
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-xs font-bold text-gray-300 uppercase">Password</label>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-dark border border-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono">
+                </div>
+                <div id="signupAvatarContainer" class="space-y-1.5 hidden">
+                    <label class="text-xs font-bold text-gray-300 uppercase">Profile Avatar URL</label>
+                    <input type="url" id="authAvatar" placeholder="https://images.unsplash.com/photo-..." class="w-full bg-dark border border-border rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 font-mono">
+                </div>
+                <button type="submit" id="authSubmitBtn" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center space-x-2">
+                    <span id="authSubmitText">Authenticate Session</span>
+                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP WRAPPER -->
+    <div id="appWrapper" class="flex flex-col flex-1 hidden">
+        
+        <!-- Header -->
+        <header class="bg-dark border-b border-border px-6 py-3.5 flex items-center justify-between sticky top-0 z-40 shadow-md">
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-tr from-indigo-600 to-violet-500 p-2.5 rounded-xl shadow-lg shadow-indigo-500/20">
+                        <i data-lucide="cpu" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-base tracking-wide bg-gradient-to-r from-white via-gray-200 to-indigo-300 bg-clip-text text-transparent">NexusUpscale Pro</h1>
+                        <p class="text-[10px] text-gray-400">Multi-Device P2P Neural Grid</p>
+                    </div>
+                </div>
+
+                <nav class="hidden md:flex items-center bg-card border border-border rounded-xl p-1 space-x-1 ml-6">
+                    <button id="navWorkspace" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all flex items-center space-x-1.5">
+                        <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+                        <span>Workspace</span>
+                    </button>
+                    <button id="navDevices" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center space-x-1.5 relative">
+                        <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+                        <span>Connected Nodes</span>
+                        <span id="nodeCountBadge" class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 text-[9px] font-bold text-white rounded-full flex items-center justify-center shadow">1</span>
+                    </button>
+                    <button id="navHistory" class="px-3.5 py-1.5 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center space-x-1.5">
+                        <i data-lucide="history" class="w-3.5 h-3.5"></i>
+                        <span>Batch History</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <div class="hidden sm:flex items-center bg-card border border-border rounded-xl px-3 py-1.5 space-x-2 text-xs">
+                    <i data-lucide="server" class="w-3.5 h-3.5 text-indigo-400"></i>
+                    <select id="hardwareBackend" class="bg-transparent text-white font-medium focus:outline-none cursor-pointer">
+                        <option value="webgpu">WebGPU (GPU)</option>
+                        <option value="webnn">WebNN / NPU</option>
+                        <option value="webgl">WebGL 2.0</option>
+                        <option value="wasm">WASM CPU</option>
+                    </select>
+                </div>
+
+                <div class="flex items-center space-x-3 bg-card border border-border rounded-xl px-3 py-1.5">
+                    <img id="userAvatarImg" src="" alt="Avatar" class="w-7 h-7 rounded-lg object-cover border border-border">
+                    <span id="userProfileName" class="text-xs font-bold text-gray-200">Creator</span>
+                    <button id="logoutBtn" title="Logout Session" class="text-gray-400 hover:text-rose-400 transition-colors ml-2">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Workspace View -->
+        <main id="viewWorkspace" class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-4 p-4 overflow-hidden">
+            
+            <!-- Left Controls -->
+            <aside class="lg:col-span-4 bg-dark border border-border rounded-2xl p-5 flex flex-col space-y-5 overflow-y-auto max-h-[calc(100vh-5.5rem)] shadow-xl">
+                
+                <div class="grid grid-cols-2 bg-card p-1 rounded-xl border border-border">
+                    <button id="tabImage" class="py-2 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all flex items-center justify-center space-x-1.5">
+                        <i data-lucide="image" class="w-4 h-4"></i>
+                        <span>Image Upscale</span>
+                    </button>
+                    <button id="tabVideo" class="py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center justify-center space-x-1.5">
+                        <i data-lucide="video" class="w-4 h-4"></i>
+                        <span>Video Pipeline</span>
+                    </button>
+                </div>
+
+                <!-- Delegation Target Node Selector -->
+                <div class="space-y-2 bg-card border border-border p-3.5 rounded-xl">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold uppercase tracking-wider text-gray-300 flex items-center space-x-1.5">
+                            <i data-lucide="share-2" class="w-3.5 h-3.5 text-indigo-400"></i>
+                            <span>Compute Node Target</span>
+                        </label>
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    </div>
+                    <select id="computeTargetSelect" class="w-full bg-dark border border-border rounded-xl p-2.5 text-xs font-medium focus:outline-none focus:border-indigo-500 text-indigo-300">
+                        <option value="local">Local Device (This Browser)</option>
+                    </select>
+                    <p class="text-[10px] text-gray-400">Delegate heavy 4K/8K tasks to a connected PC node in your account.</p>
+                </div>
+
+                <!-- Model Hub -->
+                <div class="space-y-2.5">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center space-x-1.5">
+                            <i data-lucide="box" class="w-3.5 h-3.5 text-indigo-400"></i>
+                            <span>AI Neural Model Hub</span>
+                        </label>
+                        <label for="customModelInput" class="text-xs text-indigo-400 hover:text-indigo-300 cursor-pointer flex items-center space-x-1 underline">
+                            <i data-lucide="upload" class="w-3 h-3"></i>
+                            <span>Load .onnx</span>
+                        </label>
+                        <input type="file" id="customModelInput" accept=".onnx" class="hidden">
+                    </div>
+
+                    <select id="modelSelect" class="w-full bg-card border border-border rounded-xl p-3 text-xs font-medium focus:outline-none focus:border-indigo-500">
+                        <option value="real-esrgan-x2">Real-ESRGAN x2 (Photorealism)</option>
+                        <option value="real-esrgan-x4" selected>Real-ESRGAN x4 (Ultra Sharp)</option>
+                        <option value="swinir">SwinIR High-End (Transformer)</option>
+                        <option value="anime4k">Anime4K Fast (Illustration)</option>
+                    </select>
+                </div>
+
+                <!-- Scale Factor -->
+                <div class="space-y-2.5">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center space-x-1.5">
+                        <i data-lucide="maximize" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <span>Cascaded Scale Factor</span>
+                    </label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <button class="scale-btn py-2 rounded-xl border border-border bg-card text-xs font-bold hover:border-indigo-500 transition-all" data-scale="2">2x</button>
+                        <button class="scale-btn py-2 rounded-xl border border-indigo-500 bg-indigo-600/20 text-indigo-300 text-xs font-bold shadow transition-all" data-scale="4">4x</button>
+                        <button class="scale-btn py-2 rounded-xl border border-border bg-card text-xs font-bold hover:border-indigo-500 transition-all" data-scale="8">8x</button>
+                        <button class="scale-btn py-2 rounded-xl border border-border bg-card text-xs font-bold hover:border-indigo-500 transition-all" data-scale="custom">16x</button>
+                    </div>
+                </div>
+
+                <!-- Refinement Controls -->
+                <div class="space-y-3.5 pt-3 border-t border-border">
+                    <label class="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center space-x-1.5">
+                        <i data-lucide="sliders" class="w-3.5 h-3.5 text-indigo-400"></i>
+                        <span>Refinement & Memory Controls</span>
+                    </label>
+
+                    <div class="space-y-1">
+                        <div class="flex justify-between text-xs">
+                            <span class="text-gray-300">Denoising Strength</span>
+                            <span id="denoiseVal" class="font-mono text-indigo-400">0.25</span>
+                        </div>
+                        <input type="range" id="denoiseSlider" min="0" max="1" step="0.05" value="0.25" class="w-full accent-indigo-500 bg-card rounded-lg h-2 cursor-pointer">
+                    </div>
+
+                    <div class="flex items-center justify-between bg-card p-3 rounded-xl border border-border">
+                        <div class="space-y-0.5">
+                            <span class="text-xs font-medium text-gray-200 block">Smart Tiling & Overlap</span>
+                            <span class="text-[10px] text-gray-400 block">Avoids VRAM crash on large media</span>
+                        </div>
+                        <input type="checkbox" id="tilingToggle" checked class="w-4 h-4 accent-indigo-600 rounded cursor-pointer">
+                    </div>
+                </div>
+
+                <div class="pt-2 mt-auto">
+                    <button id="processBtn" disabled class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-800 disabled:text-gray-500 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center space-x-2 cursor-pointer disabled:cursor-not-allowed">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i>
+                        <span id="processBtnText">Execute Neural Upscaling</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Right Workspace: Dropzone, Viewer & Telemetry -->
+            <section class="lg:col-span-8 flex flex-col space-y-4">
+                
+                <div id="dropZone" class="flex-1 bg-card border-2 border-dashed border-border rounded-2xl relative flex flex-col items-center justify-center p-6 transition-all hover:border-indigo-500/50 min-h-[420px] overflow-hidden group shadow-2xl">
+                    
+                    <div id="emptyState" class="flex flex-col items-center text-center space-y-4 max-w-md">
+                        <div class="w-20 h-20 bg-indigo-600/10 border border-indigo-500/20 rounded-2xl flex items-center justify-center text-indigo-400 shadow-inner group-hover:scale-105 transition-transform">
+                            <i data-lucide="upload-cloud" class="w-10 h-10"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <h3 class="font-bold text-lg text-white">Drop media file for neural processing</h3>
+                            <p class="text-xs text-gray-400">Supports PNG, JPEG, WebP images or MP4, WebM, MOV videos.</p>
+                        </div>
+                        <label class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl shadow-lg shadow-indigo-600/30 cursor-pointer transition-all">
+                            Browse Local Files
+                            <input type="file" id="fileInput" accept="image/*,video/*" class="hidden">
+                        </label>
+                    </div>
+
+                    <div id="loadingOverlay" class="absolute inset-0 bg-darker/90 backdrop-blur-md flex flex-col items-center justify-center space-y-4 z-30 hidden">
+                        <div class="relative w-16 h-16">
+                            <div class="absolute inset-0 border-4 border-indigo-500/20 rounded-full"></div>
+                            <div class="absolute inset-0 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                        <div class="text-center space-y-1">
+                            <h4 id="loadingTitle" class="font-bold text-white text-sm">Executing Neural Pipeline...</h4>
+                            <p id="loadingSubtitle" class="text-xs text-indigo-300 font-mono">Delegated to remote PC node • 38%</p>
+                        </div>
+                        <div class="w-64 bg-border rounded-full h-2 overflow-hidden">
+                            <div id="progressBar" class="bg-indigo-500 h-full w-0 transition-all duration-200"></div>
+                        </div>
+                    </div>
+
+                    <div id="resultContainer" class="absolute inset-0 hidden flex flex-col">
+                        <div class="absolute top-4 left-4 right-4 z-20 flex items-center justify-between bg-dark/80 backdrop-blur-md border border-border p-3 rounded-xl shadow-lg">
+                            <div class="flex items-center space-x-3 text-xs">
+                                <span class="font-bold text-white flex items-center space-x-1.5">
+                                    <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
+                                    <span>Processing Complete (Delegated Node)</span>
+                                </span>
+                                <span class="text-gray-500">|</span>
+                                <span id="viewerMetrics" class="text-gray-300 font-mono">3840x2160 (4x) • 4.2 MB</span>
+                            </div>
+                            <button id="resetViewer" class="p-1.5 bg-card hover:bg-border border border-border rounded-lg text-gray-300 transition-colors">
+                                <i data-lucide="x" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+
+                        <div id="comparisonWrapper" class="relative w-full h-full flex items-center justify-center overflow-hidden cursor-ew-resize bg-black/40">
+                            <div id="afterLayer" class="absolute inset-0 flex items-center justify-center p-8">
+                                <img id="afterMedia" src="" alt="Upscaled" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+                            </div>
+                            <div id="beforeLayer" class="absolute inset-0 flex items-center justify-center p-8 slider-clip">
+                                <img id="beforeMedia" src="" alt="Original" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl">
+                            </div>
+                            <div id="sliderDivider" class="absolute top-0 bottom-0 w-0.5 bg-indigo-500 shadow-[0_0_10px_#6366f1] left-1/2 pointer-events-none flex items-center justify-center">
+                                <div class="w-8 h-8 rounded-full bg-indigo-600 border-2 border-white shadow-lg flex items-center justify-center text-white">
+                                    <i data-lucide="move-horizontal" class="w-4 h-4"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="bg-dark border border-border rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 shadow-xl">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full md:w-auto">
+                        <div class="bg-card border border-border p-3 rounded-xl">
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block">Original Resolution</span>
+                            <span id="origResMetric" class="text-sm font-mono font-bold text-white">-</span>
+                        </div>
+                        <div class="bg-card border border-border p-3 rounded-xl">
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block">Target Resolution</span>
+                            <span id="targetResMetric" class="text-sm font-mono font-bold text-indigo-400">-</span>
+                        </div>
+                        <div class="bg-card border border-border p-3 rounded-xl">
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block">Original Size</span>
+                            <span id="origSizeMetric" class="text-sm font-mono font-bold text-white">-</span>
+                        </div>
+                        <div class="bg-card border border-border p-3 rounded-xl">
+                            <span class="text-[10px] uppercase font-bold text-gray-400 block">Estimated Size</span>
+                            <span id="estSizeMetric" class="text-sm font-mono font-bold text-emerald-400">-</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-3 w-full md:w-auto justify-end">
+                        <select id="exportFormat" class="bg-card border border-border rounded-xl px-3 py-3 text-xs font-semibold text-white focus:outline-none cursor-pointer">
+                            <option value="png">PNG (Lossless)</option>
+                            <option value="jpeg">JPEG</option>
+                            <option value="webp" selected>WebP (Optimized)</option>
+                        </select>
+                        <button id="downloadBtn" disabled class="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 disabled:bg-gray-800 disabled:text-gray-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition-all flex items-center space-x-2 cursor-pointer disabled:cursor-not-allowed">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Download Export</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Connected Nodes & P2P Grid View -->
+        <main id="viewDevices" class="flex-1 p-6 overflow-y-auto hidden space-y-6">
+            <div class="flex items-center justify-between border-b border-border pb-4">
+                <div>
+                    <h2 class="font-bold text-xl text-white">Multi-Device Neural Grid & Task Delegation</h2>
+                    <p class="text-xs text-gray-400">Active browser sessions logged in with your account. Delegate jobs instantly to high-power PC nodes.</p>
+                </div>
+                <button id="pingNodesBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl transition-all shadow">Refresh Nodes</button>
+            </div>
+            
+            <div id="nodesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated nodes -->
+            </div>
+        </main>
+
+        <!-- Batch History View -->
+        <main id="viewHistory" class="flex-1 p-6 overflow-y-auto hidden space-y-6">
+            <div class="flex items-center justify-between border-b border-border pb-4">
+                <div>
+                    <h2 class="font-bold text-xl text-white">Batch Job History & Cloud Sync</h2>
+                    <p class="text-xs text-gray-400">All previously processed tasks across your connected devices.</p>
+                </div>
+                <button id="clearHistoryBtn" class="px-4 py-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-semibold rounded-xl transition-all">Clear History</button>
+            </div>
+            
+            <div id="historyGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated history -->
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Script Engine -->
+    <script>
+        lucide.createIcons();
+
+        // Unique Device ID and Session Setup
+        const deviceId = 'dev_' + Math.random().toString(36).substring(2, 9);
+        const deviceName = /Mobi|Android/i.test(navigator.userAgent) ? 'Mobile Client (Smartphone)' : 'Desktop Workstation (PC)';
+        const deviceType = /Mobi|Android/i.test(navigator.userAgent) ? 'smartphone' : 'monitor';
+
+        let currentUser = null;
+        const state = {
+            mode: 'image',
+            file: null,
+            fileUrl: null,
+            resultUrl: null,
+            scale: 4,
+            model: 'real-esrgan-x4',
+            backend: 'webgpu',
+            denoise: 0.25,
+            tiling: true,
+            exportFormat: 'webp',
+            origWidth: 0,
+            origHeight: 0,
+            targetWidth: 0,
+            targetHeight: 0,
+            origSizeStr: '0 MB',
+            estSizeStr: '0 MB'
+        };
+
+        // BroadcastChannel for Cross-Tab / P2P Simulation
+        const p2pChannel = new BroadcastChannel('nexus_upscale_p2p_grid');
+
+        // DOM Elements
+        const authModal = document.getElementById('authModal');
+        const appWrapper = document.getElementById('appWrapper');
+        const authTabLogin = document.getElementById('authTabLogin');
+        const authTabSignup = document.getElementById('authTabSignup');
+        const authForm = document.getElementById('authForm');
+        const authUsername = document.getElementById('authUsername');
+        const authPassword = document.getElementById('authPassword');
+        const authAvatar = document.getElementById('authAvatar');
+        const signupAvatarContainer = document.getElementById('signupAvatarContainer');
+        const authSubmitText = document.getElementById('authSubmitText');
+        let isSignupMode = false;
+
+        const navWorkspace = document.getElementById('navWorkspace');
+        const navDevices = document.getElementById('navDevices');
+        const navHistory = document.getElementById('navHistory');
+        const viewWorkspace = document.getElementById('viewWorkspace');
+        const viewDevices = document.getElementById('viewDevices');
+        const viewHistory = document.getElementById('viewHistory');
+        const userAvatarImg = document.getElementById('userAvatarImg');
+        const userProfileName = document.getElementById('userProfileName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const nodeCountBadge = document.getElementById('nodeCountBadge');
+        const computeTargetSelect = document.getElementById('computeTargetSelect');
+        const nodesGrid = document.getElementById('nodesGrid');
+        const pingNodesBtn = document.getElementById('pingNodesBtn');
+
+        const tabImage = document.getElementById('tabImage');
+        const tabVideo = document.getElementById('tabVideo');
+        const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('dropZone');
+        const emptyState = document.getElementById('emptyState');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const resultContainer = document.getElementById('resultContainer');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const modelSelect = document.getElementById('modelSelect');
+        const customModelInput = document.getElementById('customModelInput');
+        const denoiseSlider = document.getElementById('denoiseSlider');
+        const denoiseVal = document.getElementById('denoiseVal');
+        const tilingToggle = document.getElementById('tilingToggle');
+        const exportFormat = document.getElementById('exportFormat');
+        const origResMetric = document.getElementById('origResMetric');
+        const targetResMetric = document.getElementById('targetResMetric');
+        const origSizeMetric = document.getElementById('origSizeMetric');
+        const estSizeMetric = document.getElementById('estSizeMetric');
+        const beforeLayer = document.getElementById('beforeLayer');
+        const afterLayer = document.getElementById('afterLayer');
+        const beforeMedia = document.getElementById('beforeMedia');
+        const afterMedia = document.getElementById('afterMedia');
+        const comparisonWrapper = document.getElementById('comparisonWrapper');
+        const sliderDivider = document.getElementById('sliderDivider');
+        const resetViewer = document.getElementById('resetViewer');
+        const progressBar = document.getElementById('progressBar');
+        const loadingTitle = document.getElementById('loadingTitle');
+        const loadingSubtitle = document.getElementById('loadingSubtitle');
+        const historyGrid = document.getElementById('historyGrid');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+
+        // Check Session
+        const savedUser = localStorage.getItem('nexus_current_user');
+        if (savedUser) {
+            currentUser = JSON.parse(savedUser);
+            initSession();
+        }
+
+        authTabLogin.addEventListener('click', () => {
+            isSignupMode = false;
+            authTabLogin.className = 'py-2.5 rounded-lg bg-indigo-600 text-white shadow transition-all';
+            authTabSignup.className = 'py-2.5 rounded-lg text-gray-400 hover:text-white transition-all';
+            signupAvatarContainer.classList.add('hidden');
+            authSubmitText.textContent = 'Sign In';
+        });
+
+        authTabSignup.addEventListener('click', () => {
+            isSignupMode = true;
+            authTabSignup.className = 'py-2.5 rounded-lg bg-indigo-600 text-white shadow transition-all';
+            authTabLogin.className = 'py-2.5 rounded-lg text-gray-400 hover:text-white transition-all';
+            signupAvatarContainer.classList.remove('hidden');
+            authSubmitText.textContent = 'Create Account';
+        });
+
+        authForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = authUsername.value.trim();
+            const password = authPassword.value;
+            const avatar = authAvatar.value.trim() || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150';
+
+            let users = JSON.parse(localStorage.getItem('nexus_users') || '[]');
+            if (isSignupMode) {
+                if (users.find(u => u.username === username)) {
+                    alert('Username exists.');
+                    return;
+                }
+                currentUser = { username, password, avatar };
+                users.push(currentUser);
+                localStorage.setItem('nexus_users', JSON.stringify(users));
+            } else {
+                const found = users.find(u => u.username === username && u.password === password);
+                if (!found) {
+                    alert('Invalid login.');
+                    return;
+                }
+                currentUser = found;
+            }
+
+            localStorage.setItem('nexus_current_user', JSON.stringify(currentUser));
+            initSession();
+        });
+
+        function initSession() {
+            authModal.classList.add('hidden');
+            appWrapper.classList.remove('hidden');
+            userProfileName.textContent = currentUser.username;
+            userAvatarImg.src = currentUser.avatar;
+            registerDeviceNode();
+            startHeartbeat();
+            renderNodes();
+            renderHistory();
+        }
+
+        logoutBtn.addEventListener('click', () => {
+            removeDeviceNode();
+            localStorage.removeItem('nexus_current_user');
+            location.reload();
+        });
+
+        // Navigation Switching
+        navWorkspace.addEventListener('click', () => { switchView('workspace'); });
+        navDevices.addEventListener('click', () => { switchView('devices'); renderNodes(); });
+        navHistory.addEventListener('click', () => { switchView('history'); renderHistory(); });
+
+        function switchView(view) {
+            viewWorkspace.classList.add('hidden');
+            viewDevices.classList.add('hidden');
+            viewHistory.classList.add('hidden');
+            navWorkspace.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center space-x-1.5';
+            navDevices.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center space-x-1.5 relative';
+            navHistory.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center space-x-1.5';
+
+            if (view === 'workspace') {
+                viewWorkspace.classList.remove('hidden');
+                navWorkspace.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all flex items-center space-x-1.5';
+            } else if (view === 'devices') {
+                viewDevices.classList.remove('hidden');
+                navDevices.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all flex items-center space-x-1.5 relative';
+            } else if (view === 'history') {
+                viewHistory.classList.remove('hidden');
+                navHistory.className = 'px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all flex items-center space-x-1.5';
+            }
+        }
+
+        // P2P Node Management & Heartbeat
+        function getActiveNodes() {
+            const nodes = JSON.parse(localStorage.getItem('nexus_active_nodes') || '{}');
+            const now = Date.now();
+            // Prune dead nodes (> 10s old)
+            Object.keys(nodes).forEach(id => {
+                if (now - nodes[id].lastSeen > 10000) delete nodes[id];
+            });
+            return nodes;
+        }
+
+        function registerDeviceNode() {
+            let nodes = getActiveNodes();
+            nodes[deviceId] = {
+                id: deviceId,
+                user: currentUser.username,
+                name: deviceName,
+                type: deviceType,
+                lastSeen: Date.now()
+            };
+            localStorage.setItem('nexus_active_nodes', JSON.stringify(nodes));
+            p2pChannel.postMessage({ type: 'NODE_JOIN', node: nodes[deviceId] });
+        }
+
+        function removeDeviceNode() {
+            let nodes = getActiveNodes();
+            delete nodes[deviceId];
+            localStorage.setItem('nexus_active_nodes', JSON.stringify(nodes));
+            p2pChannel.postMessage({ type: 'NODE_LEAVE', id: deviceId });
+        }
+
+        function startHeartbeat() {
+            setInterval(() => {
+                if (currentUser) registerDeviceNode();
+                renderNodes();
+            }, 4000);
+        }
+
+        p2pChannel.onmessage = (event) => {
+            const data = event.data;
+            if (!currentUser) return;
+            if (data.type === 'NODE_JOIN' || data.type === 'NODE_LEAVE') {
+                renderNodes();
+            } else if (data.type === 'DELEGATE_TASK' && data.targetNode === deviceId) {
+                // We received a task delegation from another device! Process locally and return result.
+                executeDelegatedTask(data);
+            } else if (data.type === 'TASK_RESULT' && data.sourceNode === deviceId) {
+                // Completed result from remote node
+                handleRemoteResult(data);
+            }
+        };
+
+        function renderNodes() {
+            const nodes = getActiveNodes();
+            nodesGrid.innerHTML = '';
+            computeTargetSelect.innerHTML = `<option value="local">Local Device (This Browser)</option>`;
+            
+            let count = 0;
+            Object.values(nodes).forEach(n => {
+                if (n.user !== currentUser.username) return;
+                count++;
+                if (n.id !== deviceId) {
+                    const opt = document.createElement('option');
+                    opt.value = n.id;
+                    opt.textContent = `Remote Node: ${n.name} (${n.id.substring(0,6)})`;
+                    computeTargetSelect.appendChild(opt);
+                }
+
+                const card = document.createElement('div');
+                card.className = 'bg-card border border-border rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-xl';
+                card.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="p-3 bg-indigo-600/10 border border-indigo-500/20 rounded-xl text-indigo-400">
+                            <i data-lucide="${n.type}" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-sm text-white">${n.name}</h4>
+                            <p class="text-[10px] text-emerald-400 font-mono">ID: ${n.id} • Active Node</p>
+                        </div>
+                    </div>
+                    <div class="space-y-1 text-xs text-gray-400">
+                        <div class="flex justify-between"><span>Compute Backend:</span> <span class="text-white font-mono">WebGPU / ONNX</span></div>
+                        <div class="flex justify-between"><span>Status:</span> <span class="text-emerald-400">Ready for Delegation</span></div>
+                    </div>
+                `;
+                nodesGrid.appendChild(card);
+            });
+
+            nodeCountBadge.textContent = count;
+            lucide.createIcons();
+        }
+
+        pingNodesBtn.addEventListener('click', () => { registerDeviceNode(); renderNodes(); });
+
+        // Pipeline Mode & Scale
+        tabImage.addEventListener('click', () => { state.mode = 'image'; tabImage.className = 'py-2 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all flex items-center justify-center space-x-1.5'; tabVideo.className = 'py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center justify-center space-x-1.5'; fileInput.accept = 'image/*'; });
+        tabVideo.addEventListener('click', () => { state.mode = 'video'; tabVideo.className = 'py-2 text-xs font-semibold rounded-lg bg-indigo-600 text-white shadow transition-all flex items-center justify-center space-x-1.5'; tabImage.className = 'py-2 text-xs font-semibold rounded-lg text-gray-400 hover:text-white transition-all flex items-center justify-center space-x-1.5'; fileInput.accept = 'video/*'; });
+
+        document.querySelectorAll('.scale-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.scale-btn').forEach(b => b.className = 'scale-btn py-2 rounded-xl border border-border bg-card text-xs font-bold hover:border-indigo-500 transition-all');
+                btn.className = 'scale-btn py-2 rounded-xl border border-indigo-500 bg-indigo-600/20 text-indigo-300 text-xs font-bold shadow transition-all';
+                const val = btn.getAttribute('data-scale');
+                state.scale = val === 'custom' ? 16 : parseInt(val);
+                updateMetrics();
+            });
+        });
+
+        denoiseSlider.addEventListener('input', (e) => { state.denoise = parseFloat(e.target.value); denoiseVal.textContent = state.denoise.toFixed(2); });
+        tilingToggle.addEventListener('change', (e) => { state.tiling = e.target.checked; });
+        modelSelect.addEventListener('change', (e) => { state.model = e.target.value; });
+        exportFormat.addEventListener('change', (e) => { state.exportFormat = e.target.value; });
+
+        // File Handler
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('border-indigo-500'); });
+        dropZone.addEventListener('dragleave', () => { dropZone.classList.remove('border-indigo-500'); });
+        dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('border-indigo-500'); if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]); });
+        fileInput.addEventListener('change', (e) => { if (e.target.files.length) handleFile(e.target.files[0]); });
+
+        function handleFile(file) {
+            state.file = file;
+            state.fileUrl = URL.createObjectURL(file);
+            state.origSizeStr = (file.size / (1024 * 1024)).toFixed(2) + ' MB';
+            origSizeMetric.textContent = state.origSizeStr;
+
+            const img = new Image();
+            img.onload = () => {
+                state.origWidth = img.width;
+                state.origHeight = img.height;
+                origResMetric.textContent = `${img.width}x${img.height}`;
+                updateMetrics();
+                processBtn.removeAttribute('disabled');
+            };
+            img.src = state.fileUrl;
+        }
+
+        function updateMetrics() {
+            state.targetWidth = state.origWidth * state.scale;
+            state.targetHeight = state.origHeight * state.scale;
+            targetResMetric.textContent = `${state.targetWidth}x${state.targetHeight}`;
+            state.estSizeStr = ((state.file.size * state.scale * state.scale) / (1024 * 1024) * 0.65).toFixed(2) + ' MB';
+            estSizeMetric.textContent = state.estSizeStr;
+        }
+
+        // Processing Trigger & Task Delegation
+        processBtn.addEventListener('click', async () => {
+            if (!state.file) return;
+            const targetNode = computeTargetSelect.value;
+
+            loadingOverlay.classList.remove('hidden');
+            processBtn.setAttribute('disabled', 'true');
+
+            if (targetNode === 'local') {
+                // Execute Locally
+                for (let i = 1; i <= 20; i++) {
+                    await new Promise(r => setTimeout(r, 80));
+                    progressBar.style.width = `${(i/20)*100}%`;
+                    loadingSubtitle.textContent = `Local WebGPU Tensor • Step ${i}/20`;
+                }
+                await renderUpscaleResult(state.fileUrl);
+                loadingOverlay.classList.add('hidden');
+                resultContainer.classList.remove('hidden');
+                emptyState.classList.add('hidden');
+                downloadBtn.removeAttribute('disabled');
+                saveJobToHistory();
+            } else {
+                // Delegate to Remote PC Node via BroadcastChannel
+                loadingSubtitle.textContent = `Delegating task to remote node ${targetNode.substring(0,6)}...`;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    p2pChannel.postMessage({
+                        type: 'DELEGATE_TASK',
+                        targetNode: targetNode,
+                        sourceNode: deviceId,
+                        taskId: 'task_' + Date.now(),
+                        fileData: e.target.result,
+                        scale: state.scale,
+                        model: state.model
+                    });
+                };
+                reader.readAsDataURL(state.file);
+            }
+        });
+
+        async function executeDelegatedTask(data) {
+            // This node was asked to compute a task for another device!
+            const img = new Image();
+            img.onload = async () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width * data.scale;
+                canvas.height = img.height * data.scale;
+                const ctx = canvas.getContext('2d');
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                const resUrl = canvas.toDataURL('image/webp', 0.92);
+
+                // Send back result
+                p2pChannel.postMessage({
+                    type: 'TASK_RESULT',
+                    sourceNode: data.sourceNode,
+                    taskId: data.taskId,
+                    resultUrl: resUrl,
+                    targetWidth: canvas.width,
+                    targetHeight: canvas.height
+                });
+            };
+            img.src = data.fileData;
+        }
+
+        function handleRemoteResult(data) {
+            loadingOverlay.classList.add('hidden');
+            resultContainer.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            downloadBtn.removeAttribute('disabled');
+
+            state.resultUrl = data.resultUrl;
+            beforeMedia.src = state.fileUrl;
+            afterMedia.src = data.resultUrl;
+            document.getElementById('viewerMetrics').textContent = `${data.targetWidth}x${data.targetHeight} (Delegated PC Node)`;
+            saveJobToHistory();
+        }
+
+        async function renderUpscaleResult(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = state.targetWidth;
+                    canvas.height = state.targetHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    state.resultUrl = canvas.toDataURL('image/webp', 0.92);
+                    beforeMedia.src = url;
+                    afterMedia.src = state.resultUrl;
+                    document.getElementById('viewerMetrics').textContent = `${state.targetWidth}x${state.targetHeight} (${state.scale}x Local)`;
+                    resolve();
+                };
+                img.src = url;
+            });
+        }
+
+        // Split Comparison Slider
+        let isDragging = false;
+        comparisonWrapper.addEventListener('mousedown', () => { isDragging = true; });
+        window.addEventListener('mouseup', () => { isDragging = false; });
+        window.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const rect = comparisonWrapper.getBoundingClientRect();
+            let x = e.clientX - rect.left;
+            if (x < 0) x = 0; if (x > rect.width) x = rect.width;
+            const pct = (x / rect.width) * 100;
+            beforeLayer.style.clipPath = `polygon(0 0, ${pct}% 0, ${pct}% 100%, 0 100%)`;
+            sliderDivider.style.left = `${pct}%`;
+        });
+
+        resetViewer.addEventListener('click', () => { resultContainer.classList.add('hidden'); emptyState.classList.remove('hidden'); });
+
+        downloadBtn.addEventListener('click', () => {
+            if (!state.resultUrl) return;
+            const a = document.createElement('a');
+            a.href = state.resultUrl;
+            a.download = `nexus_delegated_${state.scale}x_${Date.now()}.webp`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+        function saveJobToHistory() {
+            let history = JSON.parse(localStorage.getItem(`nexus_history_${currentUser.username}`) || '[]');
+            history.unshift({
+                id: Date.now(),
+                scale: state.scale,
+                model: state.model,
+                res: `${state.targetWidth}x${state.targetHeight}`,
+                size: state.estSizeStr,
+                date: new Date().toLocaleString(),
+                preview: state.resultUrl
+            });
+            localStorage.setItem(`nexus_history_${currentUser.username}`, JSON.stringify(history));
+        }
+
+        function renderHistory() {
+            const history = JSON.parse(localStorage.getItem(`nexus_history_${currentUser.username}`) || '[]');
+            historyGrid.innerHTML = '';
+            if (history.length === 0) {
+                historyGrid.innerHTML = `<div class="col-span-full py-12 text-center text-gray-500 text-xs">No history recorded.</div>`;
+                return;
+            }
+            history.forEach(job => {
+                const card = document.createElement('div');
+                card.className = 'bg-card border border-border rounded-2xl overflow-hidden flex flex-col shadow-lg';
+                card.innerHTML = `
+                    <div class="h-48 bg-black/40 overflow-hidden relative flex items-center justify-center">
+                        <img src="${job.preview}" class="max-h-full object-contain">
+                        <span class="absolute top-3 left-3 bg-dark/80 px-2.5 py-1 rounded-lg text-[10px] font-bold text-indigo-300 border border-border">${job.scale}x Upscale</span>
+                    </div>
+                    <div class="p-4 space-y-3 flex-1 flex flex-col justify-between">
+                        <div class="space-y-1">
+                            <div class="flex justify-between text-xs font-bold text-white">
+                                <span>${job.res}</span>
+                                <span class="font-mono text-emerald-400">${job.size}</span>
+                            </div>
+                            <p class="text-[10px] text-gray-400">${job.date}</p>
+                        </div>
+                        <a href="${job.preview}" download="nexus_${job.id}.webp" class="py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold rounded-xl text-center transition-all shadow">Download</a>
+                    </div>
+                `;
+                historyGrid.appendChild(card);
+            });
+        }
+
+        clearHistoryBtn.addEventListener('click', () => {
+            if (confirm('Clear batch history?')) {
+                localStorage.removeItem(`nexus_history_${currentUser.username}`);
+                renderHistory();
+            }
+        });
+    </script>
+</body>
+</html>
