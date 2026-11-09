@@ -34,7 +34,7 @@ Her ruthless isolation was finally broken when the <mark>Traveler</mark> arrived
 
 <p> Odette is a mysterious new figure in <mark>Teyvat</mark> whose past is still shrouded in dark secrets.
 Driven by a personal vendetta, she navigates the shadows of the nations while hiding her true motivations from those around her.
-Her unexpected arrival catches the attention of the Traveler, as her fate seems deeply tied to the upcoming conflicts. <p/>
+Her unexpected arrival catches the attention of the Traveler, as her fate seems deeply tied to the upcoming conflicts. </p>
 <img
 src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png/revision/latest?cb=20260703040217" alt="Odette" width="832" height="1216">
 
@@ -44,7 +44,7 @@ src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png
   Despite her relaxed lifestyle, she is highly dedicated to defending her nation against any incoming threats.
 </p>
 <img src="https://static.wikia.nocookie.net/gensin-impact/images/a/a7/Varesa_Card.png/revision/latest?cb=20250217100445" alt="Varesa.img" width="832" height="1216">
-
+<p> </p>
 	<h>The most Popular Fatui Harbingers:</h>
     <p>The 4th Harbinger: "Arlecchino"</p>
     <img src="https://imgs.search.brave.com/GQ-o90hsLTV5GFoWBftSi9W0ssspoURDK6dglUDS-fI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zMy56/ZXJvY2hhbi5uZXQv/MjQwLzE0LzM5LzQy/MDY5NjQuYXZpZg" alt="Arlecchino.jpg" width="832" height="1216">
