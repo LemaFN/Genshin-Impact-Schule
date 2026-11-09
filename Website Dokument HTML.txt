@@ -43,8 +43,7 @@ src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png
   Adored by local children as the "Masked Hero", she possesses immense martial strength alongside a legendary, <mark>insatiable appetite</mark> for food. 
   Despite her relaxed lifestyle, she is highly dedicated to defending her nation against any incoming threats.
 </p>
-<img src="https://static.wikia.nocookie.net/gensin-impact/images/a/a7/Varesa_Card.png/revision/latest?cb=20250217100445" alt="Varesa.img">
-
+<img src="https://static.wikia.nocookie.net/gensin-impact/images/a/a7/Varesa_Card.png/revision/latest?cb=20250217100445" alt="Varesa.img" width="832" height="1216">
 
 	<h>The most Popular Fatui Harbingers:</h>
     <p>The 4th Harbinger: "Arlecchino"</p>
