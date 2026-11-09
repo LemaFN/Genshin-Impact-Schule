@@ -47,9 +47,10 @@ src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png
 <img src="https://static.wikia.nocookie.net/gensin-impact/images/a/a7/Varesa_Card.png/revision/latest?cb=20250217100445" alt="Varesa.img" width="832" height="1216">
 <p> </p>
 	<h>The most Popular Fatui Harbingers:</h>
-    <p>The 4th Harbinger: "Arlecchino"</p>
+    <p>The 4th Harbinger: "<mark>Arlecchino</mark>"
+</p>
     <img src="https://imgs.search.brave.com/GQ-o90hsLTV5GFoWBftSi9W0ssspoURDK6dglUDS-fI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zMy56/ZXJvY2hhbi5uZXQv/MjQwLzE0LzM5LzQy/MDY5NjQuYXZpZg" alt="Arlecchino.jpg" width="832" height="1216">
-    <p>In the Story, she becomes your Ally and "Friend"... She also owns a Orphanage named House of the Fireplace, where her "Kids" also call her "Father" She Still is one of the best Charactes to Play and definitive got alot of Aura</p>
+    <p>In the Story, she becomes your Ally and "Friend"... She also owns a <mark>Orphanage</mark> named House of the Fireplace, where her "<mark>Kids</mark>" also call her "<mark>Father</mark>" She Still is one of the best Charactes to Play and definitive got alot of Aura</p>
 
     <h>Then the 3rd Harbinger: "Columbina"</h>
     <img src="https://imgs.search.brave.com/qLveY8nLmopxEuz4hnSoJNXtWzU4NKkAc6wUVt_G1G4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/dWhkcGFwZXIuY29t/L3dhbGxwYXBlci9j/b2x1bWJpbmEtZ2Vu/c2hpbi1pbXBhY3Qt/NjQzQDVAbA" alt="columbina.jpg" width="1216" height="832">
