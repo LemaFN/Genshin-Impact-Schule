@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riddell Elite | Professional Football Helmets Showcase</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#090a0f',
+                        cardBg: '#12141d',
+                        cardHover: '#1a1d2d',
+                        neonRed: '#ff2a2a',
+                        neonBlue: '#00f2fe',
+                        accentDark: '#161925'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090a0f;
+            color: #f3f4f6;
+            overflow-x: hidden;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090a0f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #272a3a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff2a2a;
+        }
+        .glass-panel {
+            background: rgba(18, 20, 29, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glow-red {
+            box-shadow: 0 0 30px rgba(255, 42, 42, 0.25);
+        }
+        .glow-red-sm {
+            box-shadow: 0 0 15px rgba(255, 42, 42, 0.3);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #9ca3af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .text-gradient-red {
+            background: linear-gradient(135deg, #ff4d4d 0%, #ff1a1a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="bg-darkBg text-slate-100 min-h-screen selection:bg-red-600 selection:text-white">
+
+    <!-- Header / Navigation Bar -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-white/10 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-red-600 to-red-800 flex items-center justify-center glow-red-sm">
+                    <i class="fa-solid fa-shield-halved text-white text-xl"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-black tracking-wider text-white">RIDDELL</span>
+                    <span class="block text-xs uppercase tracking-widest text-red-500 font-bold">Elite Engineering</span>
+                </div>
+            </div>
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="#collection" class="hover:text-red-500 transition-colors">Collection</a>
+                <a href="#sizing-guide" class="hover:text-red-500 transition-colors">Sizing Guide</a>
+                <a href="#safety" class="hover:text-red-500 transition-colors">Safety Technology</a>
+                <a href="#compare" class="hover:text-red-500 transition-colors">Compare Models</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <button onclick="document.getElementById('sizing-guide').scrollIntoView({behavior: 'smooth'})" class="hidden sm:inline-flex items-center space-x-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold text-sm transition-all shadow-lg shadow-red-600/30 hover:shadow-red-600/50">
+                    <i class="fa-solid fa-ruler"></i>
+                    <span>Size Calculator</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden py-20 lg:py-32 border-b border-white/5">
+        <!-- Background Glow Orbs -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-red-600/15 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="absolute top-1/3 right-10 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-1.5 rounded-full text-xs font-medium text-red-400 mb-6 backdrop-blur-md">
+                <i class="fa-solid fa-award"></i>
+                <span>Official Pro-Line & Youth Equipment Showcase</span>
+            </div>
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight mb-6 uppercase">
+                Engineering <span class="text-gradient-red">Impact</span> Protection
+            </h1>
+            <p class="max-w-2xl mx-auto text-slate-400 text-base sm:text-lg mb-10">
+                Discover Riddell's state-of-the-art helmet lineup. From the revolutionary Axiom 3D series equipped with advanced safeguarding tech to trusted youth models built for peak performance.
+            </p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="#collection" class="bg-red-600 hover:bg-red-700 text-white font-bold px-8 py-4 rounded-xl transition-all shadow-lg shadow-red-600/40 hover:shadow-red-600/60 flex items-center space-x-3">
+                    <span>Explore Catalog</span>
+                    <i class="fa-solid fa-arrow-down"></i>
+                </a>
+                <a href="#sizing-guide" class="glass-panel hover:bg-white/10 text-white font-bold px-8 py-4 rounded-xl transition-all border border-white/10 flex items-center space-x-3">
+                    <i class="fa-solid fa-ruler text-red-500"></i>
+                    <span>Check Your Size</span>
+                </a>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div class="glass-panel p-6 rounded-2xl border border-white/5">
+                    <div class="text-3xl font-black text-white mb-1">#1</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider">Most Worn on Field</div>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border border-white/5">
+                    <div class="text-3xl font-black text-red-500 mb-1">3D</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider">Custom Digital Fit</div>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border border-white/5">
+                    <div class="text-3xl font-black text-white mb-1">5+</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider">Decades of Innovation</div>
+                </div>
+                <div class="glass-panel p-6 rounded-2xl border border-white/5">
+                    <div class="text-3xl font-black text-red-500 mb-1">100%</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider">Athlete Focused</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Catalog Section -->
+    <main id="collection" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+            <div>
+                <span class="text-red-500 text-sm font-bold tracking-widest uppercase">Catalog & Pricing</span>
+                <h2 class="text-3xl sm:text-4xl font-black tracking-tight mt-1">Professional Helmet Lineup</h2>
+            </div>
+            <!-- Filter Tabs -->
+            <div class="mt-6 md:mt-0 flex items-center space-x-2 bg-cardBg p-1.5 rounded-2xl border border-white/10">
+                <button onclick="filterHelmets('all')" id="btn-all" class="filter-btn px-6 py-2.5 rounded-xl font-semibold text-sm transition-all bg-red-600 text-white shadow-md">All Models</button>
+                <button onclick="filterHelmets('Varsity')" id="btn-Varsity" class="filter-btn px-6 py-2.5 rounded-xl font-semibold text-sm transition-all text-slate-400 hover:text-white">Varsity</button>
+                <button onclick="filterHelmets('Youth')" id="btn-Youth" class="filter-btn px-6 py-2.5 rounded-xl font-semibold text-sm transition-all text-slate-400 hover:text-white">Youth</button>
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="helmet-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- JavaScript will dynamically render helmet cards here -->
+        </div>
+    </main>
+
+    <!-- Sizing Guide & Interactive Calculator Section -->
+    <section id="sizing-guide" class="py-20 bg-gradient-to-b from-darkBg to-cardBg border-t border-white/10 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <div class="inline-flex items-center space-x-2 bg-red-500/10 border border-red-500/20 px-4 py-1.5 rounded-full text-xs font-bold text-red-400 mb-4">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>CRITICAL SAFETY NOTICE</span>
+                </div>
+                <h2 class="text-3xl sm:text-5xl font-black tracking-tight mb-4">Helmet Sizing Calculator</h2>
+                <p class="text-slate-400 text-base">
+                    If you buy the wrong helmet size, it's critical: too tight causes jaw pain; too loose, and the helmet flies off upon impact. Measure your head circumference above the eyebrows to find your exact match.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Sizing Calculator Tool -->
+                <div class="lg:col-span-5 glass-panel p-8 rounded-3xl border border-white/10 shadow-2xl">
+                    <h3 class="text-xl font-bold mb-6 flex items-center space-x-3">
+                        <i class="fa-solid fa-calculator text-red-500"></i>
+                        <span>Find Your Size</span>
+                    </h3>
+                    <div class="space-y-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-300 mb-2">Head Circumference (cm or inches)</label>
+                            <div class="flex space-x-3">
+                                <input type="number" id="head-size-input" placeholder="e.g. 57" step="0.5" class="w-full bg-darkBg border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors">
+                                <select id="size-unit" class="bg-darkBg border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 transition-colors">
+                                    <option value="cm">cm</option>
+                                    <option value="in">inches</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button onclick="calculateSize()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-red-600/30 flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span>Calculate Recommended Size</span>
+                        </button>
+                        <div id="sizing-result" class="hidden p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-center">
+                            <span class="text-xs uppercase tracking-wider text-red-400 block font-semibold mb-1">Recommended Size Category</span>
+                            <span id="result-text" class="text-2xl font-black text-white">Medium / Large</span>
+                        </div>
+                    </div>
+
+                    <!-- Reference Image / Diagram -->
+                    <div class="mt-8 pt-6 border-t border-white/10 text-center">
+                        <p class="text-xs text-slate-400 mb-4">Reference Measurement Guide</p>
+                        <div class="rounded-xl overflow-hidden border border-white/10 bg-darkBg p-2">
+                            <img src="https://www.helmonline.de/media/wysiwyg/hoofdomtrek_de.jpg" alt="Head Measurement Guide" class="w-full h-48 object-cover rounded-lg opacity-90 hover:opacity-100 transition-opacity">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sizing Chart Table -->
+                <div class="lg:col-span-7 glass-panel p-8 rounded-3xl border border-white/10 overflow-x-auto">
+                    <h3 class="text-xl font-bold mb-6 flex items-center space-x-3">
+                        <i class="fa-solid fa-table text-red-500"></i>
+                        <span>Official Riddell Sizing Table</span>
+                    </h3>
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-white/10 text-slate-400 text-xs uppercase tracking-wider">
+                                <th class="py-4 px-4 font-semibold">Size</th>
+                                <th class="py-4 px-4 font-semibold">Circumference (cm)</th>
+                                <th class="py-4 px-4 font-semibold">Circumference (Inches)</th>
+                                <th class="py-4 px-4 font-semibold">Target Group</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/5 text-sm">
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-4 font-bold text-white">Small (S)</td>
+                                <td class="py-4 px-4 text-slate-300">52 cm – 54 cm</td>
+                                <td class="py-4 px-4 text-slate-300">20.5" – 21.2"</td>
+                                <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/20 text-blue-400">Youth / Small Varsity</span></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-4 font-bold text-white">Medium (M)</td>
+                                <td class="py-4 px-4 text-slate-300">54 cm – 57 cm</td>
+                                <td class="py-4 px-4 text-slate-300">21.2" – 22.4"</td>
+                                <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400">Varsity / Youth</span></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-4 font-bold text-white">Large (L)</td>
+                                <td class="py-4 px-4 text-slate-300">57 cm – 60 cm</td>
+                                <td class="py-4 px-4 text-slate-300">22.4" – 23.6"</td>
+                                <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400">Varsity</span></td>
+                            </tr>
+                            <tr class="hover:bg-white/5 transition-colors">
+                                <td class="py-4 px-4 font-bold text-white">X-Large (XL)</td>
+                                <td class="py-4 px-4 text-slate-300">60 cm – 63 cm</td>
+                                <td class="py-4 px-4 text-slate-300">23.6" – 24.8"</td>
+                                <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-red-500/20 text-red-400">Varsity Pro</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Modal for Helmet Inspection -->
+    <div id="helmet-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden opacity-0 transition-opacity duration-300">
+        <div id="modal-content" class="glass-panel max-w-2xl w-full rounded-3xl p-6 sm:p-8 border border-white/20 relative transform scale-95 transition-transform duration-300 max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modal-body">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 glass-panel px-6 py-4 rounded-2xl border border-red-500/30 shadow-2xl transform translate-y-24 opacity-0 transition-all duration-300 flex items-center space-x-3">
+        <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-white">
+            <i class="fa-solid fa-check text-sm"></i>
+        </div>
+        <div>
+            <div class="text-sm font-bold text-white" id="toast-title">Action Successful</div>
+            <div class="text-xs text-slate-400" id="toast-desc">Item added to inquiry list.</div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-darkBg border-t border-white/10 py-12 text-center text-slate-500 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-center space-x-3 mb-6">
+                <div class="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center text-white font-bold">R</div>
+                <span class="text-lg font-black tracking-wider text-white">RIDDELL ELITE SHOWCASE</span>
+            </div>
+            <p class="mb-4">Professional American Football Equipment Data & Showcase.</p>
+            <p>&copy; 2026 Riddell Inc. All rights reserved. Designed with 50 years of frontend excellence.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data & Logic -->
+    <script>
+        // Helmet Dataset based on user specifications
+        const helmets = [
+            {
+                id: 1,
+                name: "AXIOM 3D",
+                category: "Varsity",
+                price: "$1,649.99",
+                image: "https://bayerteamsports.s8.cdn-upgates.com/_cache/6/6/66eb9a5a0b4a4a0eebd1d27bb299c4c0-axiom-bayer-6110-logo1.png",
+                badge: "Top of the Line",
+                description: "The AXIOM 3D is the newest and most expensive helmet series from RIDDELL. It features a complimentary, matching visor included with the helmet. The helmet features advanced front and side jaw protection systems.",
+                highlights: ["Includes Free Matching Visor", "Advanced 3D Custom Fit", "Maximum Front & Side Jaw Protection"]
+            },
+            {
+                id: 2,
+                name: "AXIOM",
+                category: "Varsity",
+                price: "$1,009.99",
+                image: "https://www.wikingsports.ch/wp-content/uploads/2025/02/57edf56bc23fa127905421b5a632296c-img-6126-logo.png",
+                badge: "Flagship",
+                description: "The AXIOM helmet series is among the newest innovations from RIDDELL, offering high-end impact absorption with specialized shell architecture and integrated safety tech.",
+                highlights: ["State-of-the-art Shell Design", "Integrated Impact Sensors Ready", "Exceptional Comfort Padding"]
+            },
+            {
+                id: 3,
+                name: "SF ECHO",
+                category: "Varsity",
+                price: "$719.99",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9GAn5MytcegIJY1mDyPsAhOwh56KnZvH6jl-JeZUCfyLKs-1tbmKApaI&s=10",
+                badge: "Modern Pro",
+                description: "The SF ECHO Varsity series is the modernized version of the legendary Speedflex, engineered with a specialized facemask and refined shell contours for elite athletes.",
+                highlights: ["Modernized Speedflex Evolution", "Specialized Facemask Design", "Elite Varsity Protection"]
+            },
+            {
+                id: 4,
+                name: "SPEEDFLEX",
+                category: "Varsity",
+                price: "$554.99",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSN0Jjllfajo6SEQnBPkAOggsqXCgfT64OfBzWgVt3elA&s=10",
+                badge: "Most Popular",
+                description: "The Speed series is the most frequently sold helmet type from RIDDELL. The Speedflex is the most famous helmet from Riddell, trusted by thousands of professional and collegiate players.",
+                highlights: ["Industry Standard Icon", "Patented Flex System", "Unmatched Field Proven Reliability"]
+            },
+            {
+                id: 5,
+                name: "SPEEDFLEX ND6",
+                category: "Youth",
+                price: "$469.99",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT8r3-FrW6FyHvcKzaOz3gLA9cJh5O1lsj_FD5qLlsv6Q&s=10",
+                badge: "Youth Elite",
+                description: "Tailored specifically for youth players, the Speedflex ND6 brings elite-level flexibility and impact mitigation to younger athletes seeking top-tier safety.",
+                highlights: ["Youth Optimized Weight", "Flex System Technology", "Superior Cranial Fit"]
+            },
+            {
+                id: 6,
+                name: "SPEEDFLEX YOUTH",
+                category: "Youth",
+                price: "$429.99",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWdN3h8qZ2wdKe4BNoMk7gDbh3JcCaFCnnrFZp1yjBDA&s=10",
+                badge: "Youth Favorite",
+                description: "The official youth variant of the famous Speedflex, providing growing athletes with professional-grade safety features and comfortable interior liners.",
+                highlights: ["Youth Specific Engineering", "Iconic Speedflex Styling", "Enhanced Comfort Padding"]
+            },
+            {
+                id: 7,
+                name: "SPEED CLASSIC ICON",
+                category: "Varsity",
+                price: "$414.99",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQUCdcviYcoGdgjwNUNlfeGGEyQVJt8L5z9SztJwejkzA&s",
+                badge: "Classic",
+                description: "The classic icon series replicates the traditional Speed architecture with timeless styling. It offers an affordable entry into varsity protection.",
+                highlights: ["Traditional Aesthetic", "Cost-Effective Varsity Option", "Proven Shell Durability"]
+            },
+            {
+                id: 8,
+                name: "SPEED ICON",
+                category: "Varsity",
+                price: "$399.99",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTADs5u4TBl8eo2GHpHRrmrwcE27ianTotGzl8plGbFaQ&s=10",
+                badge: "Value Pro",
+                description: "The Speed Icon class is an older version that is budget-friendly, though it offers slightly reduced advanced protection compared to the Speedflex.",
+                highlights: ["Budget-Friendly Varsity", "Classic Speed Shell", "Reliable Performance"]
+            },
+            {
+                id: 9,
+                name: "SPEED ND6",
+                category: "Youth",
+                price: "$309.99",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4hn8TvzA7bapq5uK2fWXLO0L6CsdJeDYww2xXdSaMQw&s=10",
+                badge: "Youth Classic",
+                description: "A streamlined youth helmet delivering essential Riddell safety and comfortable padding at an accessible price point for parents and youth programs.",
+                highlights: ["Accessible Youth Safety", "Lightweight Construction", "Durable Finish"]
+            },
+            {
+                id: 10,
+                name: "JET ND6",
+                category: "Youth",
+                price: "$229.99",
+                image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTySdht__DHe_s6M0lRAqgp_pZj4LC1y47z4ll4G6CiVg&s=10",
+                badge: "Lightweight",
+                description: "The JET series is the smallest series with only one helmet style. Unlike the SF ECHO, it features specialized facemasks with excellent ventilation air slots to keep the head cool.",
+                highlights: ["High Ventilation Air Slots", "Specialized Facemask", "Lightweight Compact Profile"]
+            },
+            {
+                id: 11,
+                name: "SPEED CLASSIC YOUTH",
+                category: "Youth",
+                price: "$224.99",
+                image: "https://www.forelle.com/static/uploads-cms2/57190036_-_Riddell_Speed_Icon_Classic_Helmets_-_navy_-_1.jpg?timestamp=1749543595926",
+                badge: "Oldest Model",
+                description: "The oldest model, the Speed Classic Youth has the oldest special design from today's helmet production. It is the most affordable and comes equipped with the standard chin strap.",
+                highlights: ["Most Affordable Entry", "Traditional Standard Chin Strap", "Classic Heritage Design"]
+            }
+        ];
+
+        // Render Helmets
+        function renderHelmets(filter = 'all') {
+            const grid = document.getElementById('helmet-grid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' ? helmets : helmets.filter(h => h.category === filter);
+
+            filtered.forEach(helmet => {
+                const card = document.createElement('div');
+                card.className = 'glass-panel rounded-3xl p-6 flex flex-col justify-between border border-white/10 hover:border-red-500/50 transition-all duration-300 group hover:-translate-y-1.5 shadow-xl';
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${helmet.category === 'Varsity' ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'}">${helmet.category}</span>
+                            <span class="text-xs font-semibold text-slate-400 bg-white/5 px-2.5 py-1 rounded-lg">${helmet.badge}</span>
+                        </div>
+                        <div class="h-52 w-full flex items-center justify-center mb-6 relative bg-darkBg/50 rounded-2xl p-4 border border-white/5 group-hover:border-red-500/20 transition-colors">
+                            <img src="${helmet.image}" alt="${helmet.name}" class="max-h-44 object-contain transform group-hover:scale-105 transition-transform duration-300 drop-shadow-2xl" onerror="this.src='https://placehold.co/300x300/12141d/ff2a2a?text=Riddell+Helmet'">
+                        </div>
+                        <h3 class="text-xl font-black text-white mb-2 tracking-tight">${helmet.name}</h3>
+                        <p class="text-slate-400 text-sm line-clamp-2 mb-6">${helmet.description}</p>
+                    </div>
+                    <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-400 block uppercase">US Price</span>
+                            <span class="text-2xl font-black text-white">${helmet.price}</span>
+                        </div>
+                        <button onclick="openModal(${helmet.id})" class="bg-white/10 hover:bg-red-600 text-white p-3 rounded-xl font-bold transition-all flex items-center space-x-2 border border-white/10 hover:border-red-600">
+                            <span>Details</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Filter Logic
+        function filterHelmets(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.className = 'filter-btn px-6 py-2.5 rounded-xl font-semibold text-sm transition-all text-slate-400 hover:text-white';
+            });
+            const activeBtn = document.getElementById(`btn-${category}`);
+            if(activeBtn) {
+                activeBtn.className = 'filter-btn px-6 py-2.5 rounded-xl font-semibold text-sm transition-all bg-red-600 text-white shadow-md';
+            }
+            renderHelmets(category);
+        }
+
+        // Modal Logic
+        function openModal(id) {
+            const helmet = helmets.find(h => h.id === id);
+            if (!helmet) return;
+
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = `
+                <div class="flex items-center space-x-3 mb-6">
+                    <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${helmet.category === 'Varsity' ? 'bg-red-500/20 text-red-400' : 'bg-blue-500/20 text-blue-400'}">${helmet.category}</span>
+                    <span class="text-xs font-semibold text-slate-400 bg-white/5 px-3 py-1 rounded-lg">${helmet.badge}</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mb-6">
+                    <div class="bg-darkBg/80 p-6 rounded-2xl border border-white/10 flex items-center justify-center">
+                        <img src="${helmet.image}" alt="${helmet.name}" class="max-h-60 object-contain drop-shadow-2xl">
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-black text-white mb-2">${helmet.name}</h2>
+                        <div class="text-3xl font-black text-red-500 mb-4">${helmet.price}</div>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-6">${helmet.description}</p>
+                    </div>
+                </div>
+                <div class="mb-8">
+                    <h4 class="text-sm font-bold text-white uppercase tracking-wider mb-3">Key Features & Highlights</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        ${helmet.highlights.map(h => `<div class="bg-white/5 border border-white/10 p-3 rounded-xl text-xs font-medium text-slate-200 flex items-center space-x-2"><i class="fa-solid fa-check text-red-500"></i><span>${h}</span></div>`).join('')}
+                    </div>
+                </div>
+                <div class="flex space-x-4">
+                    <button onclick="closeModal(); showToast('Inquiry Submitted', 'We will connect you with a authorized Riddell dealer for ${helmet.name}.')" class="flex-1 bg-red-600 hover:bg-red-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-red-600/30 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>Request Quote / Buy</span>
+                    </button>
+                    <button onclick="closeModal()" class="px-6 bg-white/10 hover:bg-white/20 text-white font-bold py-3.5 rounded-xl transition-all border border-white/10">
+                        Close
+                    </button>
+                </div>
+            `;
+
+            const modal = document.getElementById('helmet-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('helmet-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Sizing Calculator Logic
+        function calculateSize() {
+            const inputVal = parseFloat(document.getElementById('head-size-input').value);
+            const unit = document.getElementById('size-unit').value;
+            const resultDiv = document.getElementById('sizing-result');
+            const resultText = document.getElementById('result-text');
+
+            if (!inputVal || isNaN(inputVal)) {
+                showToast('Invalid Input', 'Please enter a valid head circumference number.');
+                return;
+            }
+
+            let sizeInCm = unit === 'in' ? inputVal * 2.54 : inputVal;
+            let recommended = '';
+
+            if (sizeInCm < 52) {
+                recommended = 'X-Small / Youth Small';
+            } else if (sizeInCm >= 52 && sizeInCm < 54) {
+                recommended = 'Small (S)';
+            } else if (sizeInCm >= 54 && sizeInCm < 57) {
+                recommended = 'Medium (M)';
+            } else if (sizeInCm >= 57 && sizeInCm < 60) {
+                recommended = 'Large (L)';
+            } else {
+                recommended = 'X-Large (XL)';
+            }
+
+            resultText.textContent = recommended;
+            resultDiv.classList.remove('hidden');
+            showToast('Size Calculated', `Recommended size: ${recommended}`);
+        }
+
+        // Toast Notification
+        function showToast(title, desc) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-desc').textContent = desc;
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 4000);
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            renderHelmets('all');
+        }
+    </script>
+</body>
+</html>
