@@ -13,13 +13,14 @@
 Haunted by the traumatic loss of his fallen comrades against the Abyss, he escaped reality into a long, deep slumber.
 After finally awakening, his path crosses with the <mark>Traveler</mark>, to whom he surprisingly reveals his true mystical nature.<p/>
 
-<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbtPo5kf08rAThm1c8SajhF6vHJSFE6teI7Iy0hOUXTXfEsbHmVih1NYfy&s=10" alt="Genshin"width="1024" height="1024">
+<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSbtPo5kf08rAThm1c8SajhF6vHJSFE6teI7Iy0hOUXTXfEsbHmVih1NYfy&s=10" alt="Genshin"width="832" height="1216">
 <p>Here we got <mark>Shogun</mark> (The ruler of the Land of Eternity)</p>
 <p> Her Lore:<p/>
 <p> The <mark>Raiden Shogun</mark> is the vessel of the Electro Archon, seeking a frozen <mark>"Eternity"</mark> for Inazuma after losing her loved ones to tragedy.
 To escape the erosion of time, she shut her soul inside a sword and created a puppet to rule the nation.
 Her ruthless isolation was finally broken when the <mark>Traveler</mark> arrived and challenged her ideals. <p/>
-<img src="https://static.wikia.nocookie.net/genshin-impact/images/e/ec/Raiden_Karte.jpg/revision/latest?cb=20211123185857&path-prefix=de" alt="Raiden">
+<img src="https://static.wikia.nocookie.net/genshin-impact/images/e/ec/Raiden_Karte.jpg/revision/latest?cb=20211123185857&path-prefix=de" alt="Raiden" width="832" height="1216">
+
 <p>And here would be The Traveler (you can choose between them</p>
 <p> The Travelers have alot of Lore and much still hasn´t been enlightened, but here is a small cutout:<p/>
 <p>
@@ -27,8 +28,10 @@ Her ruthless isolation was finally broken when the <mark>Traveler</mark> arrived
   Stripped of their original power and stuck in an unfamiliar world, they embark on a grand journey across all <mark>seven nations</mark>. 
   Along the way, they master multiple <mark>elements</mark> without a Vision while searching for answers and their lost family.
 </p>
-<img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Genshin_Impact_Travelers.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="Travelers">
+<img src="https://upload.wikimedia.org/wikipedia/en/5/5e/Genshin_Impact_Travelers.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original" alt="Travelers" width="832" height="1216">
+
 <p> But there are some Characters that just got released Like <mark>Odette</mark>: <p/>
+
 <p> Odette is a mysterious new figure in <mark>Teyvat</mark> whose past is still shrouded in dark secrets.
 Driven by a personal vendetta, she navigates the shadows of the nations while hiding her true motivations from those around her.
 Her unexpected arrival catches the attention of the Traveler, as her fate seems deeply tied to the upcoming conflicts. <p/>
@@ -45,22 +48,22 @@ src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png
 
 	<h>The most Popular Fatui Harbingers:</h>
     <p>The 4th Harbinger: "Arlecchino"</p>
-    <img src="https://imgs.search.brave.com/GQ-o90hsLTV5GFoWBftSi9W0ssspoURDK6dglUDS-fI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zMy56/ZXJvY2hhbi5uZXQv/MjQwLzE0LzM5LzQy/MDY5NjQuYXZpZg" alt="Arlecchino.jpg" width="1024" height="1024">
+    <img src="https://imgs.search.brave.com/GQ-o90hsLTV5GFoWBftSi9W0ssspoURDK6dglUDS-fI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zMy56/ZXJvY2hhbi5uZXQv/MjQwLzE0LzM5LzQy/MDY5NjQuYXZpZg" alt="Arlecchino.jpg" width="832" height="1216">
     <p>In the Story, she becomes your Ally</p>
     
     <h>Then the 3rd Harbinger: "Columbina"</h>
-    <img src="https://imgs.search.brave.com/qLveY8nLmopxEuz4hnSoJNXtWzU4NKkAc6wUVt_G1G4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/dWhkcGFwZXIuY29t/L3dhbGxwYXBlci9j/b2x1bWJpbmEtZ2Vu/c2hpbi1pbXBhY3Qt/NjQzQDVAbA" alt="columbina.jpg" width="1024" height="1024">
+    <img src="https://imgs.search.brave.com/qLveY8nLmopxEuz4hnSoJNXtWzU4NKkAc6wUVt_G1G4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/dWhkcGFwZXIuY29t/L3dhbGxwYXBlci9j/b2x1bWJpbmEtZ2Vu/c2hpbi1pbXBhY3Qt/NjQzQDVAbA" alt="columbina.jpg" width="1216" height="832">
     <p>Columbina is your biggest Friend in the Nod Krai Storyquest... You fight against Il Dottore and much more.</p>
     <p> She has multiple Names: <mark>Kutaar(Mondmädchen)</mark> <mark>Columbina Hyposelenia</mark> and <mark>Moon Maiden</mark> </p>
     
     <h>The 2nd Harbinger: "Il Dottore"</h>
-    <img src="https://imgs.search.brave.com/mcuc8t3sK7DbQEtaphV5UMVz2g8KAB4qOnM9Cq-YXh8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2RkLzY5/LzU4L2RkNjk1ODQy/MGNiOGY3NThlYzhj/NWViODJjMjE1ZjRl/LmpwZw" alt="Dottore.jpg" width="1024" height="1024">
+    <img src="https://imgs.search.brave.com/mcuc8t3sK7DbQEtaphV5UMVz2g8KAB4qOnM9Cq-YXh8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2RkLzY5/LzU4L2RkNjk1ODQy/MGNiOGY3NThlYzhj/NWViODJjMjE1ZjRl/LmpwZw" alt="Dottore.jpg" width="832" height="1216">
     <p><mark>Dottore</mark> is the 2nd Harbinger... In the Sumeru Storyline he almost creates a new God, and in the Nod Krai Storyquest he collects the Power of the <mark>3 Moons</mark> and almost became a Godlike Human</p>
     <h>The 1st Harbinger: "Capitano"</h>
-    <img src="https://imgs.search.brave.com/4c31LVaO5SGsWSmdDsnBiqI5a3ihsN3eGzW5xT8MUtI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzQyL2Jh/LzI3LzQyYmEyNzRk/N2Q4ZmUyMjYyZTQ3/Njc1OWU1NjIzYzRh/LmpwZw" alt="Capitano.jpg"width="1024" height="1024">
+    <img src="https://imgs.search.brave.com/4c31LVaO5SGsWSmdDsnBiqI5a3ihsN3eGzW5xT8MUtI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzQyL2Jh/LzI3LzQyYmEyNzRk/N2Q4ZmUyMjYyZTQ3/Njc1OWU1NjIzYzRh/LmpwZw" alt="Capitano.jpg"width="832" height="1216">
     <p>In Natlan Storyline he fights against <mark>Mavuika (The Pyro Archon)</mark>, but all he wants is her <mark>Gnosis</mark>, to fight against the <mark>Heavenly Principals</mark></p>
     <h>And the Chef of the Harbingers: <mark>"Pierro"</mark></h>
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmKr7sziUCPo3a6z1bHaEgagvbu7MatctY2UIy3zTsgazX61Wli-Hswd8&s=10"  alt="Pierro.jpg" width="1024" height="1024">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmKr7sziUCPo3a6z1bHaEgagvbu7MatctY2UIy3zTsgazX61Wli-Hswd8&s=10"  alt="Pierro.jpg" width="832" height="1216">
     <p><mark>Pierro</mark> it the <mark>Director</mark> of The Fatui Harbingers and with that the direct contact Person for the <mark>Tsaritsa</mark>
     <h><mark>The Tsaritsa</mark> the Archon of Snezhnaya</h>
 <p> You can Find my Flins Build Here: <a href="https://akasha.cv/profile/786665222">Akasha System<a>
