@@ -49,7 +49,7 @@ src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png
 	<h>The most Popular <mark>Fatui Harbingers</mark>:</h>
     <p>The 4th Harbinger: "<mark>Arlecchino</mark>"
 </p>
-    <img src="https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/arlecchino_2.png" alt="Arlecchino.jpg" width="300" height="500">
+    <img src="https://mediaproxy.tvtropes.org/width/1200/https://static.tvtropes.org/pmwiki/pub/images/arlecchino_2.png" alt="Arlecchino.jpg" width="500" height="800">
     <p>In the Story, she becomes your Ally and "Friend"... She also owns a <mark>Orphanage</mark> named House of the Fireplace, where her "<mark>Kids</mark>" also call her "<mark>Father</mark>" She Still is one of the best Charactes to Play and definitive got alot of Aura</p>
 
     <h>Then the 3rd Harbinger: "<mark
