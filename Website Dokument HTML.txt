@@ -54,18 +54,18 @@ src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png
 
     <h>Then the 3rd Harbinger: "<mark
 Columbina</mark>"</h>
-    <img src="https://imgs.search.brave.com/qLveY8nLmopxEuz4hnSoJNXtWzU4NKkAc6wUVt_G1G4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/dWhkcGFwZXIuY29t/L3dhbGxwYXBlci9j/b2x1bWJpbmEtZ2Vu/c2hpbi1pbXBhY3Qt/NjQzQDVAbA" alt="columbina.jpg" width="500" height="800">
+    <img src="https://imgs.search.brave.com/qLveY8nLmopxEuz4hnSoJNXtWzU4NKkAc6wUVt_G1G4/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pbWcu/dWhkcGFwZXIuY29t/L3dhbGxwYXBlci9j/b2x1bWJpbmEtZ2Vu/c2hpbi1pbXBhY3Qt/NjQzQDVAbA" alt="columbina.jpg" width="800" height="500">
     <p>Columbina is your biggest Friend in the Nod Krai Storyquest... You fight against Il Dottore and much more.</p>
     <p> She has multiple Names: <mark>Kutaar(Mondmädchen)</mark> <mark>Columbina Hyposelenia</mark> and <mark>Moon Maiden</mark> </p>
     
     <h>The 2nd Harbinger: "Il Dottore"</h>
-    <img src="https://imgs.search.brave.com/mcuc8t3sK7DbQEtaphV5UMVz2g8KAB4qOnM9Cq-YXh8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2RkLzY5/LzU4L2RkNjk1ODQy/MGNiOGY3NThlYzhj/NWViODJjMjE1ZjRl/LmpwZw" alt="Dottore.jpg" width="500" height="800">
+    <img src="https://imgs.search.brave.com/mcuc8t3sK7DbQEtaphV5UMVz2g8KAB4qOnM9Cq-YXh8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2RkLzY5/LzU4L2RkNjk1ODQy/MGNiOGY3NThlYzhj/NWViODJjMjE1ZjRl/LmpwZw" alt="Dottore.jpg" width="600" height="800">
     <p><mark>Dottore</mark> is the 2nd Harbinger... In the Sumeru Storyline he almost creates a new God, and in the Nod Krai Storyquest he collects the Power of the <mark>3 Moons</mark> and almost became a Godlike Human</p>
     <h>The 1st Harbinger: "Capitano"</h>
     <img src="https://imgs.search.brave.com/4c31LVaO5SGsWSmdDsnBiqI5a3ihsN3eGzW5xT8MUtI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzQyL2Jh/LzI3LzQyYmEyNzRk/N2Q4ZmUyMjYyZTQ3/Njc1OWU1NjIzYzRh/LmpwZw" alt="Capitano.jpg"width="500" height="800">
     <p>In Natlan Storyline he fights against <mark>Mavuika (The Pyro Archon)</mark>, but all he wants is her <mark>Gnosis</mark>, to fight against the <mark>Heavenly Principals</mark></p>
     <h>And the Chef of the Harbingers: <mark>"Pierro"</mark></h>
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmKr7sziUCPo3a6z1bHaEgagvbu7MatctY2UIy3zTsgazX61Wli-Hswd8&s=10"  alt="Pierro.jpg" width="832" height="1216">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmKr7sziUCPo3a6z1bHaEgagvbu7MatctY2UIy3zTsgazX61Wli-Hswd8&s=10"  alt="Pierro.jpg" width="800" height="500">
     <p><mark>Pierro</mark> it the <mark>Director</mark> of The Fatui Harbingers and with that the direct contact Person for the <mark>Tsaritsa</mark>
     <h><mark>The Tsaritsa</mark> the Archon of Snezhnaya</h>
 <p> You can Find my Flins Build Here: <a href="https://akasha.cv/profile/786665222">Akasha System<a>
