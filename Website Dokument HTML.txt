@@ -49,7 +49,7 @@ src="https://static.wikia.nocookie.net/gensin-impact/images/f/f3/Odette_Card.png
 	<h>The most Popular <mark>Fatui Harbingers</mark>:</h>
     <p>The 4th Harbinger: "<mark>Arlecchino</mark>"
 </p>
-    <img src="https://imgs.search.brave.com/GQ-o90hsLTV5GFoWBftSi9W0ssspoURDK6dglUDS-fI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zMy56/ZXJvY2hhbi5uZXQv/MjQwLzE0LzM5LzQy/MDY5NjQuYXZpZg" alt="Arlecchino.jpg" width="500" height="800">
+    <img src="https://imgs.search.brave.com/GQ-o90hsLTV5GFoWBftSi9W0ssspoURDK6dglUDS-fI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zMy56/ZXJvY2hhbi5uZXQv/MjQwLzE0LzM5LzQy/MDY5NjQuYXZpZg" alt="Arlecchino.jpg" width="300" height="500">
     <p>In the Story, she becomes your Ally and "Friend"... She also owns a <mark>Orphanage</mark> named House of the Fireplace, where her "<mark>Kids</mark>" also call her "<mark>Father</mark>" She Still is one of the best Charactes to Play and definitive got alot of Aura</p>
 
     <h>Then the 3rd Harbinger: "<mark
@@ -59,7 +59,7 @@ Columbina</mark>"</h>
     <p> She has multiple Names: <mark>Kutaar(Mondmädchen)</mark> <mark>Columbina Hyposelenia</mark> and <mark>Moon Maiden</mark> </p>
     
     <h>The 2nd Harbinger: "Il Dottore"</h>
-    <img src="https://imgs.search.brave.com/mcuc8t3sK7DbQEtaphV5UMVz2g8KAB4qOnM9Cq-YXh8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2RkLzY5/LzU4L2RkNjk1ODQy/MGNiOGY3NThlYzhj/NWViODJjMjE1ZjRl/LmpwZw" alt="Dottore.jpg" width="600" height="800">
+    <img src="https://imgs.search.brave.com/mcuc8t3sK7DbQEtaphV5UMVz2g8KAB4qOnM9Cq-YXh8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2RkLzY5/LzU4L2RkNjk1ODQy/MGNiOGY3NThlYzhj/NWViODJjMjE1ZjRl/LmpwZw" alt="Dottore.jpg" width="800" height="700">
     <p><mark>Dottore</mark> is the 2nd Harbinger... In the Sumeru Storyline he almost creates a new God, and in the Nod Krai Storyquest he collects the Power of the <mark>3 Moons</mark> and almost became a Godlike Human</p>
     <h>The 1st Harbinger: "Capitano"</h>
     <img src="https://imgs.search.brave.com/4c31LVaO5SGsWSmdDsnBiqI5a3ihsN3eGzW5xT8MUtI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzQyL2Jh/LzI3LzQyYmEyNzRk/N2Q4ZmUyMjYyZTQ3/Njc1OWU1NjIzYzRh/LmpwZw" alt="Capitano.jpg"width="500" height="800">
