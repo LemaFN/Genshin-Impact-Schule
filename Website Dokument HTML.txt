@@ -82,7 +82,7 @@ Columbina</mark>"</h>
 </style>
 
 <div class="gold-box">
-  Das wars mit meine Info... Für weitere Infos Game spielen oder
+  Das wars mit meiner Info... Für weitere Infos Game spielen oder
   <a href="https://genshin-impact.fandom.com/de/wiki/Genshin_Impact_Wiki">Genshin Wiki</a>
 </div>
 <style>
