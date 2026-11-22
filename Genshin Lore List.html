@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090b13">
+<meta name="description" content="Eine interaktive, fan-erstellte Übersicht der Macht-Hierarchie und Lore-Entitäten von Genshin Impact.">
+<title>TEYVAT ARCHIVES — Macht-Hierarchie</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&display=swap');
+:root{--bg:#090b13;--panel:#111522;--panel2:#171d2c;--text:#eef0f6;--muted:#9ca5b8;--gold:#d8b56d;--line:rgba(216,181,109,.2);--accent:#d8b56d;--shadow:0 22px 70px rgba(0,0,0,.35)}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:90px}body{margin:0;background:var(--bg);color:var(--text);font-family:Manrope,system-ui,sans-serif;line-height:1.65;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-2;background:radial-gradient(ellipse at 15% 10%,rgba(80,105,170,.14),transparent 36%),radial-gradient(ellipse at 85% 30%,rgba(180,135,75,.1),transparent 35%),linear-gradient(180deg,#090b13,#0b0e18 55%,#090b13)}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.5}
+a{color:inherit;text-decoration:none}button,input{font:inherit}.serif{font-family:Cinzel,serif}.topbar{height:72px;position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(18px,5vw,76px);background:rgba(8,10,17,.78);backdrop-filter:blur(18px);border-bottom:1px solid rgba(255,255,255,.07)}
+.brand{display:flex;align-items:center;gap:12px;font:700 15px Cinzel;letter-spacing:.16em}.brand-mark{width:30px;height:30px;border:1px solid var(--gold);transform:rotate(45deg);display:grid;place-items:center;color:var(--gold);font:14px Manrope}.brand-mark span{transform:rotate(-45deg)}
+.nav{display:flex;gap:25px;color:#b8bfd0;font-size:12px;letter-spacing:.12em;text-transform:uppercase}.nav a:hover{color:var(--gold)}.nav-actions{display:flex;gap:9px}.icon-btn,.menu-btn{border:1px solid rgba(255,255,255,.13);background:transparent;color:var(--text);border-radius:50px;padding:9px 13px;cursor:pointer;font-size:12px}.icon-btn:hover{border-color:var(--gold);color:var(--gold)}.menu-btn{display:none}
+.hero{min-height:740px;height:100svh;max-height:980px;position:relative;display:flex;align-items:center;padding:110px clamp(22px,10vw,150px) 70px;overflow:hidden}
+.hero:after{content:"";position:absolute;width:min(58vw,700px);height:min(58vw,700px);right:4%;top:12%;border:1px solid rgba(216,181,109,.13);border-radius:50%;box-shadow:0 0 0 38px rgba(216,181,109,.018),0 0 0 90px rgba(216,181,109,.015),inset 0 0 100px rgba(216,181,109,.05);animation:orbit 38s linear infinite}
+.hero-orb{position:absolute;right:15%;top:23%;width:min(34vw,430px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(255,239,196,.22),rgba(216,181,109,.07) 24%,rgba(50,63,103,.13) 48%,transparent 70%);filter:blur(1px);animation:float 7s ease-in-out infinite}
+.hero-orb:before,.hero-orb:after{content:"";position:absolute;inset:12%;border:1px solid rgba(216,181,109,.24);border-radius:50%;transform:rotateX(68deg) rotate(25deg)}.hero-orb:after{transform:rotateY(68deg) rotate(-25deg)}
+.hero-content{position:relative;z-index:2;max-width:780px}.eyebrow{color:var(--gold);font-size:11px;letter-spacing:.34em;text-transform:uppercase;font-weight:800;display:flex;align-items:center;gap:13px}.eyebrow:before{content:"";width:38px;height:1px;background:var(--gold)}
+h1{font:500 clamp(48px,8vw,108px)/1.04 Cinzel;margin:26px 0 20px;letter-spacing:-.045em}h1 em{font-style:normal;color:var(--gold);display:block}.hero-copy{max-width:570px;color:#aeb6c8;font-size:15px;line-height:1.9}.hero-actions{display:flex;gap:13px;margin-top:34px;flex-wrap:wrap}.primary,.secondary{padding:14px 21px;border-radius:3px;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:.25s}.primary{background:var(--gold);color:#17130c;border:1px solid var(--gold)}.primary:hover{transform:translateY(-3px);box-shadow:0 10px 35px #d8b56d35}.secondary{background:transparent;border:1px solid #555b6b;color:var(--text)}.secondary:hover{border-color:var(--gold);color:var(--gold)}.hero-meta{display:flex;gap:34px;margin-top:54px;color:#7f899e;font-size:10px;letter-spacing:.16em;text-transform:uppercase}.hero-meta strong{display:block;color:#e5e8ef;font:500 22px Cinzel;letter-spacing:0}
+.scroll-hint{position:absolute;bottom:30px;left:clamp(22px,10vw,150px);font-size:9px;color:#7e879a;letter-spacing:.25em;text-transform:uppercase;display:flex;align-items:center;gap:12px}.scroll-hint:before{content:"";height:1px;width:45px;background:var(--gold)}
+.section{padding:110px clamp(20px,8vw,120px);max-width:1600px;margin:auto}.section-head{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:38px}.kicker{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:800}.section h2{font:500 clamp(30px,4.5vw,54px)/1.15 Cinzel;margin:10px 0 0}.section-intro{color:var(--muted);max-width:520px;font-size:13px}
+.notice{border:1px solid rgba(216,181,109,.22);background:linear-gradient(110deg,rgba(216,181,109,.08),rgba(255,255,255,.015));padding:18px 22px;display:flex;gap:15px;align-items:flex-start;margin-bottom:40px}.notice .symbol{font-size:20px;color:var(--gold)}.notice p{margin:0;color:#b8c0d0;font-size:12px}.notice strong{color:#f0d49a}
+.overview{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:35px 0 70px}.overview-item{background:linear-gradient(145deg,#151b2a,#0f1320);border:1px solid rgba(255,255,255,.07);padding:18px 16px;min-height:118px;position:relative;overflow:hidden;transition:.3s}.overview-item:hover{border-color:var(--gold);transform:translateY(-4px)}.overview-item b{font:500 29px Cinzel;color:var(--gold)}.overview-item span{display:block;color:#c2c8d4;font-size:10px;letter-spacing:.1em;text-transform:uppercase;margin-top:6px}.overview-item small{color:#788398;font-size:10px}
+.toolbar{display:flex;gap:12px;align-items:center;margin:0 0 24px;flex-wrap:wrap}.search-wrap{flex:1;min-width:220px;position:relative}.search-wrap input{width:100%;background:#111624;border:1px solid rgba(255,255,255,.1);color:var(--text);padding:14px 16px 14px 43px;outline:none;border-radius:2px;font-size:12px}.search-wrap input:focus{border-color:var(--gold)}.search-wrap:before{content:"⌕";position:absolute;left:15px;top:6px;font-size:25px;color:var(--gold)}.filter{background:#111624;border:1px solid rgba(255,255,255,.1);color:#c4cada;padding:13px 14px;font-size:11px;outline:none;min-width:150px}.result-count{font-size:10px;color:#7f899e;letter-spacing:.12em;text-transform:uppercase}
+.tier-list{display:flex;flex-direction:column;gap:13px}.tier{--tier:#d8b56d;background:linear-gradient(110deg,rgba(21,27,42,.98),rgba(13,17,28,.98));border:1px solid rgba(255,255,255,.075);position:relative;overflow:hidden;transition:border .3s,transform .3s}.tier:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tier);opacity:.85}.tier:hover{border-color:color-mix(in srgb,var(--tier),transparent 55%)}.tier-head{display:grid;grid-template-columns:90px 1fr auto;gap:20px;align-items:center;padding:24px 27px;cursor:pointer}.tier-number{font:500 42px Cinzel;color:var(--tier);opacity:.9}.tier-title{font:500 19px Cinzel;margin:0 0 5px}.tier-sub{font-size:11px;color:#8791a5}.tier-meta{display:flex;align-items:center;gap:18px;color:#8791a5;font-size:10px;text-transform:uppercase;letter-spacing:.1em}.tier-toggle{width:30px;height:30px;border:1px solid rgba(255,255,255,.13);border-radius:50%;display:grid;place-items:center;color:var(--tier);font-size:17px;transition:.3s}.tier.open .tier-toggle{transform:rotate(45deg);border-color:var(--tier)}
+.tier-body{display:none;padding:0 27px 28px 137px}.tier.open .tier-body{display:block;animation:reveal .45s ease}.tier-desc{color:#9da7ba;font-size:12px;margin:0 0 19px;max-width:850px}.entity-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.entity{border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.018);padding:15px 16px;transition:.25s;position:relative}.entity:hover{background:rgba(255,255,255,.045);border-color:color-mix(in srgb,var(--tier),transparent 55%);transform:translateX(3px)}.entity-name{font-weight:800;font-size:12px;color:#edf0f6}.entity-tag{float:right;color:var(--tier);font-size:9px;letter-spacing:.12em;text-transform:uppercase}.entity p{font-size:11px;color:#9ba5b8;line-height:1.7;margin:7px 0 0}.entity.hidden{display:none}.tier.hidden{display:none}.empty{display:none;text-align:center;padding:60px 20px;color:#9ca5b8;border:1px dashed #343b4b}.empty.show{display:block}
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);margin-top:40px}.timeline-card{background:#101522;padding:24px;min-height:165px}.timeline-card b{font:500 18px Cinzel;color:var(--gold)}.timeline-card p{font-size:11px;color:#9da7ba;margin:10px 0 0}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.method{padding:25px;background:#111624;border:1px solid rgba(255,255,255,.07)}.method .num{font:500 30px Cinzel;color:var(--gold)}.method h3{font:500 15px Cinzel;margin:10px 0}.method p{font-size:11px;color:#9ca6b9;margin:0}
+footer{padding:45px clamp(20px,8vw,120px);border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;gap:25px;align-items:center;color:#7f899e;font-size:10px;letter-spacing:.1em;text-transform:uppercase}.footer-brand{font:600 13px Cinzel;color:#d5d9e3;letter-spacing:.15em}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease}.reveal.visible{opacity:1;transform:none}
+.progress{position:fixed;top:72px;left:0;height:2px;background:var(--gold);width:0;z-index:30}
+.backtop{position:fixed;right:22px;bottom:22px;width:42px;height:42px;border:1px solid rgba(216,181,109,.4);background:#111624;color:var(--gold);border-radius:50%;cursor:pointer;opacity:0;pointer-events:none;transition:.3s;z-index:15}.backtop.show{opacity:1;pointer-events:auto}
+@keyframes orbit{to{transform:rotate(360deg)}}@keyframes float{50%{transform:translateY(-18px) scale(1.03)}}@keyframes reveal{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(max-width:900px){.nav{display:none}.menu-btn{display:block}.overview{grid-template-columns:repeat(3,1fr)}.timeline{grid-template-columns:repeat(2,1fr)}.hero:after{right:-20%;opacity:.65}.hero-orb{right:-4%;top:25%;opacity:.7}.section-head{display:block}.section-intro{margin-top:14px}}
+@media(max-width:620px){.topbar{height:62px}.progress{top:62px}.brand{font-size:12px}.hero{min-height:720px;padding-top:110px}.hero-meta{gap:18px}.hero-meta strong{font-size:18px}.section{padding:78px 17px}.overview{grid-template-columns:repeat(2,1fr);gap:7px}.overview-item{padding:14px;min-height:100px}.tier-head{grid-template-columns:54px 1fr auto;gap:12px;padding:18px 15px}.tier-number{font-size:30px}.tier-title{font-size:15px}.tier-sub{font-size:10px}.tier-meta{display:none}.tier-body{padding:0 15px 20px}.entity-grid{grid-template-columns:1fr}.entity-tag{float:none;display:block;margin-top:4px}.timeline,.method-grid{grid-template-columns:1fr}.notice{padding:15px}.filter{flex:1;min-width:130px}footer{display:block;line-height:2.2}.footer-brand{margin-bottom:10px}.hero:after{width:100vw;height:100vw;right:-45%;top:25%}.hero-orb{width:75vw;right:-25%;top:27%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}.reveal{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas><div class="progress" id="progress"></div>
+<header class="topbar">
+  <a class="brand" href="#top"><span class="brand-mark"><span>✦</span></span> TEYVAT ARCHIVES</a>
+  <nav class="nav"><a href="#ordnung">Machtordnung</a><a href="#tiers">Tierliste</a><a href="#methodik">Methodik</a></nav>
+  <div class="nav-actions"><button class="icon-btn" id="expandAll">Alle öffnen</button><button class="menu-btn" onclick="document.querySelector('#ordnung').scrollIntoView({behavior:'smooth'})">↓ Erkunden</button></div>
+</header>
+<main id="top">
+<section class="hero">
+ <div class="hero-orb"></div>
+ <div class="hero-content">
+  <div class="eyebrow">Ein Archiv der Macht · Genshin Impact</div>
+  <h1>Die Ordnung<br><em>von Teyvat.</em></h1>
+  <p class="hero-copy">Von den kosmischen Urmächten über Drachenkönige und Archonten bis zu den Sterblichen: Entdecke eine kuratierte Lore-Übersicht der mächtigsten Wesen und Persönlichkeiten aus Genshin Impact.</p>
+  <div class="hero-actions"><a class="primary" href="#tiers">Rangordnung entdecken ↗</a><a class="secondary" href="#methodik">Über diese Liste</a></div>
+  <div class="hero-meta"><div><strong>10</strong>Machtstufen</div><div><strong>100+</strong>Figuren & Entitäten</div><div><strong>∞</strong>Interpretationsspielraum</div></div>
+ </div>
+ <div class="scroll-hint">Scrollen, um das Archiv zu öffnen</div>
+</section>
+<section class="section" id="ordnung">
+ <div class="section-head reveal"><div><div class="kicker">Das kosmische Gefüge</div><h2>Eine Welt. Viele Ebenen.</h2></div><p class="section-intro">Diese Übersicht ordnet die in der Vorlage genannten Figuren nach ihrer dort eingeschätzten Bedeutung und Macht. Die Grenzen zwischen den Stufen sind nicht immer eindeutig.</p></div>
+ <div class="notice reveal"><div class="symbol">✧</div><p><strong>Fan-erstellte Lore-Einordnung:</strong> Genshin Impact veröffentlicht keine offizielle, vollständige Power-Tierliste. Die Platzierungen spiegeln die zugrunde liegende PDF wider und sind als interpretative Einordnung zu verstehen – nicht als bestätigte Entwickler-Rangfolge. Spoiler zu mehreren Story-Regionen sind enthalten.</p></div>
+ <div class="overview reveal">
+  <div class="overview-item"><b>01–02</b><span>Kosmische Ordnung</span><small>Schöpfung & Grundgesetze</small></div>
+  <div class="overview-item"><b>03–04</b><span>Transzendente Wesen</span><small>Sünder, Drachen & Hexenzirkel</small></div>
+  <div class="overview-item"><b>05–06</b><span>Göttliche Ebene</span><small>Archonten & regionale Mächte</small></div>
+  <div class="overview-item"><b>07–08</b><span>Elite & Legenden</span><small>Visionsträger und Anführer</small></div>
+  <div class="overview-item"><b>09–10</b><span>Sterbliche Ebene</span><small>Spezialisten & Zivilisten</small></div>
+ </div>
+</section>
+<section class="section" id="tiers">
+ <div class="section-head reveal"><div><div class="kicker">Das große Ranking</div><h2>Die Macht-Hierarchie</h2></div><p class="section-intro">Öffne eine Stufe, lies die Lore-Einordnung und durchsuche das Archiv nach Namen, Titeln oder Fähigkeiten.</p></div>
+ <div class="toolbar reveal"><div class="search-wrap"><input id="search" type="search" placeholder="Charakter, Titel oder Fähigkeit suchen …" aria-label="Archiv durchsuchen"></div><select class="filter" id="tierFilter" aria-label="Tier-Stufe filtern"><option value="all">Alle Stufen</option></select><span class="result-count" id="resultCount">10 Stufen · 100+ Einträge</span></div>
+ <div class="tier-list" id="tierList"></div><div class="empty" id="empty">Keine passenden Einträge gefunden. Probiere einen anderen Suchbegriff.</div>
+</section>
+<section class="section" id="methodik">
+ <div class="section-head reveal"><div><div class="kicker">Einordnung & Grenzen</div><h2>Wie ist das Ranking zu lesen?</h2></div><p class="section-intro">Macht in Teyvat ist mehr als reine Kampfkraft. Wissen, Autorität, Herkunft, Fähigkeiten und konkrete Leistungen können die Einschätzung beeinflussen.</p></div>
+ <div class="method-grid reveal">
+  <article class="method"><div class="num">01</div><h3>Lore statt Spielwerte</h3><p>Die Stufen beziehen sich auf die erzählte Welt und nicht auf Schadenszahlen, Builds, Seltenheit oder spielmechanische Stärke.</p></article>
+  <article class="method"><div class="num">02</div><h3>Keine exakte Wissenschaft</h3><p>Viele Figuren haben nie direkt gegeneinander gekämpft. Ein Vergleich bleibt deshalb teilweise spekulativ und kontextabhängig.</p></article>
+  <article class="method"><div class="num">03</div><h3>Stand der Vorlage</h3><p>Die Einträge und Beschreibungen wurden aus der bereitgestellten PDF übernommen und für diese Website strukturiert. Neue Story-Inhalte können die Einordnung verändern.</p></article>
+ </div>
+ <div class="timeline reveal">
+  <div class="timeline-card"><b>Tier 1–2</b><p>Schöpfung, kosmische Herkunft und Kontrolle fundamentaler Weltgesetze.</p></div>
+  <div class="timeline-card"><b>Tier 3–4</b><p>Uralte Drachen, Abgrundwissen, Hexenzirkel und außergewöhnliche Entitäten.</p></div>
+  <div class="timeline-card"><b>Tier 5–6</b><p>Archonten, Harbinger, Adepten und regionale Gottheiten.</p></div>
+  <div class="timeline-card"><b>Tier 7–10</b><p>Legendäre Kämpfer, militärische Elite, Visionsträger und gewöhnliche Menschen.</p></div>
+ </div>
+</section>
+</main>
+<footer><div><div class="footer-brand">✦ TEYVAT ARCHIVES</div><div>Ein Fanprojekt · Nicht mit HoYoverse verbunden</div></div><div>Genshin Impact © HoYoverse · Lore-Ranking nach bereitgestellter Vorlage</div></footer>
+<button class="backtop" id="backtop" aria-label="Nach oben">↑</button>
+<script>
+const tiers = [
+{n:1,title:"Das Himmlische Prinzip & die Schöpfer-Ebene",sub:"Kosmische Weltordnung",color:"#e8c982",desc:"Die absolute Spitze des Universums. Diese Stufe umfasst Entitäten, die laut Vorlage außerhalb der gewöhnlichen Regeln Teyvats stehen und die kosmische Ordnung prägen.",items:[
+["Phanes – Der Primordiale","Erschaffer der aktuellen menschlichen Weltordnung; besiegte die sieben Drachenkönige der Urwelt und gilt als oberste Herrscherinstanz über Celestia."],
+["Der Zweite, der kam","Mysteriöse kosmische Entität, deren Ankunft einen kataklysmischen Krieg mit Phanes auslöste. Der Konflikt erschütterte Teyvat und steht in Verbindung mit der Entstehung der Archon-Gnosen."],
+["Nibelung – Der alte Drachenkönig","Ursprünglicher Herrscher über die Elementardrachen vor Phanes' Ankunft. Kehrte mit verbotener Macht aus dem Abgrund zurück und führte Krieg gegen den Primordialen."],
+["Lumine – ursprüngliche Form","Kosmische Weltenwanderin und in der Vorlage als vierte Abstammende eingeordnet. Ihre ursprünglichen Kräfte liegen außerhalb der Gesetze Teyvats."],
+["Aether – ursprüngliche Form","Kosmisches Wesen von außerhalb Teyvats; führt den Abgrundorden an und verfügt über Wissen zur Struktur und Geschichte der Welt."]]},
+{n:2,title:"Die Vier Schatten des Himmlischen Prinzips",sub:"Herrscher über Grundgesetze",color:"#b9a6ef",desc:"Vom Primordialen aus seiner eigenen Substanz erschaffene Abspaltungen, die über fundamentale Gesetze des Universums wachen.",items:[
+["Asmoday – Herrscherin des Raums","Die unbekannte Göttin kontrolliert Raumdimensionen und Raumwürfel. Sie trennte die Geschwister zu Beginn ihrer Reise und versiegelte ihre Kräfte."],
+["Ronova – Herrscherin des Todes","Aufseherin über das Reich des Todes. Die Vorlage verbindet sie mit Xbalanques Auferstehungskraft und dem Fluch der Unsterblichkeit auf Khaenri'ah."],
+["Istaroth – Herrscherin der Zeit","Göttin der Tausend Winde. Kann Zeitströme und Kausalitäten beeinflussen; ihre Spuren finden sich unter anderem in Enkanomiya, Mondstadt und Inazuma."],
+["Naberius / Rhinedottir – Leben","Naberius war der Schatten des Lebens. Rhinedottir fand sein Herz und nahm laut Vorlage durch die Verschmelzung eine Rolle als Herrscherin über Schöpfung und Leben ein."]]},
+{n:3,title:"Die Fünf Sünder & vollständige Drachenkönige",sub:"Welttranszendierende Abgrundmacht und Ur-Autorität",color:"#e58b79",desc:"Wesen mit elementarer Ur-Autorität oder verbotenem Wissen, das die Grenzen der bekannten Welt überschreitet.",items:[
+["Surtalogi – Reiter des Bösen","Lehrmeister von Skirk und Besitzer des Verschlingenden Narwals. Ein Wesen von gewaltiger Kampfkraft, das durch das All reist und gigantische Wesen bändigt."],
+["Rhinedottir – Gold","Meisterin der Khemia-Alchemie. Erschuf Durin, Albedo, Elynas und Ruinen-Monsterhorden; wird in der Vorlage zugleich mit dem Schatten des Lebens verbunden."],
+["Rerir – Rächer von Solnari","Zentrale Machtfigur tieferer Abgrund-Traditionen und der Nod-Krai-Ereignisse, ausgestattet mit gewaltigen Kräften der Finsternis."],
+["Vedrfolnir – der Weise Seher","Bruder von Dainsleif. Besitzt die Fähigkeit, Schicksalsstränge vorauszusehen und Ereignisse über Zeitgrenzen hinweg zu beeinflussen."],
+["Hroptatyr – der Weise","Einer der fünf Sünder von Khaenri'ah, die beim Untergang des Reiches nach ultimativer verbotener Macht griffen."],
+["Neuvillette – Hydro-Drachenkönig","Reinkarnation des Hydro-Drachenkönigs. Erhielt seine vollständige Hydro-Autorität zurück und kontrolliert die Ursprungsmeere."],
+["Apep – Dendro-Drachenkönigin","Uralte Herrscherin des Dendro-Elements in Sumeru, mit enormen elementaren Reserven und Wissen aus der Urzeit."],
+["Xiuhcoatl – Pyro-Drachenkönig","Historischer Ur-Herrscher des Flammen-Elements in Natlan."],
+["Azhdaha – Geo-Drachenwesen","Uraltes Erd-Wesen Liyues. Kämpfte einst auf Augenhöhe mit Morax, bevor mentale Erosion seine Kraft und seinen Verstand zersetzte."]]},
+{n:4,title:"Hexenzirkel, Dainsleif & kosmische Entitäten",sub:"Magie, Schicksal und Grenzbereiche",color:"#91b8df",desc:"Magierinnen und Entitäten, die Schicksal lesen oder beeinflussen und weit über gewöhnliche sterbliche Maßstäbe hinausgehen.",items:[
+["Alice","Anführerin und Gründerin des Hexenzirkels, Mutter von Klee. Weltenreisende, Erfinderin und Beschützerin der äußeren Grenzen Teyvats."],
+["Barbeloth","Meister-Astrologin des Hexenzirkels und Lehrerin von Mona Megistus. Kann die Schicksalsfäden am Firmament entziffern."],
+["Andersdotter – M.","Erschafferin von Märchenwelten wie Simulanka; ihre magischen Worte können Realitäten formen."],
+["Ivanovna – J.","Ehemaliges mächtiges Zirkelmitglied, das ein Erbe alchemistischer und magischer Forschung hinterließ."],
+["Nicole Reeyn – N.","Prophetin des Zirkels. Kann als Stimme im Geist anderer sprechen, selbst wenn Erinnerungen durch Irminsul verändert wurden."],
+["Octavia","Hochrangige, erfahrene Magierin und Mitglied der Führungsriege des Hexenzirkels."],
+["Dainsleif – der Zweigträger","Ehemaliger Kapitän der königlichen Garde Khaenri'ahs. Mit Unsterblichkeit verflucht und nutzt eine namenlose blaue Sub-Elementarmacht gegen den Abgrund."],
+["Skirk","Schülerin von Surtalogi. Lebt in den tiefsten Abgründen des Raumes und beherrscht Abgrund-Kampfkünste auf einem Niveau nahe der Archonten."],
+["Der Verschlingende Narwal","Kosmische Bestie aus dem Urmeer, die ganze Welten oder Ozeane verschlingen kann; gilt Surtalogi als Haustier."]]},
+{n:5,title:"Die Sieben Archonten & die Top-3 der Fatui",sub:"Göttliche Ebene",color:"#d7a2d0",desc:"Die göttlichen Regenten der Elemente sowie Fatui-Harbinger, denen die Vorlage eine Macht auf Götterniveau zuschreibt.",items:[
+["Morax / Zhongli – Geo","Sieger des Archontenkrieges. Formte den Guyun-Steinwald aus gigantischen Steinlanzen und zählt zu den kampferfahrensten Göttern."],
+["Beelzebul / Raiden Ei – Elektro","Meisterin des Musou no Hitotachi. Spaltete Inseln und kämpfte 500 Jahre im Reich der Euthymie gegen die Shogun-Puppe."],
+["Mavuika – Pyro","Menschliche Archontin von Natlan und Hüterin der Heiligen Flamme. Lieferte sich einen direkten, ebenbürtigen Duellkampf mit Capitano."],
+["Buer / Nahida – Dendro","Avatar des Irminsul. Kontrolliert Träume, Verstand und Erinnerungen und besitzt Zugriff auf das Wissen der Welt."],
+["Barbatos / Venti – Anemo","Formte einst die Topografie Mondstadts um. Trotz geschwächter aktiver Kampfkraft besitzt er tiefe Verbindungen zu Istaroth."],
+["Die Zarin / Tsaritsa – Cryo","Anführerin von Snezhnaya und den Fatui. Sammelt die Gnosissen der Archonten für den Konflikt mit Celestia."],
+["Focalors / Furina – Hydro","Focalors opferte sich, um den göttlichen Thron zu vernichten. Furina agierte 500 Jahre als menschliche Darstellung einer Gottheit und besitzt nun eine Vision."],
+["Historische Götter & antike Herrscher","Makoto, Egeria, Rukkhadevata, König Deshret, Nabu Malikata, Guizhong, Havria, Orobashi, Kanna Kapatcir, Remus, Decarabian und Xbalanque."],
+["Il Capitano / Thrain – Nr. 1","Der Captain. Krieger Khaenri'ahs mit unsterblicher Rüstung; kämpfte laut Vorlage auf Augenhöhe mit Mavuika."],
+["Il Dottore / Zandik – Nr. 2","Genialer und skrupelloser Wissenschaftler. Verfügte über Klon-Segmente verschiedener Lebensalter und Machtmittel, die Archonten-Kräfte ausgleichen können."],
+["Columbina – Nr. 3","Damselette. Mysteriöses, engelsgleiches Wesen mit uralter Herkunft und gewaltigem, meist verborgenem Zerstörungspotenzial."]]},
+{n:6,title:"Reisende, hohe Adepten & übrige Harbinger",sub:"Regionale Macht und außergewöhnliche Wesen",color:"#8cc9bb",desc:"Charaktere und Wesen mit immenser regionaler Macht, fähig, Städte zu beschützen oder zu verheeren.",items:[
+["Lumine – aktueller Story-Fortschritt","Steuert mehrere Elemente ohne Vision. Besiegte Kämpfer wie Signora und Childe und trat mit strategischer Unterstützung gegen gottgleiche Entitäten wie Shouki no Kami an."],
+["Arlecchino / Peruere – Nr. 4","The Knave. Trägerin des blutroten Mond-Erbes aus Khaenri'ah. Besiegte die Reisende laut Vorlage im direkten Duell."],
+["Pulcinella – Nr. 5","Bürgermeister von Snezhnaya mit beträchtlichen politischen und militärischen Ressourcen."],
+["Scaramouche / Wanderer – ehem. Nr. 6","Ehemaliger Harbinger und künstliche göttliche Puppe. Erreichte als Shouki no Kami kurzzeitig den Status eines Archonten."],
+["Sandrone – Nr. 7","Marionette. Expertin für Automaten- und Ruinen-Technologie."],
+["La Signora / Rosalyne – ehem. Nr. 8","Crimson Witch of Flames; verfügte über jahrhundertealte Flammenmagie."],
+["Pantalone – Nr. 9","Regator. Finanzgenie von Snezhnaya."],
+["Tartaglia / Childe – Nr. 11","Beherrscht die Foul-Legacy-Verwandlung aus dem Abgrund und entwickelte sich im Kampf im Urmeer weiter."],
+["Liyue-Adepten","Xiao, Xianyun (Cloud Retainer), Zibai, Madame Ping, Mountain Shaper, Moon Carver, Ganyu und Shenhe."],
+["Götterbestien & mächtige Entitäten","Yae Miko, Dvalin, Andrius, Osial, Beisht und Guoba / Marchosius."],
+["Gefallene Yakshas & legendäre Geister","Bosacius, Indarias, Bonanus, Menogias, Pervases, Fujin, Lingyuan, Kitsune Saiguu, Chiyo, Sasayuri, Ioroi und Urakusai."],
+["Weitere mystische Wesen","Och-Kan, Arabalika, Arama, Arana, Ararycan, Sorush und Liloupar."],
+["Nod-Krai & spezielle Akteure","Flins, Mitya, Valeriy, Vodyanitsa und Aino."]]},
+{n:7,title:"Übermenschliche & legendäre Visionsträger",sub:"Fast-Adepten- und Harbinger-Niveau",color:"#d9a76f",desc:"Kämpfer an der Spitze sterblicher und halbmenschlicher Macht – durch Erbe, Hexerei, künstliche Schöpfung oder Kampferfahrung.",items:[
+["Varka – Ritter des Boreas","Großmeister des Ordo Favonius und legendärer Krieger. Seine Kampfkraft wird selbst von Tartaglia und Capitano respektiert."],
+["Albedo – Kreideprinz","Synthetischer Mensch, erschaffen von Rhinedottir mittels Khemia. Besitzt tiefes Wissen über alchemistische Schöpfung und großes Zerstörungspotenzial."],
+["Cyno – General Mahamatra","Oberstes Exekutivorgan der Akademie von Sumeru. Beherbergt den göttlichen Geist und die Macht von Hermanubis."],
+["Klee","Tochter von Alice. Verfügt über gewaltige Pyro-Zerstörungskraft und sprengte der Vorlage zufolge ganze Berglandschaften."],
+["Kaedehara Kazuha","Meisterhafter Schwertkämpfer, der durch die simultane Erweckung zweier Visionen den Musou no Hitotachi abwehren konnte."],
+["Mona Megistus","Hochbegabte Astrologin und Schülerin von Barbeloth. Beherrscht fortgeschrittene Hydromantie und kann Schicksalslinien entziffern."],
+["Lisa Minci","Brillante Absolventin der Sumeru-Akademie mit außergewöhnlich hohem magischem Potenzial."],
+["Diluc Ragnvindr","Ehemaliger Kavalleriehauptmann, der jahrelang ohne Vision gegen die Fatui kämpfte und die Aufmerksamkeit der Harbinger auf sich zog."],
+["Jean Gunnhildr","Löwenzahnritter. Stellvertretende Großmeisterin und herausragende Meisterin des Schwertkampfs und der Anemo-Kontrolle."],
+["Ningguang","Tianquan der Qixing. Beherrscht gewaltige Geo-Konstrukte und Adepten-Ballisten-Magie, die im Kampf gegen Osial und Beisht entscheidend war."],
+["Clorinde","Ungeschlagene Champion-Duellantin von Fontaine und Spezialistin für Nah- und Fernkampf."],
+["Wriothesley","Herzog der Festung Méropide und überragender Nahkämpfer."]]},
+{n:8,title:"Elite-Kämpfer, Generäle & Strategen",sub:"Militärische und strategische Speerspitze",color:"#83a9d7",desc:"Erfahrene Militärführer, Geheimagenten, Klanoberhäupter und hochrangige Kämpfer der Nationen.",items:[
+["Mondstadt","Eula Lawrence, Kaeya Alberich und Rosaria – Aufklärungshauptmann, Kavalleriehauptmann und nächtliche Beschützerin."],
+["Inazuma","Kamisato Ayato, Kamisato Ayaka, Sangonomiya Kokomi, Kujou Sara und Arataki Itto – Klanoberhaupt, Schwertmeisterin, Strategin, Tengu-Generalin und Oni."],
+["Sumeru","Alhaitham, Dehya, Tighnari, Candace und Sethos – Taktiker, Söldnerin, Waldhüter, Beschützerin von Aaru und ehemaliger Träger eines Hermanubis-Teilgeists."],
+["Fontaine","Navia, Lyney, Lynette, Freminet, Chevreuse und Sigewinne – Spina di Rosula, Haus des Herdes, Spezialpatrouille und Méropide-Station."],
+["Natlan","Kinich, Mualani, Xilonen, Chasca, Ororon, Citlali, Iansan, Varesa und Ifa – Krieger, Handwerker, Schamanen und Spezialisten der Nation."]]},
+{n:9,title:"Ausgebildete Visionsträger & Spezialisten",sub:"Ritter, Abenteurer und Fachleute",color:"#8ab6a1",desc:"Geschulte Visionsträger, Handwerker, Gelehrte, Nachwuchsritter und Spezialisten mit elementaren Fähigkeiten oder besonderen Hilfsmitteln.",items:[
+["Mondstadt","Razor, Noelle, Bennett, Fischl, Amber, Sucrose, Mika, Diona und Barbara."],
+["Liyue","Hu Tao, Xingqiu, Xiangling, Yanfei, Yun Jin, Baizhu, Gaming, Lan Yan, Xinyan und Yaoyao."],
+["Inazuma","Yoimiya, Thoma, Gorou, Kuki Shinobu, Kirara, Chiori, Yumemizuki Mizuki, Sayu und Shikanoin Heizou."],
+["Sumeru","Nilou, Faruzan, Layla, Kaveh, Collei und Dori."],
+["Fontaine & weitere Regionen","Charlotte, Emilie, Dahlia, Ineffa, Lauma, Nefer und Jahoda."],
+["Natlan","Kachina – junge Kriegerin mit Turbo-Wirbler."]]},
+{n:10,title:"Normale Menschen ohne Vision",sub:"Zivilisten, Gelehrte & Soldaten",color:"#9ba3b3",desc:"Personen ohne Vision oder göttliche Erbschaft, die durch Strategie, Technologie, Willen oder besondere Herkunft handeln.",items:[
+["Katheryne","Bionische Puppe der Abenteurergilde, hergestellt in Snezhnaya."],
+["Jeht","Eremitin mit herausragenden physischen Kampffähigkeiten und Messerbeherrschung ohne Vision."],
+["Zhiqiong","Erkunderin der Großen Kluft, angetrieben von menschlichem Pioniergeist."],
+["Teppei","Elitesoldat des Watatsumi-Widerstands."],
+["Dunyarzad","Treue Anhängerin Nahidas aus Sumeru."],
+["Ruu","Geist des Tsurumi-Jungen mit historischer Bindung an den Donnervogel."],
+["Paimon & bekannte Persönlichkeiten / NPCs","Paimon, Timaeus, Timmie, Wagner, Cyrus, Stanley, Ellin, Pallad, Liben, Ying'er, Lan, Kazari / Hanachirusato, Xavier, Tadhla, Jebrael, Rahman, Rana, Tirzad, Mamere, Sedene, Pahsiv, Caterpillar, Mary-Ann, Alain Guillotin, Rene, Jakob, Kapitän R / Pacal und Bona."]]}
+];
+
+const list=document.getElementById('tierList'), filter=document.getElementById('tierFilter');
+tiers.forEach(t=>{const o=document.createElement('option');o.value=t.n;o.textContent=`Tier ${t.n} · ${t.title}`;filter.append(o)});
+function render(){
+ const q=document.getElementById('search').value.trim().toLocaleLowerCase('de');
+ const f=filter.value;let shown=0, count=0;
+ list.innerHTML='';
+ tiers.forEach(t=>{
+  const matches=t.items.map(([name,desc])=>({name,desc,ok:!q||(name+' '+desc+' tier '+t.n+' '+t.title).toLocaleLowerCase('de').includes(q)})).filter(x=>x.ok);
+  const visible=(f==='all'||f===String(t.n))&&matches.length>0;
+  if(!visible)return;shown++;count+=matches.length;
+  const el=document.createElement('article');el.className='tier'+(q||f!=='all'?' open':'');el.style.setProperty('--tier',t.color);
+  const items=matches.map(x=>`<article class="entity"><span class="entity-name">${esc(x.name)}</span><p>${esc(x.desc)}</p></article>`).join('');
+  el.innerHTML=`<div class="tier-head" role="button" tabindex="0" aria-expanded="${q||f!=='all'?'true':'false'}"><div class="tier-number">${String(t.n).padStart(2,'0')}</div><div><h3 class="tier-title">${esc(t.title)}</h3><div class="tier-sub">${esc(t.sub)}</div></div><div class="tier-meta"><span>${matches.length} Einträge</span><span class="tier-toggle">＋</span></div></div><div class="tier-body"><p class="tier-desc">${esc(t.desc)}</p><div class="entity-grid">${items}</div></div>`;
+  const head=el.querySelector('.tier-head');const toggle=()=>{el.classList.toggle('open');head.setAttribute('aria-expanded',el.classList.contains('open'))};
+  head.addEventListener('click',toggle);head.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle()}});
+  list.append(el);
+ });
+ document.getElementById('empty').classList.toggle('show',shown===0);
+ document.getElementById('resultCount').textContent=`${shown} ${shown===1?'Stufe':'Stufen'} · ${count} Treffer`;
+}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+document.getElementById('search').addEventListener('input',render);filter.addEventListener('change',render);render();
+document.getElementById('expandAll').addEventListener('click',()=>{const all=[...document.querySelectorAll('.tier')],open=all.some(x=>!x.classList.contains('open'));all.forEach(x=>{x.classList.toggle('open',open);x.querySelector('.tier-head').setAttribute('aria-expanded',open)}) ;document.getElementById('expandAll').textContent=open?'Alle schließen':'Alle öffnen'});
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12});document.querySelectorAll('.reveal').forEach(x=>observer.observe(x));
+const progress=document.getElementById('progress'),back=document.getElementById('backtop');window.addEventListener('scroll',()=>{const max=document.documentElement.scrollHeight-innerHeight;progress.style.width=(max?scrollY/max*100:0)+'%';back.classList.toggle('show',scrollY>600)},{passive:true});back.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+const canvas=document.getElementById('stars'),ctx=canvas.getContext('2d');let stars=[];
+function resize(){canvas.width=innerWidth*devicePixelRatio;canvas.height=innerHeight*devicePixelRatio;canvas.style.width=innerWidth+'px';canvas.style.height=innerHeight+'px';stars=Array.from({length:Math.min(120,Math.floor(innerWidth/9))},()=>({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*1.4+.25,a:Math.random()*.55+.12,s:Math.random()*.18+.04}))}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);stars.forEach(p=>{p.a+=Math.sin(Date.now()/1100+p.x)*.001;ctx.fillStyle=`rgba(225,215,190,${Math.max(.08,p.a)})`;ctx.beginPath();ctx.arc(p.x,p.y,p.r*devicePixelRatio,0,Math.PI*2);ctx.fill();p.y-=p.s*devicePixelRatio;if(p.y<0)p.y=canvas.height});requestAnimationFrame(draw)}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){resize();draw();addEventListener('resize',resize)}else canvas.remove();
+</script>
+</body>
+</html>
